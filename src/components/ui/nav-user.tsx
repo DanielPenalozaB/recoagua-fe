@@ -26,7 +26,6 @@ import {
 import { useRouter } from "next/navigation"
 import { handleLogout } from "@/lib/auth-utils"
 import { getInitials } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
 
 interface NavUserProps {
   readonly user: {
@@ -43,8 +42,7 @@ export function NavUser({
   user,
   validateMobile = false,
 }: NavUserProps) {
-  const router = useRouter()
-  const isMobile = useIsMobile();
+  const router = useRouter();
 
   const handleLogoutClick = async () => {
     await handleLogout()
@@ -69,7 +67,7 @@ export function NavUser({
               {getInitials(user.name)}
             </AvatarFallback>
           </Avatar>
-          {!isMobile && (
+          {!validateMobile && (
             <>
               <div className="grid flex-1 text-left text-sm leading-tight min-w-0">
                 <span className="truncate font-medium">{user.name}</span>
