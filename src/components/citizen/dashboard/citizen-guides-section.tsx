@@ -56,7 +56,7 @@ export default function CitizenGuidesSection() {
             <span>{guide.estimatedDuration} min</span>
           </div>
           <a
-            href={`/guide/${guide.id}`}
+            href={`/guides/${guide.id}`}
             className={`w-full rounded-lg py-2 cursor-pointer px-4 flex justify-center items-center gap-2 transition-all duration-200 ease-in-out ${
               index === 0
                 ? "bg-[#CCFBF1] hover:bg-[#f0fdfc] text-[#0D9488]"
@@ -64,7 +64,7 @@ export default function CitizenGuidesSection() {
             }`}
             onClick={(e) => {
               e.preventDefault();
-              push(`/guide/${guide.id}`);
+              push(`/guides/${guide.id}`);
             }}
           >
             Iniciar lección

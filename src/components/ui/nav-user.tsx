@@ -60,8 +60,8 @@ export function NavUser({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-3 p-2 rounded-lg transition-all hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500">
-          <Avatar className="h-8 w-8 rounded-lg">
+        <button className="flex items-center gap-3 hover:bg-gray-100 p-1 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 transition-all">
+          <Avatar className="rounded-lg w-8 h-8">
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="rounded-lg">
               {getInitials(user.name)}
@@ -69,32 +69,32 @@ export function NavUser({
           </Avatar>
           {!validateMobile && (
             <>
-              <div className="grid flex-1 text-left text-sm leading-tight min-w-0">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs text-gray-500">{user.email}</span>
+              <div className="flex-1 grid min-w-0 text-sm text-left leading-tight">
+                <span className="font-medium truncate">{user.name}</span>
+                <span className="text-gray-500 text-xs truncate">{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4 flex-shrink-0" />
+              <ChevronsUpDown className="flex-shrink-0 ml-auto size-4" />
             </>
           )}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-56 rounded-lg"
+        className="rounded-lg w-56"
         align="end"
         sideOffset={4}
       >
         <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar className="h-8 w-8 rounded-lg">
+          <div className="flex items-center gap-2 px-1 py-1.5 text-sm text-left">
+            <Avatar className="rounded-lg w-8 h-8">
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback className="rounded-lg">
                 {getInitials(user.name)}
               </AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
-              <span className="truncate text-xs text-muted-foreground capitalize">
+            <div className="flex-1 grid text-sm text-left leading-tight">
+              <span className="font-medium truncate">{user.name}</span>
+              <span className="text-xs truncate">{user.email}</span>
+              <span className="text-muted-foreground text-xs truncate capitalize">
                 {user.role}
                 {user.city ? ` • ${user.city.name}` : ''}
               </span>
@@ -104,11 +104,11 @@ export function NavUser({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={handleProfileClick}>
-            <User className="mr-2 h-4 w-4" />
+            <User className="mr-2 w-4 h-4" />
             <span>Perfil</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSettingsClick}>
-            <Settings className="mr-2 h-4 w-4" />
+            <Settings className="mr-2 w-4 h-4" />
             <span>Ajustes</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -116,9 +116,9 @@ export function NavUser({
           <>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push('/admin/settings')}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                <span>Configuración de Admin</span>
+              <DropdownMenuItem onClick={() => router.push('/admin')}>
+                <Sparkles className="mr-2 w-4 h-4" />
+                <span>Panel de Admin</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </>
@@ -126,9 +126,9 @@ export function NavUser({
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleLogoutClick}
-          className="text-red-600 focus:text-red-700 focus:bg-red-50"
+          className="focus:bg-red-50 text-red-600 focus:text-red-700"
         >
-          <LogOut className="mr-2 h-4 w-4 text-red-600 focus:text-red-700" />
+          <LogOut className="mr-2 w-4 h-4 text-red-600 focus:text-red-700" />
           <span>Cerrar sesión</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

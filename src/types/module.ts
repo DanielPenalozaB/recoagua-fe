@@ -1,14 +1,18 @@
 import { Block } from "./block";
+import { Guide } from "./guide";
 
 export interface Module {
   id: number;
   name: string;
   description: string;
   order: number;
-  guideId: number;
+  points: number;
+  status: string;
+  guide: Guide;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: null;
   blocks: Block[];
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface CreateModuleDto {

@@ -1,4 +1,4 @@
-import { PaginationResponse } from '@/types/common';
+import { ApiResponse, PaginationResponse } from '@/types/common';
 import { ApiService } from './api';
 import { Guide, CreateGuideDto, UpdateGuideDto, GuideFilterDto, GuideProgress, GuideStats } from '@/types/guide';
 
@@ -6,7 +6,8 @@ export class GuideService extends ApiService {
   async getGuides(filters?: GuideFilterDto): Promise<PaginationResponse<Guide>> {
     const queryParams = new URLSearchParams();
 
-    if (filters?.status) queryParams.append('status', filters.status);
+    if (filters?.search) queryParams.append('search', filters.search);
+    if (filters?.status) queryParams.append('status', filters.status.toLowerCase());
     if (filters?.language) queryParams.append('language', filters.language);
     if (filters?.page) queryParams.append('page', filters.page.toString());
     if (filters?.limit) queryParams.append('limit', filters.limit.toString());
@@ -14,7 +15,7 @@ export class GuideService extends ApiService {
     return this.get(`/guides?${queryParams.toString()}`);
   }
 
-  async getGuide(id: number): Promise<Guide> {
+  async getGuide(id: number): Promise<ApiResponse<Guide>> {
     return this.get(`/guides/${id}`);
   }
 

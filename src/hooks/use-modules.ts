@@ -33,7 +33,7 @@ export const useCreateModule = () => {
   return useMutation({
     mutationFn: (moduleData: CreateModuleDto) => moduleService.createModule(moduleData),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: moduleKeys.list(data.guideId) });
+      queryClient.invalidateQueries({ queryKey: moduleKeys.list(data.guide.id) });
       toast.success('Module created successfully');
     },
     onError: (error: Error) => {
@@ -46,11 +46,11 @@ export const useUpdateModule = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateModuleDto }) => 
+    mutationFn: ({ id, data }: { id: number; data: UpdateModuleDto }) =>
       moduleService.updateModule(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: moduleKeys.detail(data.id) });
-      queryClient.invalidateQueries({ queryKey: moduleKeys.list(data.guideId) });
+      queryClient.invalidateQueries({ queryKey: moduleKeys.list(data.guide.id) });
       toast.success('Module updated successfully');
     },
     onError: (error: Error) => {

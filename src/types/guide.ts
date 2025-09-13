@@ -6,16 +6,24 @@ export enum GuideStatus {
   ARCHIVED = 'archived'
 }
 
+export enum GuideDifficulty {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced'
+}
+
 export interface Guide {
   id: number;
   name: string;
   description: string;
+  difficulty: GuideDifficulty;
   estimatedDuration: number;
   status: GuideStatus;
   language: string;
+  totalPoints: number;
   modules: Module[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateGuideDto {
@@ -31,6 +39,7 @@ export interface UpdateGuideDto extends Partial<CreateGuideDto> {
 }
 
 export interface GuideFilterDto {
+  search?: string;
   status?: GuideStatus;
   language?: string;
   page?: number;

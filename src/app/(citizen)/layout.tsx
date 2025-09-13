@@ -56,8 +56,6 @@ export default function CitizenLayout({ children }: { children: React.ReactNode 
     city: session.user.city || null,
   };
 
-  console.log(navigationItems);
-
   return (
     <MapboxProvider>
       <div className="min-h-screen bg-gray-50 pb-20">

@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/types/common';
 import { ApiService } from './api';
 import { Module, CreateModuleDto, UpdateModuleDto } from '@/types/module';
 
@@ -6,7 +7,7 @@ export class ModuleService extends ApiService {
     return this.get(`/guides/${guideId}/modules`);
   }
 
-  async getModule(id: number): Promise<Module> {
+  async getModule(id: number): Promise<ApiResponse<Module>> {
     return this.get(`/modules/${id}`);
   }
 
