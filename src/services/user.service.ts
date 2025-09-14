@@ -6,10 +6,34 @@ export class UserService extends ApiService {
   async getUsers(filters?: UserFilterDto): Promise<PaginationResponse<User>> {
     const queryParams = new URLSearchParams();
 
-    if (filters?.role) queryParams.append('role', filters.role);
+    // Handle array parameters correctly
+    if (filters?.role) {
+      if (Array.isArray(filters.role)) {
+        filters.role.forEach(role => queryParams.append('role', role));
+      } else {
+        queryParams.append('role', filters.role);
+      }
+    }
+
+    if (filters?.status) {
+      if (Array.isArray(filters.status)) {
+        filters.status.forEach(status => queryParams.append('status', status));
+      } else {
+        queryParams.append('status', filters.status);
+      }
+    }
+
+    // String search parameters
+    if (filters?.name) queryParams.append('search', filters.name);
+
+    // Single value parameters
     if (filters?.cityId) queryParams.append('cityId', filters.cityId.toString());
     if (filters?.page) queryParams.append('page', filters.page.toString());
     if (filters?.limit) queryParams.append('limit', filters.limit.toString());
+
+    // Sorting parameters (if needed in the future)
+    if (filters?.sortBy) queryParams.append('sortBy', filters.sortBy);
+    if (filters?.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
 
     return this.get(`/users?${queryParams.toString()}`);
   }

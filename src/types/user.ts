@@ -6,6 +6,12 @@ export enum UserRole {
   CITIZEN = 'citizen'
 }
 
+export enum UserStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  PENDING = 'pending',
+}
+
 export interface User {
   id: number;
   email: string;
@@ -13,6 +19,7 @@ export interface User {
   language: string;
   role: UserRole;
   city: City | null;
+  status: UserStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,8 +38,21 @@ export interface UpdateUserDto extends Partial<CreateUserDto> {
 }
 
 export interface UserFilterDto {
-  role?: UserRole;
-  cityId?: number;
+  // Pagination
   page?: number;
   limit?: number;
+
+  // Search filters
+  name?: string;
+
+  // Multi-select filters
+  role?: string | string[];
+  status?: string | string[];
+
+  // Single value filters
+  cityId?: number;
+
+  // Sorting (optional - for future use)
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }

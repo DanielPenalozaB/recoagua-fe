@@ -2,19 +2,18 @@
 
 import * as React from "react"
 import {
-  BookOpen, Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2, Users,
-  FileText,
-  BarChart3
+  BookOpen, LifeBuoy, PieChart, Settings2, Users, BarChart3,
+  Component,
+  Droplets,
+  Target,
+  Award,
+  Trophy,
+  MapPin,
+  Globe,
+  Flag,
+  Layers
 } from "lucide-react"
 
-import { NavMain } from "@/components/ui/nav-main"
-import { NavProjects } from "@/components/ui/nav-projects"
 import { NavSecondary } from "@/components/ui/nav-secondary"
 import { NavUser } from "@/components/ui/nav-user"
 import {
@@ -27,125 +26,244 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
+import { NavMainGroups } from "./nav-main-groups"
+import { Skeleton } from "./skeleton"
 
-// Admin-specific navigation items
-const adminNavMain = [
+export const adminNavGroups = [
   {
-    title: "Dashboard",
-    url: "/admin",
-    icon: BarChart3,
-    isActive: false,
-    items: [],
-  },
-  {
-    title: "Users",
-    url: "/admin/users",
-    icon: Users,
-    isActive: false,
-    items: [],
-  },
-  {
-    title: "Guides",
-    url: "/admin/guides",
-    icon: BookOpen,
-    isActive: false,
+    title: "Principal",
     items: [
       {
-        title: "All Guides",
+        title: "Dashboard",
+        url: "/admin",
+        icon: BarChart3,
+        isActive: false,
+        items: [],
+      },
+    ],
+  },
+  {
+    title: "Contenido",
+    items: [
+      {
+        title: "Guías",
         url: "/admin/guides",
+        icon: BookOpen,
+        isActive: false,
+        items: [
+          {
+            title: "Todas las guías",
+            url: "/admin/guides",
+          },
+          {
+            title: "Nueva guía",
+            url: "/admin/guides/create",
+          },
+          {
+            title: "Categorías",
+            url: "/admin/guides/categories",
+          },
+        ],
       },
       {
-        title: "Create New",
-        url: "/admin/guides/create",
+        title: "Módulos",
+        url: "/admin/modules",
+        icon: Component,
+        isActive: false,
+        items: [
+          {
+            title: "Todos los módulos",
+            url: "/admin/modules",
+          },
+          {
+            title: "Nuevo módulo",
+            url: "/admin/modules/create",
+          },
+        ],
       },
       {
-        title: "Categories",
-        url: "/admin/guides/categories",
+        title: "Bloques",
+        url: "/admin/blocks",
+        icon: Layers,
+        isActive: false,
+        items: [
+          {
+            title: "Todos los bloques",
+            url: "/admin/blocks",
+          },
+          {
+            title: "Nuevo bloque",
+            url: "/admin/blocks/create",
+          },
+        ],
       },
     ],
   },
   {
-    title: "Content",
-    url: "/admin/content",
-    icon: FileText,
-    isActive: false,
+    title: "Ubicaciones",
     items: [
       {
-        title: "Modules",
-        url: "/admin/content/modules",
+        title: "Ciudades",
+        url: "/admin/cities",
+        icon: MapPin,
+        isActive: false,
+        items: [],
       },
       {
-        title: "Blocks",
-        url: "/admin/content/blocks",
+        title: "Regiones",
+        url: "/admin/regions",
+        icon: Globe,
+        isActive: false,
+        items: [],
+      },
+      {
+        title: "Zonas",
+        url: "/admin/zones",
+        icon: Flag,
+        isActive: false,
+        items: [],
       },
     ],
   },
   {
-    title: "Analytics",
-    url: "/admin/analytics",
-    icon: PieChart,
-    isActive: false,
-    items: [],
-  },
-  {
-    title: "Settings",
-    url: "/admin/settings",
-    icon: Settings2,
-    isActive: false,
+    title: "Gamificación",
     items: [
       {
-        title: "General",
-        url: "/admin/settings/general",
+        title: "Retos",
+        url: "/admin/challenges",
+        icon: Target,
+        isActive: false,
+        items: [],
       },
       {
-        title: "Security",
-        url: "/admin/settings/security",
+        title: "Niveles",
+        url: "/admin/levels",
+        icon: Award,
+        isActive: false,
+        items: [],
       },
       {
-        title: "Permissions",
-        url: "/admin/settings/permissions",
+        title: "Insignias",
+        url: "/admin/badges",
+        icon: Trophy,
+        isActive: false,
+        items: [],
+      },
+    ],
+  },
+  {
+    title: "Análisis",
+    items: [
+      {
+        title: "Analíticas",
+        url: "/admin/analytics",
+        icon: PieChart,
+        isActive: false,
+        items: [],
+      },
+    ],
+  },
+  {
+    title: "Administración",
+    items: [
+      {
+        title: "Usuarios",
+        url: "/admin/users",
+        icon: Users,
+        isActive: false,
+        items: [],
+      },
+      {
+        title: "Configuración",
+        url: "/admin/settings",
+        icon: Settings2,
+        isActive: false,
+        items: [
+          {
+            title: "General",
+            url: "/admin/settings/general",
+          },
+          {
+            title: "Seguridad",
+            url: "/admin/settings/security",
+          },
+          {
+            title: "Permisos",
+            url: "/admin/settings/permissions",
+          },
+        ],
       },
     ],
   },
 ]
 
-const moderatorNavMain = [
+const moderatorNavGroups = [
   {
-    title: "Dashboard",
-    url: "/admin",
-    icon: BarChart3,
-    isActive: false,
-    items: [],
-  },
-  {
-    title: "Guides",
-    url: "/admin/guides",
-    icon: BookOpen,
-    isActive: false,
+    title: "Principal",
     items: [
       {
-        title: "All Guides",
-        url: "/admin/guides",
-      },
-      {
-        title: "Create New",
-        url: "/admin/guides/create",
+        title: "Dashboard",
+        url: "/admin",
+        icon: BarChart3,
+        isActive: false,
+        items: [],
       },
     ],
   },
   {
-    title: "Content",
-    url: "/admin/content",
-    icon: FileText,
-    isActive: false,
+    title: "Contenido",
     items: [
       {
-        title: "Modules",
-        url: "/admin/content/modules",
+        title: "Guías",
+        url: "/admin/guides",
+        icon: BookOpen,
+        isActive: false,
+        items: [
+          {
+            title: "Todas las guías",
+            url: "/admin/guides",
+          },
+          {
+            title: "Nueva guía",
+            url: "/admin/guides/create",
+          },
+        ],
       },
       {
-        title: "Blocks",
-        url: "/admin/content/blocks",
+        title: "Módulos",
+        url: "/admin/modules",
+        icon: Component,
+        isActive: false,
+        items: [
+          {
+            title: "Todos los módulos",
+            url: "/admin/modules",
+          },
+        ],
+      },
+      {
+        title: "Bloques",
+        url: "/admin/blocks",
+        icon: Layers,
+        isActive: false,
+        items: [
+          {
+            title: "Todos los bloques",
+            url: "/admin/blocks",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "Análisis",
+    items: [
+      {
+        title: "Analíticas",
+        url: "/admin/analytics",
+        icon: PieChart,
+        isActive: false,
+        items: [],
       },
     ],
   },
@@ -153,47 +271,23 @@ const moderatorNavMain = [
 
 const navSecondary = [
   {
-    title: "Support",
+    title: "Soporte",
     url: "/support",
     icon: LifeBuoy,
-  },
-  {
-    title: "Feedback",
-    url: "/feedback",
-    icon: Send,
-  },
-]
-
-const projects = [
-  {
-    name: "Water Conservation",
-    url: "/projects/water",
-    icon: Frame,
-  },
-  {
-    name: "Community Outreach",
-    url: "/projects/community",
-    icon: PieChart,
-  },
-  {
-    name: "Education Program",
-    url: "/projects/education",
-    icon: Map,
-  },
+  }
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session, status } = useSession()
 
-  // Get navigation items based on user role
-  const getNavMain = () => {
+  const getNavGroups = () => {
     if (!session?.user?.role) return []
-    
+
     switch (session.user.role.toLowerCase()) {
       case 'admin':
-        return adminNavMain
+        return adminNavGroups
       case 'moderator':
-        return moderatorNavMain
+        return moderatorNavGroups
       default:
         return []
     }
@@ -202,8 +296,56 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   if (status === "loading") {
     return (
       <Sidebar variant="inset" {...props}>
-        <div className="flex items-center justify-center h-full">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <div className="flex flex-col p-2">
+          <Skeleton className="bg-neutral-200 h-12" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col p-2">
+            <div className="flex flex-col p-2 h-8">
+              <Skeleton className="bg-neutral-200 w-1/2 h-full" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Skeleton className="bg-neutral-200 h-8" />
+            </div>
+          </div>
+          <div className="flex flex-col p-2">
+            <div className="flex flex-col p-2 h-8">
+              <Skeleton className="bg-neutral-200 w-1/2 h-full" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Skeleton className="bg-neutral-200 h-8" />
+              <Skeleton className="bg-neutral-200 h-8" />
+              <Skeleton className="bg-neutral-200 h-8" />
+            </div>
+          </div>
+          <div className="flex flex-col p-2">
+            <div className="flex flex-col p-2 h-8">
+              <Skeleton className="bg-neutral-200 w-1/2 h-full" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Skeleton className="bg-neutral-200 h-8" />
+              <Skeleton className="bg-neutral-200 h-8" />
+              <Skeleton className="bg-neutral-200 h-8" />
+            </div>
+          </div>
+          <div className="flex flex-col p-2">
+            <div className="flex flex-col p-2 h-8">
+              <Skeleton className="bg-neutral-200 w-1/2 h-full" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Skeleton className="bg-neutral-200 h-8" />
+              <Skeleton className="bg-neutral-200 h-8" />
+              <Skeleton className="bg-neutral-200 h-8" />
+            </div>
+          </div>
+          <div className="flex flex-col p-2">
+            <div className="flex flex-col p-2 h-8">
+              <Skeleton className="bg-neutral-200 w-1/2 h-full" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <Skeleton className="bg-neutral-200 h-8" />
+            </div>
+          </div>
         </div>
       </Sidebar>
     )
@@ -214,11 +356,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }
 
   const userData = {
-    name: session.user.name || "User",
-    email: session.user.email || "",
-    avatar: session.user.image || "",
-    role: session.user.role || "user",
-    city: session.user.city || null,
+    name: session.user.name ?? "User",
+    email: session.user.email ?? "",
+    avatar: session.user.image ?? "",
+    role: session.user.role ?? "user",
+    city: session.user.city ?? null,
   }
 
   return (
@@ -228,12 +370,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="/admin">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
+                <div className="flex justify-center items-center bg-teal-500 rounded-lg size-8 aspect-square text-sidebar-primary-foreground">
+                  <Droplets className="size-4" />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Water Management</span>
-                  <span className="truncate text-xs">Admin Panel</span>
+                <div className="flex-1 grid text-sm text-left leading-tight">
+                  <span className="font-medium truncate">Gestión RecoAgua</span>
+                  <span className="text-xs truncate">Admin Panel</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -241,8 +383,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={getNavMain()} />
-        <NavProjects projects={projects} />
+        <NavMainGroups groups={getNavGroups()} />
         <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

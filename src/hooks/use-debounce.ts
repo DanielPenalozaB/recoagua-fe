@@ -1,29 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 
 /**
- * Debounces a value based on a specified time interval.
+ * A custom hook to debounce a value.
+ * @param value The value to debounce.
+ * @param delay The debounce delay in milliseconds.
+ * @returns The debounced value.
  *
- * @param {string | undefined} value - The value to debounce
- * @param {number} ms - The time interval in milliseconds
- * @return {string | undefined} The debounced value
+ * @example
+ * const [searchTerm, setSearchTerm] = useState('');
+ * const debouncedSearchTerm = useDebounce(searchTerm, 500);
+ *
+ * useEffect(() => {
+ * // Perform a search with the debounced term
+ * api.search(debouncedSearchTerm);
+ * }, [debouncedSearchTerm]);
  */
-export const useDebounce = (value: string | undefined, ms: number): string | undefined => {
-  const [ debouncedValue, setDebouncedValue ] = useState(value);
+export function useDebounce<T>(value: T, delay: number): T {
+  // State to store the debounced value
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
   useEffect(() => {
-    if (value === undefined) {
-      setDebouncedValue(undefined);
-    } else {
-      const timerId = setTimeout(() => {
-        setDebouncedValue(value);
-      }, ms);
+    // Set up a timer to update the debounced value after the specified delay
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
 
-      // Cleanup function to clear the timer on unmount
-      return () => {
-        clearTimeout(timerId);
-      };
+    // Clean up the timer if the value changes before the delay has passed.
+    // This is the core of the debouncing logic.
+    return () => {
+      clearTimeout(handler)
     }
-  }, [ value, ms ]);
+  }, [value, delay]) // Re-run the effect only if the value or delay changes
 
-  return debouncedValue;
-};
+  return debouncedValue
+}

@@ -8,11 +8,11 @@ export default function AdminLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen">
+      <div className="flex w-full h-screen">
         <AppSidebar />
-        <main className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto">
           {children}
-        </main>
+        </div>
       </div>
     </SidebarProvider>
   )

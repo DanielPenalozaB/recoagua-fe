@@ -1,3 +1,5 @@
+"use client"
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/user.service';
 import { CreateUserDto, UpdateUserDto, UserFilterDto } from '@/types/user';
