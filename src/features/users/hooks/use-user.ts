@@ -20,7 +20,9 @@ const useUsers = (filters?: UserFilterDto) => {
   });
 };
 
-const useUser = (id: number) => {
+const useUser = (id: number | undefined) => {
+  if (!id) return;
+
   return useQuery({
     queryKey: userKeys.detail(id),
     queryFn: () => userService.getUser(id),
@@ -47,7 +49,7 @@ const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateUserDto }) => 
+    mutationFn: ({ id, data }: { id: number; data: UpdateUserDto }) =>
       userService.updateUser(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: userKeys.detail(variables.id) });

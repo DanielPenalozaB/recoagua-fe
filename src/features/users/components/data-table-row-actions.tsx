@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useUsers } from './users-provider'
 import { User } from '@/types/user'
+import Link from 'next/link'
 
 type DataTableRowActionsProps = {
   readonly row: Row<User>
@@ -20,6 +21,7 @@ type DataTableRowActionsProps = {
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useUsers()
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -32,17 +34,14 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem
-          onClick={() => {
-            setCurrentRow(row.original)
-            setOpen('edit')
-          }}
-        >
-          Editar
-          <DropdownMenuShortcut>
-            <UserPen size={16} />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <Link href={`/admin/users/${row.original.id}`}>
+          <DropdownMenuItem>
+            Editar
+            <DropdownMenuShortcut>
+              <UserPen size={16} />
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {

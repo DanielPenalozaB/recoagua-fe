@@ -1,4 +1,4 @@
-import { PaginationResponse } from '@/types/common';
+import { ApiResponse, PaginationResponse } from '@/types/common';
 import { CreateUserDto, UpdateUserDto, User, UserFilterDto } from '@/types/user';
 import { ApiService } from './api';
 
@@ -38,7 +38,7 @@ export class UserService extends ApiService {
     return this.get(`/users?${queryParams.toString()}`);
   }
 
-  async getUser(id: number): Promise<User> {
+  async getUser(id: number): Promise<ApiResponse<User>> {
     return this.get(`/users/${id}`);
   }
 

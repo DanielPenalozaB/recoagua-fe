@@ -31,9 +31,7 @@ export interface CreateUserDto {
   cityId?: number;
 }
 
-export interface UpdateUserDto extends Partial<CreateUserDto> {
-  id: number;
-}
+export interface UpdateUserDto extends Partial<CreateUserDto> {}
 
 export interface UserFilterDto {
   // Pagination

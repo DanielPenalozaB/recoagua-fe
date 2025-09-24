@@ -84,6 +84,36 @@ export const usersColumns: ColumnDef<User>[] = [
     enableHiding: true,
   },
   {
+    accessorKey: 'createdAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Creación' />
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return <div className='w-fit'>{`${day}/${month}/${year}`}</div>
+    },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Actualización' />
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.original.updatedAt)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return <div className='w-fit'>{`${day}/${month}/${year}`}</div>
+    },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Estado' />

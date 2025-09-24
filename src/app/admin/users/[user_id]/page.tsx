@@ -13,7 +13,9 @@ import {
 } from "@/components/ui";
 import { UsersCreateEditForm } from "@/features/users";
 
-export default function CreateUser() {
+export default async function EditUserPage({ params }: { params: Promise<{ user_id: string }> }) {
+  const { user_id } = await params;
+
   return (
     <>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">
@@ -30,7 +32,7 @@ export default function CreateUser() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Crear usuario</BreadcrumbPage>
+                <BreadcrumbPage>Editar usuario</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -43,13 +45,13 @@ export default function CreateUser() {
       <Main className="flex flex-col gap-6 mx-auto p-4 max-w-2xl">
         <div className='flex flex-wrap justify-between items-center space-y-2 mb-2'>
           <div>
-            <h2 className='font-bold text-2xl tracking-tight'>Crear usuario</h2>
+            <h2 className='font-bold text-2xl tracking-tight'>Editar usuario</h2>
             <p className='text-muted-foreground'>
-              Crea un nuevo usuario en la plataforma
+              Edita los detalles del usuario
             </p>
           </div>
         </div>
-        <UsersCreateEditForm />
+        <UsersCreateEditForm userId={Number(user_id)} />
       </Main>
     </>
   )

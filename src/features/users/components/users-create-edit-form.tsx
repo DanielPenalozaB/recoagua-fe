@@ -22,8 +22,8 @@ import {
 import { UserRole } from '@/types/user'
 import { useCities } from '@/hooks/use-cities'
 import { useRouter } from 'next/navigation'
-import { useCreateUser } from '../hooks/use-user'
-import { useState } from 'react'
+import { useCreateUser, useUpdateUser, useUser } from '../hooks/use-user'
+import { useEffect, useState } from 'react'
 
 const profileFormSchema = z.object({
   name: z
@@ -51,12 +51,20 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 const defaultValues: Partial<ProfileFormValues> = {
   name: '',
   email: '',
+  cityId: '',
 }
 
-export function UsersCreateForm() {
+interface UsersCreateEditFormProps {
+  readonly userId?: number
+}
+
+export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
   const { push } = useRouter();
-  const { data, isLoading, error } = useCities({ limit: 100 });
   const createUserMutation = useCreateUser();
+  const updateUserMutation = useUpdateUser();
+  const getUserMutation = useUser(userId);
+  const { data, isLoading, error } = useCities({ limit: 100 });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ProfileFormValues>({
@@ -91,7 +99,11 @@ export function UsersCreateForm() {
         language: 'es'
       };
 
-      await createUserMutation.mutateAsync(userData);
+      if (userId) {
+        await updateUserMutation.mutateAsync({ id: userId, data: userData });
+      } else {
+        await createUserMutation.mutateAsync(userData);
+      }
 
       // Redirect to users list after successful creation
       push('/admin/users');
@@ -103,11 +115,33 @@ export function UsersCreateForm() {
     }
   }
 
+  useEffect(() => {
+    if (getUserMutation?.isSuccess) {
+      const user = getUserMutation.data.data;
+      form.setValue('name', user.name);
+      form.setValue('email', user.email);
+      form.setValue('role', user.role);
+
+      if (user.city) {
+        form.setValue('cityId', user.city.id.toString());
+      }
+    }
+  }, [getUserMutation?.isSuccess]);
+
   const placeholderText = error ? "Error al cargar ciudades" : "Selecciona una ciudad"
+
+  console.log(form.getValues());
 
   const cityItems = error
     ? <SelectItem value="1" disabled>Error al cargar ciudades</SelectItem>
     : data?.data.map((city) => (<SelectItem key={city.id.toString()} value={city.id.toString()}>{city.name}</SelectItem>));
+
+  const getButtonText = () => {
+    if (userId) {
+      return isSubmitting ? 'Actualizando...' : 'Actualizar usuario';
+    }
+    return isSubmitting ? 'Creando...' : 'Crear usuario';
+  };
 
   return (
     <Form {...form}>
@@ -145,7 +179,7 @@ export function UsersCreateForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Rol</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value ?? ''}>
                   <FormControl>
                     <SelectTrigger className='w-full'>
                       <SelectValue placeholder="Selecciona un rol" />
@@ -165,7 +199,7 @@ export function UsersCreateForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Ciudad</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className='w-full'>
                       <SelectValue placeholder={isLoading ? "Cargando ciudades..." : placeholderText} />
@@ -195,11 +229,11 @@ export function UsersCreateForm() {
         </Button>
         <Button
           type='submit'
-          title='Crear usuario'
+          title={getButtonText()}
           disabled={isSubmitting || !form.formState.isValid}
           isLoading={isSubmitting}
         >
-            {isSubmitting ? 'Creando...' : 'Crear usuario'}
+            {getButtonText()}
         </Button>
       </form>
     </Form>
