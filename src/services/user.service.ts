@@ -1,6 +1,6 @@
 import { PaginationResponse } from '@/types/common';
+import { CreateUserDto, UpdateUserDto, User, UserFilterDto } from '@/types/user';
 import { ApiService } from './api';
-import { User, CreateUserDto, UpdateUserDto, UserFilterDto } from '@/types/user';
 
 export class UserService extends ApiService {
   async getUsers(filters?: UserFilterDto): Promise<PaginationResponse<User>> {

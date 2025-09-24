@@ -1,18 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { cityService } from '@/services/city.service';
-import { CreateCityDto, UpdateCityDto } from '@/types/city';
+import { CityFilterDto, CreateCityDto, UpdateCityDto } from '@/types/city';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const cityKeys = {
   all: ['cities'] as const,
   lists: () => [...cityKeys.all, 'list'] as const,
+  list: (filters: CityFilterDto) => [...cityKeys.lists(), filters] as const,
   details: () => [...cityKeys.all, 'detail'] as const,
   detail: (id: number) => [...cityKeys.details(), id] as const,
 };
 
-export const useCities = () => {
+export const useCities = (filters?: CityFilterDto) => {
   return useQuery({
-    queryKey: cityKeys.lists(),
+    queryKey: cityKeys.list(filters || {}),
     queryFn: () => cityService.getCities(),
   });
 };

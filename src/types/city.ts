@@ -14,3 +14,19 @@ export interface CreateCityDto {
 export interface UpdateCityDto extends Partial<CreateCityDto> {
   id: number;
 }
+
+export interface CityFilterDto {
+  // Pagination
+  page?: number;
+  limit?: number;
+
+  // Search filters
+  name?: string;
+
+  // Single value filters
+  regionId?: number;
+
+  // Sorting (optional - for future use)
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}

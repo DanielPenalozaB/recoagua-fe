@@ -105,44 +105,26 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      // Add custom properties to the token only if it's our custom user type
-      if (user && isCustomUser(user)) {
-        token.accessToken = user.accessToken
-        token.refreshToken = user.refreshToken
-        token.role = user.role
-        token.language = user.language
-        token.city = user.city
-        token.accessTokenExpires = Date.now() + (user.expiresIn || 3600) * 1000
+    async jwt({ token, user, trigger, session }) {
+      // Initial sign in
+      if (user) {
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+        token.accessTokenExpires = Date.now() + (user.expiresIn || 3600) * 1000;
+        token.role = user.role;
+        token.language = user.language;
+        token.city = user.city;
+        return token;
       }
 
-      // Check if access token needs refresh
-      if (token.accessToken && token.refreshToken && token.accessTokenExpires) {
-        try {
-          // Check if token is expired (with 5-minute buffer)
-          const tokenExpirationTime = token.accessTokenExpires
-          const now = Date.now()
-          const fiveMinutesFromNow = now + 5 * 60 * 1000 // 5 minutes buffer
-
-          if (tokenExpirationTime < fiveMinutesFromNow) {
-            const refreshedTokens = await refreshAccessToken(token.refreshToken);
-
-            if (refreshedTokens) {
-              token.accessToken = refreshedTokens.accessToken
-              token.refreshToken = refreshedTokens.refreshToken
-              token.accessTokenExpires = Date.now() + refreshedTokens.expiresIn * 1000
-              token.error = undefined
-            } else {
-              token.error = "RefreshAccessTokenError"
-            }
-          }
-        } catch (error) {
-          console.error('Token refresh error:', error)
-          token.error = "RefreshAccessTokenError"
-        }
+      // Return previous token if the accessToken has not expired yet
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
       }
 
-      return token
+      // Access token has expired, try to update it
+      console.log('Token expired, refreshing...');
+      return await refreshAccessToken(token);
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
@@ -171,36 +153,36 @@ export const authOptions: NextAuthOptions = {
   },
 }
 
-async function refreshAccessToken(refreshToken: string): Promise<{
-  accessToken: string
-  refreshToken: string
-  expiresIn: number
-} | null> {
+async function refreshAccessToken(token: any) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        refreshToken,
+        refreshToken: token.refreshToken,
       }),
-    })
+    });
 
-    if (!res.ok) {
-      console.error('Refresh token request failed:', res.status, res.statusText)
-      return null
+    if (!response.ok) {
+      throw new Error('Refresh token failed');
     }
 
-    const refreshedTokens: LoginResponse = await res.json()
+    const refreshedTokens = await response.json();
 
     return {
+      ...token,
       accessToken: refreshedTokens.data.accessToken,
       refreshToken: refreshedTokens.data.refreshToken,
-      expiresIn: refreshedTokens.data.expiresIn,
-    }
+      accessTokenExpires: Date.now() + refreshedTokens.data.expiresIn * 1000,
+      error: undefined,
+    };
   } catch (error) {
-    console.error('Error refreshing access token:', error)
-    return null
+    console.error('Error refreshing access token:', error);
+    return {
+      ...token,
+      error: 'RefreshAccessTokenError',
+    };
   }
 }

@@ -12,7 +12,6 @@ import { DataTableViewOptions } from './view-options'
 type DataTableToolbarProps<TData> = {
   readonly table: Table<TData>
   readonly searchPlaceholder?: string
-  readonly searchKey?: string
   readonly filters?: {
     columnId: string
     title: string
@@ -27,7 +26,6 @@ type DataTableToolbarProps<TData> = {
 export function DataTableToolbar<TData>({
   table,
   searchPlaceholder = 'Filtrar...',
-  searchKey,
   filters = [],
 }: DataTableToolbarProps<TData>) {
   const isFiltered =
@@ -55,25 +53,12 @@ export function DataTableToolbar<TData>({
   return (
     <div className='flex justify-between items-center'>
       <div className='flex sm:flex-row flex-col-reverse flex-1 items-start sm:items-center gap-y-2 sm:space-x-2'>
-        {searchKey ? (
-          <Input
-            placeholder={searchPlaceholder}
-            value={
-              (table.getColumn(searchKey)?.getFilterValue() as string) ?? ''
-            }
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
-            }
-            className='w-[150px] lg:w-[250px] h-8'
-          />
-        ) : (
           <Input
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}
-            className='w-[150px] lg:w-[250px] h-8'
+            className='bg-white w-[150px] lg:w-[250px] h-8'
           />
-        )}
         <div className='flex gap-x-2'>
           {filters.map((filter) => {
             const column = table.getColumn(filter.columnId)

@@ -27,8 +27,6 @@ export interface User {
 export interface CreateUserDto {
   email: string;
   name: string;
-  password: string;
-  language: string;
   role: UserRole;
   cityId?: number;
 }

@@ -1,11 +1,11 @@
 "use client"
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/user.service';
 import { CreateUserDto, UpdateUserDto, UserFilterDto } from '@/types/user';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-export const userKeys = {
+const userKeys = {
   all: ['users'] as const,
   lists: () => [...userKeys.all, 'list'] as const,
   list: (filters: UserFilterDto) => [...userKeys.lists(), filters] as const,
@@ -13,14 +13,14 @@ export const userKeys = {
   detail: (id: number) => [...userKeys.details(), id] as const,
 };
 
-export const useUsers = (filters?: UserFilterDto) => {
+const useUsers = (filters?: UserFilterDto) => {
   return useQuery({
     queryKey: userKeys.list(filters || {}),
     queryFn: () => userService.getUsers(filters),
   });
 };
 
-export const useUser = (id: number) => {
+const useUser = (id: number) => {
   return useQuery({
     queryKey: userKeys.detail(id),
     queryFn: () => userService.getUser(id),
@@ -28,7 +28,7 @@ export const useUser = (id: number) => {
   });
 };
 
-export const useCreateUser = () => {
+const useCreateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -43,7 +43,7 @@ export const useCreateUser = () => {
   });
 };
 
-export const useUpdateUser = () => {
+const useUpdateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -60,7 +60,7 @@ export const useUpdateUser = () => {
   });
 };
 
-export const useDeleteUser = () => {
+const useDeleteUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -74,4 +74,8 @@ export const useDeleteUser = () => {
       toast.error(`Failed to delete user: ${error.message}`);
     },
   });
+};
+
+export {
+  useCreateUser, useDeleteUser, useUpdateUser, useUser, useUsers
 };

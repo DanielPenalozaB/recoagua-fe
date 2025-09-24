@@ -1,6 +1,6 @@
 'use client';
 
-import CommingSoonIcon from "@/components/icons/comming-soon-icon";
+import { CommingSoonIcon } from "@/components/icons";
 import { useGuides } from "@/hooks/use-guides";
 import { Guide, GuideStatus } from "@/types/guide";
 import { Clock } from "lucide-react";

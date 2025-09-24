@@ -20,10 +20,12 @@ import {
 import { roles } from '../data/data'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { usersColumns as columns } from './users-columns'
-import { User } from '@/types/user'
+import { UserFilterDto } from '@/types/user'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { ClientOnly } from '@/components/layout/client-only'
-import { UseDataTableReturn } from '@/hooks/use-data-table'
+import { useDataTable } from '@/hooks/use-data-table'
+import { useUsers } from '@/features/users'
+import { NotFoundIcon } from '@/components/icons'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -31,69 +33,161 @@ declare module '@tanstack/react-table' {
   }
 }
 
-type DataTableProps = {
-  readonly data: User[]
-  readonly tableState: UseDataTableReturn<any>
-  readonly isLoading: boolean
-  readonly error: Error | null
-  readonly totalCount: number
-  readonly pageCount: number
+type UsersTableProps = {
+  readonly defaultPageSize?: number
 }
 
 export function UsersTable({
-  data,
-  tableState,
-  isLoading,
-  error,
-  totalCount,
-  pageCount
-}: DataTableProps) {
+  defaultPageSize = 10
+}: UsersTableProps = {}) {
+  // Generic table state management with Users-specific filter builder
+  const table = useDataTable<UserFilterDto>({
+    defaultPageSize,
+    buildFilters: (state) => {
+      const filters: UserFilterDto = {
+        // Pagination
+        page: state.pagination.pageIndex + 1,
+        limit: state.pagination.pageSize,
+      }
+
+      // Global filter (name search)
+      if (state.globalFilter.trim()) {
+        filters.name = state.globalFilter.trim()
+      }
+
+      // Column filters
+      state.columnFilters.forEach(filter => {
+        switch (filter.id) {
+          case 'status':
+            filters.status = filter.value as string | string[]
+            break
+          case 'role':
+            filters.role = filter.value as string | string[]
+            break
+          case 'cityId':
+            filters.cityId = filter.value as number
+            break
+          case 'name':
+            filters.name = filter.value as string
+            break
+          // Add other filters as needed for your users table
+          default:
+            console.warn(`Unknown column filter: ${filter.id}`)
+            break
+        }
+      })
+
+      return filters
+    }
+  })
+
+  // Fetch users with server-side filtering
+  const { data, isLoading, error } = useUsers(table.filters)
+
   // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const table = useReactTable({
-    data,
+  const reactTable = useReactTable({
+    data: data?.data || [],
     columns,
     state: {
       sorting,
-      pagination: tableState.pagination,
+      pagination: table.pagination,
       rowSelection,
-      columnFilters: tableState.columnFilters,
+      columnFilters: table.columnFilters,
       columnVisibility,
-      globalFilter: tableState.globalFilter,
+      globalFilter: table.globalFilter,
     },
     enableRowSelection: true,
-    onPaginationChange: tableState.onPaginationChange,
-    onColumnFiltersChange: tableState.onColumnFiltersChange,
+    onPaginationChange: table.onPaginationChange,
+    onColumnFiltersChange: table.onColumnFiltersChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
-    onGlobalFilterChange: tableState.onGlobalFilterChange,
+    onGlobalFilterChange: table.onGlobalFilterChange,
     getCoreRowModel: getCoreRowModel(),
     // Server-side processing
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,
     // Provide server-side totals
-    pageCount,
-    rowCount: totalCount,
+    pageCount: data?.meta.totalPages || 0,
+    rowCount: data?.meta.totalItems || 0,
   })
 
   // Reset to page 1 if current page exceeds available pages
   useEffect(() => {
-    if (pageCount > 0 && tableState.pagination.pageIndex >= pageCount) {
-      tableState.setPage(1)
+    const pageCount = data?.meta.totalPages || 0
+    if (pageCount > 0 && table.pagination.pageIndex >= pageCount) {
+      table.setPage(1)
     }
-  }, [pageCount, tableState])
+  }, [data?.meta.totalPages, table])
 
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-24 text-destructive">
-        Error loading users: {error.message}
-      </div>
-    )
+  const renderTableBody = () => {
+    if (error) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={columns.length}
+            className='py-4 h-24 text-neutral-600 text-center'
+          >
+            <NotFoundIcon className='mx-auto size-24' />
+            Ocurrió un error al cargar los usuarios
+          </TableCell>
+        </TableRow>
+      )
+    }
+
+    if (isLoading) {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={columns.length}
+            className='h-24 text-center'
+          >
+            Cargando usuarios...
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (reactTable.getRowModel().rows?.length) {
+      return reactTable.getRowModel().rows.map((row) => (
+        <TableRow
+          key={row.id}
+          data-state={row.getIsSelected() && 'selected'}
+          className='group/row'
+        >
+          {row.getVisibleCells().map((cell) => (
+            <TableCell
+              key={cell.id}
+              className={cn(
+                'bg-background group-data-[state=selected]/row:bg-muted group-hover/row:bg-muted',
+                cell.column.columnDef.meta?.className ?? ''
+              )}
+            >
+              {flexRender(
+                cell.column.columnDef.cell,
+                cell.getContext()
+              )}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+    } else {
+      return (
+        <TableRow>
+          <TableCell
+            colSpan={columns.length}
+            className='h-24 text-center'
+          >
+            No hay resultados.
+          </TableCell>
+        </TableRow>
+      );
+    }
   }
 
   return (
@@ -112,9 +206,8 @@ export function UsersTable({
         }
       >
         <DataTableToolbar
-          table={table}
+          table={reactTable}
           searchPlaceholder='Filtrar usuarios...'
-          searchKey='name'
           filters={[
             {
               columnId: 'status',
@@ -136,7 +229,7 @@ export function UsersTable({
       <div className='border rounded-md overflow-hidden'>
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {reactTable.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className='group/row'>
                 {headerGroup.headers.map((header) => {
                   return (
@@ -161,49 +254,7 @@ export function UsersTable({
             ))}
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              // Loading state
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  Cargando usuarios...
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className='group/row'
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        'bg-background group-data-[state=selected]/row:bg-muted group-hover/row:bg-muted',
-                        cell.column.columnDef.meta?.className ?? ''
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
-            )}
+            {renderTableBody()}
           </TableBody>
         </Table>
       </div>
@@ -218,10 +269,10 @@ export function UsersTable({
           </div>
         }
       >
-        <DataTablePagination table={table} />
+        <DataTablePagination table={reactTable} />
       </ClientOnly>
       <ClientOnly>
-        <DataTableBulkActions table={table} />
+        <DataTableBulkActions table={reactTable} />
       </ClientOnly>
     </div>
   )

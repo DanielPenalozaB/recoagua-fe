@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 
 export class ApiService {
   protected baseUrl: string;
@@ -20,13 +20,45 @@ export class ApiService {
       ...options.headers,
     };
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       ...options,
       headers,
     });
 
+    // If token is expired, try to refresh it
     if (response.status === 401) {
-      throw new Error('Authentication failed');
+      try {
+        console.log('Token expired, attempting refresh...');
+
+        // Force session refresh - this will trigger NextAuth's token refresh
+        const refreshedSession = await getSession();
+
+        if (!refreshedSession?.accessToken) {
+          console.error('Failed to refresh token');
+          await signOut({ redirect: true, callbackUrl: '/auth/signin' });
+          throw new Error('Failed to refresh token');
+        }
+
+        console.log('Token refreshed successfully');
+
+        // Retry the request with the new token
+        headers.Authorization = `Bearer ${refreshedSession.accessToken}`;
+        response = await fetch(url, {
+          ...options,
+          headers,
+        });
+
+        // If it still fails after refresh, logout
+        if (response.status === 401) {
+          console.error('Request failed even after token refresh');
+          await signOut({ redirect: true, callbackUrl: '/auth/signin' });
+          throw new Error('Authentication failed after refresh');
+        }
+      } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
+        await signOut({ redirect: true, callbackUrl: '/auth/signin' });
+        throw refreshError;
+      }
     }
 
     if (!response.ok) {

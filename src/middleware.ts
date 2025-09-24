@@ -10,7 +10,7 @@ export default withAuth(
     const isAuthPage = nextUrl.pathname.startsWith('/auth/')
     const isApiAuthRoute = nextUrl.pathname.startsWith('/api/auth/')
     const isUnauthorizedPage = nextUrl.pathname === '/unauthorized'
-    const isPublicPage = ['/', '/about', '/contact', '/privacy', '/terms'].includes(nextUrl.pathname)
+    const isPublicPage = ['/about', '/contact', '/privacy', '/terms'].includes(nextUrl.pathname)
 
     // Allow API auth routes and public pages
     if (isApiAuthRoute || isPublicPage || isUnauthorizedPage) {

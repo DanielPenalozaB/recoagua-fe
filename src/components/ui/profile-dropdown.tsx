@@ -26,16 +26,12 @@ export function ProfileDropdown() {
     )
   }
 
-  if (!session) {
-    return null
-  }
-
   const user = {
-    name: session.user.name ?? "User",
-    email: session.user.email ?? "",
-    avatar: session.user.image ?? "",
-    role: session.user.role ?? "user",
-    city: session.user.city ?? null,
+    name: session?.user.name ?? "User",
+    email: session?.user.email ?? "",
+    avatar: session?.user.image ?? "",
+    role: session?.user.role ?? "user",
+    city: session?.user.city ?? null,
   }
   return (
     <DropdownMenu modal={false}>

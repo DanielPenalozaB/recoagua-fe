@@ -33,7 +33,7 @@ export const useCreateBlock = () => {
   return useMutation({
     mutationFn: (blockData: CreateBlockDto) => blockService.createBlock(blockData),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: blockKeys.list(data.moduleId) });
+      queryClient.invalidateQueries({ queryKey: blockKeys.list(data.id) });
       toast.success('Block created successfully');
     },
     onError: (error: Error) => {
@@ -46,11 +46,11 @@ export const useUpdateBlock = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateBlockDto }) => 
+    mutationFn: ({ id, data }: { id: number; data: UpdateBlockDto }) =>
       blockService.updateBlock(id, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: blockKeys.detail(data.id) });
-      queryClient.invalidateQueries({ queryKey: blockKeys.list(data.moduleId) });
+      queryClient.invalidateQueries({ queryKey: blockKeys.list(data.id) });
       toast.success('Block updated successfully');
     },
     onError: (error: Error) => {

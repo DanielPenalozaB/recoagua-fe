@@ -1,9 +1,24 @@
+import { City, CityFilterDto, CreateCityDto, UpdateCityDto } from '@/types/city';
+import { PaginationResponse } from '@/types/common';
 import { ApiService } from './api';
-import { City, CreateCityDto, UpdateCityDto } from '@/types/city';
 
 export class CityService extends ApiService {
-  async getCities(): Promise<City[]> {
-    return this.get('/cities');
+  async getCities(filters?: CityFilterDto): Promise<PaginationResponse<City>> {
+    const queryParams = new URLSearchParams();
+
+    // String search parameters
+    if (filters?.name) queryParams.append('search', filters.name);
+
+    // Single value parameters
+    if (filters?.regionId) queryParams.append('regionId', filters.regionId.toString());
+    if (filters?.page) queryParams.append('page', filters.page.toString());
+    if (filters?.limit) queryParams.append('limit', filters.limit.toString());
+
+    // Sorting parameters (if needed in the future)
+    if (filters?.sortBy) queryParams.append('sortBy', filters.sortBy);
+    if (filters?.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
+
+    return this.get(`/cities?${queryParams.toString()}`);
   }
 
   async getCity(id: number): Promise<City> {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function CommingSoonIcon(props: Readonly<React.SVGProps<SVGSVGElement>>) {
+export function CommingSoonIcon(props: Readonly<React.SVGProps<SVGSVGElement>>) {
   return (
     <svg
     xmlns="http://www.w3.org/2000/svg"

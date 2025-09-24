@@ -1,4 +1,11 @@
+export * from './components/data-table-bulk-actions';
+export * from './components/data-table-row-actions';
+export * from './components/users-columns';
+export * from './components/users-create-form';
+export * from './components/users-multi-delete-dialog';
 export * from './components/users-primary-buttons';
 export * from './components/users-provider';
 export * from './components/users-table';
+export * from './data/data';
+export * from './data/schema';
 export { useUsers, useUser, useCreateUser, useUpdateUser, useDeleteUser } from './hooks/use-user';
