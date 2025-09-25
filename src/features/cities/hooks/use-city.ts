@@ -18,7 +18,9 @@ export const useCities = (filters?: CityFilterDto) => {
   });
 };
 
-export const useCity = (id: number) => {
+export const useCity = (id: number | undefined) => {
+  if (!id) return;
+
   return useQuery({
     queryKey: cityKeys.detail(id),
     queryFn: () => cityService.getCity(id),
@@ -33,10 +35,10 @@ export const useCreateCity = () => {
     mutationFn: (cityData: CreateCityDto) => cityService.createCity(cityData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cityKeys.lists() });
-      toast.success('City created successfully');
+      toast.success('Ciudad creada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to create city: ${error.message}`);
+      toast.error(`Ocurrió un error al crear la ciudad: ${error.message}`);
     },
   });
 };
@@ -50,10 +52,10 @@ export const useUpdateCity = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: cityKeys.detail(variables.id) });
       queryClient.invalidateQueries({ queryKey: cityKeys.lists() });
-      toast.success('City updated successfully');
+      toast.success('Ciudad actualizada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to update city: ${error.message}`);
+      toast.error(`Ocurrió un error al actualizar la ciudad: ${error.message}`);
     },
   });
 };
@@ -66,10 +68,10 @@ export const useDeleteCity = () => {
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: cityKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: cityKeys.lists() });
-      toast.success('City deleted successfully');
+      toast.success('Ciudad eliminada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Failed to delete city: ${error.message}`);
+      toast.error(`Ocurrió un error al eliminar la ciudad: ${error.message}`);
     },
   });
 };

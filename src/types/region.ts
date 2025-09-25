@@ -1,17 +1,14 @@
-import { Region } from "./region";
-
-export interface City {
+export interface Region {
   id: number;
   name: string;
   description: string;
-  rainfall: number;
   language: string;
-  region: Region | null;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string;
 }
 
-export interface CreateCityDto {
+export interface CreateRegionDto {
   name: string;
   description: string | undefined;
   rainfall: number | undefined;
@@ -19,18 +16,15 @@ export interface CreateCityDto {
   regionId: number | null;
 }
 
-export interface UpdateCityDto extends Partial<CreateCityDto> {}
+export interface UpdateRegionDto extends Partial<CreateRegionDto> {}
 
-export interface CityFilterDto {
+export interface RegionFilterDto {
   // Pagination
   page?: number;
   limit?: number;
 
   // Search filters
   name?: string;
-
-  // Single value filters
-  regionId?: number;
 
   // Sorting (optional - for future use)
   sortBy?: string;

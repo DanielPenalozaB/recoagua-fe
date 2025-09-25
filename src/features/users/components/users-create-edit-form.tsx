@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { UserRole } from '@/types/user'
-import { useCities } from '@/hooks/use-cities'
+import { useCities } from '@/features/cities/hooks/use-city'
 import { useRouter } from 'next/navigation'
 import { useCreateUser, useUpdateUser, useUser } from '../hooks/use-user'
 import { useEffect, useState } from 'react'
@@ -130,8 +130,6 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
 
   const placeholderText = error ? "Error al cargar ciudades" : "Selecciona una ciudad"
 
-  console.log(form.getValues());
-
   const cityItems = error
     ? <SelectItem value="1" disabled>Error al cargar ciudades</SelectItem>
     : data?.data.map((city) => (<SelectItem key={city.id.toString()} value={city.id.toString()}>{city.name}</SelectItem>));
@@ -167,7 +165,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el nombre completo' type='email' {...field} />
+                  <Input placeholder='Ingresa el email' type='email' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -233,7 +231,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
           disabled={isSubmitting || !form.formState.isValid}
           isLoading={isSubmitting}
         >
-            {getButtonText()}
+          {getButtonText()}
         </Button>
       </form>
     </Form>

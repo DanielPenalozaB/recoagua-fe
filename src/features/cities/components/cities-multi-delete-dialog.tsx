@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
-type UserMultiDeleteDialogProps<TData> = {
+type CityMultiDeleteDialogProps<TData> = {
   readonly open: boolean
   readonly onOpenChange: (open: boolean) => void
   readonly table: Table<TData>
@@ -18,11 +18,11 @@ type UserMultiDeleteDialogProps<TData> = {
 
 const CONFIRM_WORD = 'DELETE'
 
-export function UsersMultiDeleteDialog<TData>({
+export function CitiesMultiDeleteDialog<TData>({
   open,
   onOpenChange,
   table,
-}: UserMultiDeleteDialogProps<TData>) {
+}: CityMultiDeleteDialogProps<TData>) {
   const [value, setValue] = useState('')
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -36,11 +36,11 @@ export function UsersMultiDeleteDialog<TData>({
     onOpenChange(false)
 
     toast.promise(sleep(2000), {
-      loading: 'Eliminando usuarios...',
+      loading: 'Eliminando ciudades...',
       success: () => {
         table.resetRowSelection()
         return `Eliminar ${selectedRows.length} ${
-          selectedRows.length > 1 ? 'usuarios' : 'usuario'
+          selectedRows.length > 1 ? 'ciudades' : 'ciudad'
         }`
       },
       error: 'Error',
@@ -60,13 +60,13 @@ export function UsersMultiDeleteDialog<TData>({
             size={18}
           />{' '}
           Eliminar {selectedRows.length}{' '}
-          {selectedRows.length > 1 ? 'usuarios' : 'usuario'}
+          {selectedRows.length > 1 ? 'ciudades' : 'ciudad'}
         </span>
       }
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Estas seguro de eliminar {selectedRows.length} usuarios? <br />
+            Estas seguro de eliminar {selectedRows.length} ciudades? <br />
             Esta acción no se puede deshacer.
           </p>
 

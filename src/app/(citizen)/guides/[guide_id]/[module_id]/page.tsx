@@ -67,7 +67,7 @@ export default function GuideModulePage({ params }: { params: Promise<{ module_i
   const handleAnswerSubmit = async (selectedOptions: number[]) => {
     // Here you would typically send the answer to your backend
     console.log('Selected options:', selectedOptions);
-    
+
     // Simulate API call
     return new Promise<void>((resolve) => {
       setTimeout(() => {

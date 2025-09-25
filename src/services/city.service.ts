@@ -1,5 +1,5 @@
 import { City, CityFilterDto, CreateCityDto, UpdateCityDto } from '@/types/city';
-import { PaginationResponse } from '@/types/common';
+import { ApiResponse, PaginationResponse } from '@/types/common';
 import { ApiService } from './api';
 
 export class CityService extends ApiService {
@@ -21,7 +21,7 @@ export class CityService extends ApiService {
     return this.get(`/cities?${queryParams.toString()}`);
   }
 
-  async getCity(id: number): Promise<City> {
+  async getCity(id: number): Promise<ApiResponse<City>> {
     return this.get(`/cities/${id}`);
   }
 
