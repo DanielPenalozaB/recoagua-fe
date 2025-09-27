@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import { CitiesCreateEditForm } from "@/features/cities";
 
-export default async function EditUserPage({ params }: { params: Promise<{ city_id: string }> }) {
+export default async function EditCityPage({ params }: { params: Promise<{ city_id: string }> }) {
   const { city_id } = await params;
 
   return (

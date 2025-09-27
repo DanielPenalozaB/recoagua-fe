@@ -14,7 +14,7 @@ export const cityKeys = {
 export const useCities = (filters?: CityFilterDto) => {
   return useQuery({
     queryKey: cityKeys.list(filters || {}),
-    queryFn: () => cityService.getCities(),
+    queryFn: () => cityService.getCities(filters),
   });
 };
 

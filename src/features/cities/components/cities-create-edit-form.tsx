@@ -21,7 +21,7 @@ import {
 import { useCity, useCreateCity, useUpdateCity } from '@/features/cities/hooks/use-city'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useRegions } from '@/hooks/use-regions'
+import { useRegions } from '@/features/regions/hooks/use-region'
 
 const cityFormSchema = z.object({
   name: z

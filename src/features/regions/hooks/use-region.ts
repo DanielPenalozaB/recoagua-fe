@@ -15,11 +15,11 @@ export const regionKeys = {
 export const useRegions = (filters?: RegionFilterDto) => {
   return useQuery({
     queryKey: regionKeys.list(filters || {}),
-    queryFn: () => regionService.getRegions(),
+    queryFn: () => regionService.getRegions(filters),
   });
 };
 
-export const useCity = (id: number | undefined) => {
+export const useRegion = (id: number | undefined) => {
   if (!id) return;
 
   return useQuery({
@@ -36,10 +36,10 @@ export const useCreateRegion = () => {
     mutationFn: (regionData: CreateRegionDto) => regionService.createRegion(regionData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: regionKeys.lists() });
-      toast.success('Ciudad creada exitosamente');
+      toast.success('Región creada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Ocurrió un error al crear la ciudad: ${error.message}`);
+      toast.error(`Ocurrió un error al crear la región: ${error.message}`);
     },
   });
 };
@@ -53,10 +53,10 @@ export const useUpdateRegion = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: regionKeys.detail(variables.id) });
       queryClient.invalidateQueries({ queryKey: regionKeys.lists() });
-      toast.success('Ciudad actualizada exitosamente');
+      toast.success('Región actualizada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Ocurrió un error al actualizar la ciudad: ${error.message}`);
+      toast.error(`Ocurrió un error al actualizar la región: ${error.message}`);
     },
   });
 };
@@ -69,10 +69,10 @@ export const useDeleteRegion = () => {
     onSuccess: (_, id) => {
       queryClient.removeQueries({ queryKey: regionKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: regionKeys.lists() });
-      toast.success('Ciudad eliminada exitosamente');
+      toast.success('Región eliminada exitosamente');
     },
     onError: (error: Error) => {
-      toast.error(`Ocurrió un error al eliminar la ciudad: ${error.message}`);
+      toast.error(`Ocurrió un error al eliminar la región: ${error.message}`);
     },
   });
 };

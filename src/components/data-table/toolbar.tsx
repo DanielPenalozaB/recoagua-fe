@@ -9,17 +9,19 @@ import { useDebounce } from '../../hooks/use-debounce'
 import { DataTableFacetedFilter } from './faceted-filter'
 import { DataTableViewOptions } from './view-options'
 
+export interface ToolbarOptions {
+  label: string
+  value: string
+  icon?: React.ComponentType<{ className?: string }>
+}
+
 type DataTableToolbarProps<TData> = {
   readonly table: Table<TData>
   readonly searchPlaceholder?: string
   readonly filters?: {
     columnId: string
     title: string
-    options: {
-      label: string
-      value: string
-      icon?: React.ComponentType<{ className?: string }>
-    }[]
+    options: ToolbarOptions[]
   }[]
 }
 

@@ -18,14 +18,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { citiesColumns as columns } from './cities-columns'
+import { regionsColumns as columns } from './regions-columns'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { ClientOnly } from '@/components/layout/client-only'
 import { useDataTable } from '@/hooks/use-data-table'
 import { NotFoundIcon } from '@/components/icons'
-import { CityFilterDto } from '@/types/city'
-import { useCities } from '@/features/cities/hooks/use-city'
-import { useRegions } from '@/features/regions/hooks/use-region'
+import { RegionFilterDto } from '@/types/region'
+import { useRegions } from '../hooks/use-region'
 
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData, TValue> {
@@ -33,18 +32,18 @@ declare module '@tanstack/react-table' {
   }
 }
 
-type CitiesTableProps = {
+type RegionsTableProps = {
   readonly defaultPageSize?: number
 }
 
-export function CitiesTable({
+export function RegionsTable({
   defaultPageSize = 10
-}: CitiesTableProps = {}) {
-  // Generic table state management with Cities-specific filter builder
-  const table = useDataTable<CityFilterDto>({
+}: RegionsTableProps = {}) {
+  // Generic table state management with Regions-specific filter builder
+  const table = useDataTable<RegionFilterDto>({
     defaultPageSize,
     buildFilters: (state) => {
-      const filters: CityFilterDto = {
+      const filters: RegionFilterDto = {
         // Pagination
         page: state.pagination.pageIndex + 1,
         limit: state.pagination.pageSize,
@@ -56,18 +55,11 @@ export function CitiesTable({
       }
 
       // Column filters
-      state.columnFilters.forEach(filter => {
-        switch (filter.id) {
-          case 'region':
-            filters.regionId = filter.value as number
-            break
-          case 'name':
-            filters.name = filter.value as string
-            break
-          // Add other filters as needed for your cities table
-          default:
-            console.warn(`Unknown column filter: ${filter.id}`)
-            break
+      state.columnFilters.forEach((filter) => {
+        if (filter.id) {
+          filters.name = filter.value as string
+        } else {
+          console.warn(`Unknown column filter: ${filter.id}`)
         }
       })
 
@@ -75,9 +67,8 @@ export function CitiesTable({
     }
   })
 
-  // Fetch cities with server-side filtering
-  const { data, isLoading, error } = useCities(table.filters)
-  const { data: regions } = useRegions()
+  // Fetch regions with server-side filtering
+  const { data, isLoading, error } = useRegions(table.filters)
 
   // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
@@ -129,7 +120,7 @@ export function CitiesTable({
             className='py-4 h-24 text-neutral-600 text-center'
           >
             <NotFoundIcon className='mx-auto size-24' />
-            Ocurrió un error al cargar los ciudades
+            Ocurrió un error al cargar los regiones
           </TableCell>
         </TableRow>
       )
@@ -142,7 +133,7 @@ export function CitiesTable({
             colSpan={columns.length}
             className='h-24 text-center'
           >
-            Cargando ciudades...
+            Cargando regiones...
           </TableCell>
         </TableRow>
       );
@@ -185,13 +176,6 @@ export function CitiesTable({
     }
   }
 
-  const getRegionsOptions = () => {
-    return regions?.data.map((region) => ({
-      value: region.id.toString(),
-      label: region.name,
-    })) ?? []
-  }
-
   return (
     <div className='space-y-4 max-sm:has-[div[role="toolbar"]]:mb-16'>
       <ClientOnly
@@ -209,14 +193,7 @@ export function CitiesTable({
       >
         <DataTableToolbar
           table={reactTable}
-          searchPlaceholder='Filtrar ciudades...'
-          filters={[
-            {
-              columnId: 'region',
-              title: 'Región',
-              options: getRegionsOptions(),
-            },
-          ]}
+          searchPlaceholder='Filtrar regiones...'
         />
       </ClientOnly>
       <div className='border rounded-md overflow-hidden'>

@@ -11,9 +11,7 @@ export interface Region {
 export interface CreateRegionDto {
   name: string;
   description: string | undefined;
-  rainfall: number | undefined;
   language: string;
-  regionId: number | null;
 }
 
 export interface UpdateRegionDto extends Partial<CreateRegionDto> {}
