@@ -1,6 +1,6 @@
 "use client"
 
-import { challengeService } from '@/services/user.challenge';
+import { challengeService } from '@/services/challenge.service';
 import { ChallengeFilterDto, CreateChallengeDto, UpdateChallengeDto } from '@/types/challenge';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';

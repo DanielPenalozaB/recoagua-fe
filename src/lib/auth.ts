@@ -165,6 +165,8 @@ async function refreshAccessToken(token: any) {
       }),
     });
 
+    console.log('Refresh token response:', response);
+
     if (!response.ok) {
       throw new Error('Refresh token failed');
     }
