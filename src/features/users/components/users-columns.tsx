@@ -8,7 +8,7 @@ import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/ui/long-text'
 import { callTypes, roles } from '../data/data'
 import { DataTableRowActions } from './data-table-row-actions'
-import { User, UserStatus } from '@/types/user'
+import { User } from '@/types/user'
 import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 
@@ -119,8 +119,10 @@ export const usersColumns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title='Estado' />
     ),
     cell: ({ row }) => {
-      const { email: status } = row.original
-      const badgeColor = callTypes.get(status as UserStatus)
+      const { status } = row.original;
+      const badgeColor = callTypes.get(status);
+      console.log(badgeColor);
+
       return (
         <div className='flex space-x-2'>
           <Badge variant='outline' className={cn('capitalize', badgeColor)}>

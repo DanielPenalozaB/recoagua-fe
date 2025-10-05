@@ -1,16 +1,17 @@
 "use client"
 
-import { type ColumnDef } from '@tanstack/react-table'
-import { cn } from '@/lib/utils'
-import { Checkbox } from '@/components/ui/checkbox'
 import { DataTableColumnHeader } from '@/components/data-table'
+import { Badge } from '@/components/ui'
+import { Checkbox } from '@/components/ui/checkbox'
 import { LongText } from '@/components/ui/long-text'
+import { cn } from '@/lib/utils'
+import { Challenge } from '@/types/challenge'
+import { type ColumnDef } from '@tanstack/react-table'
+import { Star } from 'lucide-react'
 import { DataTableRowActions } from './data-table-row-actions'
-import Link from 'next/link'
-import { ExternalLink } from 'lucide-react'
-import { City } from '@/types/city'
+import { callTypes, difficultyTypes, difficultyTypeTranslation, statusTypeTranslation, typeTypes, typeTypeTranslation } from '../data/data'
 
-export const citiesColumns: ColumnDef<City>[] = [
+export const challengesColumns: ColumnDef<Challenge>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -44,7 +45,7 @@ export const citiesColumns: ColumnDef<City>[] = [
       <DataTableColumnHeader column={column} title='Nombre' />
     ),
     cell: ({ row }) => (
-      <LongText className='ps-3 max-w-36'>{row.getValue('name')}</LongText>
+      <LongText className='ps-3 max-w-48'>{row.getValue('name')}</LongText>
     ),
     meta: {
       className: cn(
@@ -64,33 +65,82 @@ export const citiesColumns: ColumnDef<City>[] = [
     ),
   },
   {
-    accessorKey: 'rainfall',
+    accessorKey: 'score',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Precipitaciones' />
+      <DataTableColumnHeader column={column} title='Puntaje' />
     ),
     cell: ({ row }) => (
-      <div className='w-fit text-nowrap'>{row.original.rainfall ? row.original.rainfall + ' mm' : '-'}</div>
+      <div className='flex items-center gap-1'>
+        <Star className='size-4 text-neutral-500' />
+        {row.getValue('score')}
+      </div>
     ),
   },
   {
-    accessorKey: 'region',
+    accessorKey: 'difficulty',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Región' />
+      <DataTableColumnHeader column={column} title='Dificultad' />
     ),
-    cell: ({ row }) => (
-      row.original.region ? (
-        <Link
-          title={`Ir a ${row.original.region?.name}`}
-          href={`/admin/regions/${row.original.region?.id}`}
-          className='flex items-center gap-1 underline'
-        >
-          {row.original.region?.name}
-          <ExternalLink className='size-3' />
-        </Link>
-      ) : '-'
+    cell: ({ row }) => {
+      const { difficulty } = row.original
+      const badgeColor = difficultyTypes.get(difficulty)
+      return (
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', badgeColor)}>
+            {difficultyTypeTranslation.get(difficulty)}
+          </Badge>
+        </div>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+    enableHiding: false,
+    enableSorting: false,
+  },
+  {
+    accessorKey: 'type',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Tipo' />
     ),
-    enableSorting: true,
-    enableHiding: true,
+    cell: ({ row }) => {
+      const { challengeType: type } = row.original
+      const badgeColor = typeTypes.get(type)
+      return (
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', badgeColor)}>
+            {typeTypeTranslation.get(type)}
+          </Badge>
+        </div>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+    enableHiding: false,
+    enableSorting: false,
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Estado' />
+    ),
+    cell: ({ row }) => {
+      const { status } = row.original
+      const badgeColor = callTypes.get(status)
+      return (
+        <div className='flex space-x-2'>
+          <Badge variant='outline' className={cn('capitalize', badgeColor)}>
+            {statusTypeTranslation.get(status)}
+          </Badge>
+        </div>
+      )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+    enableHiding: false,
+    enableSorting: false,
   },
   {
     accessorKey: 'createdAt',
