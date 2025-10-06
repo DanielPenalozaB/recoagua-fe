@@ -104,7 +104,7 @@ export function RegionsCreateEditForm({ regionId }: RegionsCreateEditFormProps) 
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el nombre' type='text' {...field} />
+                  <Input placeholder='Ingresa el nombre' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,7 +117,7 @@ export function RegionsCreateEditForm({ regionId }: RegionsCreateEditFormProps) 
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa la descripción' type='text' {...field} />
+                  <Input placeholder='Ingresa la descripción' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

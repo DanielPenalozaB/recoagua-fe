@@ -152,7 +152,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el nombre completo' type='text' {...field} />
+                  <Input placeholder='Ingresa el nombre completo' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -165,7 +165,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el email' type='email' {...field} />
+                  <Input placeholder='Ingresa el email' type='email' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -179,7 +179,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
                 <FormLabel>Rol</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value ?? ''}>
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className='w-full bg-white'>
                       <SelectValue placeholder="Selecciona un rol" />
                     </SelectTrigger>
                   </FormControl>
@@ -199,7 +199,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
                 <FormLabel>Ciudad</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className='w-full bg-white'>
                       <SelectValue placeholder={isLoading ? "Cargando ciudades..." : placeholderText} />
                     </SelectTrigger>
                   </FormControl>

@@ -155,6 +155,13 @@ export const authOptions: NextAuthOptions = {
 
 async function refreshAccessToken(token: any) {
   try {
+    console.log('Attempting to refresh token with:', {
+      tokenExists: !!token.refreshToken,
+      tokenLength: token.refreshToken?.length,
+      expiryTime: new Date(token.accessTokenExpires).toISOString(),
+      currentTime: new Date().toISOString()
+    });
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {
       method: 'POST',
       headers: {
@@ -165,13 +172,17 @@ async function refreshAccessToken(token: any) {
       }),
     });
 
-    console.log('Refresh token response:', response);
+    console.log('Refresh token response status:', response.status);
 
     if (!response.ok) {
-      throw new Error('Refresh token failed');
+      // Try to get more details from the response
+      const errorText = await response.text();
+      console.error('Refresh token failed with details:', errorText);
+      throw new Error(`Refresh token failed: ${response.status} - ${errorText}`);
     }
 
     const refreshedTokens = await response.json();
+    console.log('Refresh token successful');
 
     return {
       ...token,

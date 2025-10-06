@@ -145,7 +145,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el nombre' type='text' {...field} />
+                  <Input placeholder='Ingresa el nombre' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -158,7 +158,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa la descripción' type='text' {...field} />
+                  <Input placeholder='Ingresa la descripción' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,6 +184,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
                         field.onChange(value);
                       }
                     }}
+                    className='bg-white'
                   />
                 </FormControl>
                 <FormMessage />
@@ -198,7 +199,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
                 <FormLabel>Región</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className='w-full bg-white'>
                       <SelectValue placeholder={isLoading ? "Cargando regiones..." : placeholderText} />
                     </SelectTrigger>
                   </FormControl>

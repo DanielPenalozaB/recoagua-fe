@@ -171,7 +171,7 @@ export function ChallengesCreateEditForm({ challengeId }: ChallengeCreateEditFor
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el nombre' type='text' {...field} />
+                  <Input placeholder='Ingresa el nombre' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,7 +184,7 @@ export function ChallengesCreateEditForm({ challengeId }: ChallengeCreateEditFor
               <FormItem>
                 <FormLabel>Descripción</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa la descripción' type='text' {...field} />
+                  <Input placeholder='Ingresa la descripción' type='text' className='bg-white' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -197,7 +197,7 @@ export function ChallengesCreateEditForm({ challengeId }: ChallengeCreateEditFor
               <FormItem>
                 <FormLabel>Puntaje</FormLabel>
                 <FormControl>
-                  <Input placeholder='Ingresa el puntaje' type='number' {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                  <Input placeholder='Ingresa el puntaje' type='number' className='bg-white' {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -211,7 +211,7 @@ export function ChallengesCreateEditForm({ challengeId }: ChallengeCreateEditFor
                 <FormLabel>Dificultad</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value ?? ''}>
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className='w-full bg-white'>
                       <SelectValue placeholder="Selecciona una dificultad" />
                     </SelectTrigger>
                   </FormControl>
@@ -233,7 +233,7 @@ export function ChallengesCreateEditForm({ challengeId }: ChallengeCreateEditFor
                 <FormLabel>Tipo</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value ?? ''}>
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className='w-full bg-white'>
                       <SelectValue placeholder="Selecciona un tipo" />
                     </SelectTrigger>
                   </FormControl>
@@ -255,7 +255,7 @@ export function ChallengesCreateEditForm({ challengeId }: ChallengeCreateEditFor
                 <FormLabel>Estado</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value ?? ''}>
                   <FormControl>
-                    <SelectTrigger className='w-full'>
+                    <SelectTrigger className='w-full bg-white'>
                       <SelectValue placeholder="Selecciona un estado" />
                     </SelectTrigger>
                   </FormControl>
