@@ -24,8 +24,9 @@ import {
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useBadge, useCreateBadge, useUpdateBadge } from '../hooks/use-badge'
-import { BadgeStatus, CreateBadgeDto } from '@/types/badge'
+import { CreateBadgeDto } from '@/types/badge'
 import { ImagePreview } from '@/components/ui/image-preview'
+import { Status } from '@/types/common'
 
 // Badge form schema
 const badgeFormSchema = z.object({
@@ -56,7 +57,7 @@ const badgeFormSchema = z.object({
     .max(500, {
       message: 'Los requisitos deben tener menos de 500 caracteres.',
     }),
-  status: z.enum([BadgeStatus.ACTIVE, BadgeStatus.INACTIVE])
+  status: z.enum([Status.ACTIVE, Status.INACTIVE])
 })
 
 type BadgeFormValues = z.infer<typeof badgeFormSchema>
@@ -66,7 +67,7 @@ const defaultValues: Partial<BadgeFormValues> = {
   description: '',
   imageUrl: '',
   requirements: '',
-  status: BadgeStatus.INACTIVE
+  status: Status.INACTIVE
 }
 
 interface BadgesCreateEditFormProps {
@@ -87,11 +88,11 @@ export function BadgesCreateEditForm({ badgeId }: BadgesCreateEditFormProps) {
     mode: 'onChange',
   })
 
-  const renderStatusLabel = (status: BadgeStatus) => {
+  const renderStatusLabel = (status: Status) => {
     switch (status) {
-      case BadgeStatus.ACTIVE:
+      case Status.ACTIVE:
         return 'Activo';
-      case BadgeStatus.INACTIVE:
+      case Status.INACTIVE:
       default:
         return 'Inactivo';
     }
@@ -237,7 +238,7 @@ export function BadgesCreateEditForm({ badgeId }: BadgesCreateEditFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.values(BadgeStatus).map((status) => (
+                    {Object.values(Status).map((status) => (
                       <SelectItem key={status} value={status}>
                         {renderStatusLabel(status)}
                       </SelectItem>

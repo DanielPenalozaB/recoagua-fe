@@ -4,7 +4,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown, Separator, SidebarTrigger, ThemeSwitch } from '@/components/ui'
 import { UsersPrimaryButtons, UsersProvider, UsersTable } from '@/features/users'
 
-export default function Users() {
+export default function UsersPage() {
   return (
     <UsersProvider>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">

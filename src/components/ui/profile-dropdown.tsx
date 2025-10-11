@@ -12,13 +12,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { handleLogout } from '@/lib/auth-utils';
 import { getInitials } from '@/lib/utils';
-import { LogOut } from 'lucide-react';
+import { LogOut, Sparkles } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Skeleton } from './skeleton';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function ProfileDropdown() {
   const { data: session, status } = useSession();
+    const router = useRouter();
+    const pathname = usePathname();
+    const isAdminRoute = pathname.startsWith("/admin");
 
   if (status === "loading") {
     return (
@@ -33,6 +37,41 @@ export function ProfileDropdown() {
     role: session?.user.role ?? "user",
     city: session?.user.city ?? null,
   }
+
+  const renderAdminPanelMenu = () => {
+    if (user.role !== 'admin') {
+      return;
+    }
+
+    if (isAdminRoute === true) {
+      return (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push('/')}>
+              <Sparkles className="mr-2 w-4 h-4" />
+              <span>Panel de Ciudadano</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </>
+      );
+    }
+
+    if (!isAdminRoute) {
+      return (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push('/admin')}>
+              <Sparkles className="mr-2 w-4 h-4" />
+              <span>Panel de Admin</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </>
+      );
+    }
+  }
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -67,6 +106,7 @@ export function ProfileDropdown() {
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
+        {renderAdminPanelMenu()}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleLogout}

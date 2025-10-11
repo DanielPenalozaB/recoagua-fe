@@ -24,3 +24,8 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
 }
+
+export enum Status {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+}

@@ -4,7 +4,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown, Separator, SidebarTrigger, ThemeSwitch } from '@/components/ui'
 import { RegionsPrimaryButtons, RegionsProvider, RegionsTable } from '@/features/regions'
 
-export default function Regions() {
+export default function RegionsPage() {
   return (
     <RegionsProvider>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">

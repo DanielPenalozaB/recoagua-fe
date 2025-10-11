@@ -21,10 +21,10 @@ export default function UserMenu() {
     return (
       <div className="flex items-center space-x-2">
         <Link href="/auth/signin">
-          <Button variant="ghost">Sign in</Button>
+          <Button variant="ghost">Iniciar sesión</Button>
         </Link>
         <Link href="/auth/signup">
-          <Button>Sign up</Button>
+          <Button>Registrarse</Button>
         </Link>
       </div>
     )

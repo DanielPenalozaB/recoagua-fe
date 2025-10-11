@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import { BadgesCreateEditForm } from "@/features/badges";
 
-export default function CreateUser() {
+export default function CreateBadgePage() {
   return (
     <>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">

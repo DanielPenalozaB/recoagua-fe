@@ -18,13 +18,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTableBulkActions } from './data-table-bulk-actions'
-import { badgesColumns as columns } from './badges-columns'
+import { zonesColumns as columns } from './zones-columns'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { ClientOnly } from '@/components/layout/client-only'
 import { useDataTable } from '@/hooks/use-data-table'
 import { NotFoundIcon } from '@/components/icons'
-import { useBadges } from '../hooks/use-badge'
-import { BadgeFilterDto } from '@/types/badge'
+import { useZones } from '../hooks/use-zone'
+import { ZoneFilterDto } from '@/types/zone'
 import { Status } from '@/types/common'
 
 declare module '@tanstack/react-table' {
@@ -33,18 +33,18 @@ declare module '@tanstack/react-table' {
   }
 }
 
-type BadgesTableProps = {
+type ZonesTableProps = {
   readonly defaultPageSize?: number
 }
 
-export function BadgesTable({
+export function ZonesTable({
   defaultPageSize = 10
-}: BadgesTableProps = {}) {
-  // Generic table state management with Badges-specific filter builder
-  const table = useDataTable<BadgeFilterDto>({
+}: ZonesTableProps = {}) {
+  // Generic table state management with Zones-specific filter builder
+  const table = useDataTable<ZoneFilterDto>({
     defaultPageSize,
     buildFilters: (state) => {
-      const filters: BadgeFilterDto = {
+      const filters: ZoneFilterDto = {
         // Pagination
         page: state.pagination.pageIndex + 1,
         limit: state.pagination.pageSize,
@@ -59,12 +59,12 @@ export function BadgesTable({
       state.columnFilters.forEach(filter => {
         switch (filter.id) {
           case 'status':
-            filters.status = filter.value as string | string[]
+            filters.status = filter.value as string
             break
           case 'name':
             filters.name = filter.value as string
             break
-          // Add other filters as needed for your Badges table
+          // Add other filters as needed for your Zones table
           default:
             console.warn(`Unknown column filter: ${filter.id}`)
             break
@@ -75,8 +75,8 @@ export function BadgesTable({
     }
   })
 
-  // Fetch Badges withBadgever-side filtering
-  const { data, isLoading, error } = useBadges(table.filters)
+  // Fetch Zones withZonever-side filtering
+  const { data, isLoading, error } = useZones(table.filters)
 
   // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
@@ -128,7 +128,7 @@ export function BadgesTable({
             className='py-4 h-24 text-neutral-600 text-center'
           >
             <NotFoundIcon className='mx-auto size-24' />
-            Ocurrió un error al cargar los insignias
+            Ocurrió un error al cargar los zona
           </TableCell>
         </TableRow>
       )
@@ -141,7 +141,7 @@ export function BadgesTable({
             colSpan={columns.length}
             className='h-24 text-center'
           >
-            Cargando insignias...
+            Cargando zona...
           </TableCell>
         </TableRow>
       );
@@ -201,7 +201,7 @@ export function BadgesTable({
       >
         <DataTableToolbar
           table={reactTable}
-          searchPlaceholder='Filtrar insignias...'
+          searchPlaceholder='Filtrar zona...'
           filters={[
             {
               columnId: 'status',

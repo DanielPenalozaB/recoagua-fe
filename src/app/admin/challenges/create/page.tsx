@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import { ChallengesCreateEditForm } from "@/features/challenges";
 
-export default function CreateUser() {
+export default function CreateChallengePage() {
   return (
     <>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">

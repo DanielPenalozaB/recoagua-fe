@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import { LevelsCreateEditForm } from "@/features/levels";
 
-export default function CreateUser() {
+export default function CreateLevelPage() {
   return (
     <>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">

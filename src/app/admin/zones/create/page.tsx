@@ -11,9 +11,9 @@ import {
   SidebarTrigger,
   ThemeSwitch
 } from "@/components/ui";
-import { UsersCreateEditForm } from "@/features/users";
+import { ZonesCreateEditForm } from "@/features/zones";
 
-export default function CreateUserPage() {
+export default function CreateZonesPage() {
   return (
     <>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">
@@ -26,11 +26,11 @@ export default function CreateUserPage() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/admin/users">Usuarios</BreadcrumbLink>
+                <BreadcrumbLink href="/admin/challenges">Zonas</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Crear usuario</BreadcrumbPage>
+                <BreadcrumbPage>Crear zona</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -43,13 +43,13 @@ export default function CreateUserPage() {
       <Main className="flex flex-col gap-6 mx-auto p-4 max-w-2xl">
         <div className='flex flex-wrap justify-between items-center space-y-2 mb-2'>
           <div>
-            <h2 className='font-bold text-2xl tracking-tight'>Crear usuario</h2>
+            <h2 className='font-bold text-2xl tracking-tight'>Crear zona</h2>
             <p className='text-muted-foreground'>
-              Crea un nuevo usuario en la plataforma
+              Crea una nueva zona en la plataforma
             </p>
           </div>
         </div>
-        <UsersCreateEditForm />
+        <ZonesCreateEditForm />
       </Main>
     </>
   )

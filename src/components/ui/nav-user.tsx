@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { handleLogout } from "@/lib/auth-utils"
 import { getInitials } from "@/lib/utils"
 
@@ -43,6 +43,8 @@ export function NavUser({
   validateMobile = false,
 }: NavUserProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isAdminRoute = pathname.startsWith("/admin");
 
   const handleLogoutClick = async () => {
     await handleLogout()
@@ -55,6 +57,40 @@ export function NavUser({
 
   const handleSettingsClick = () => {
     router.push("/settings")
+  }
+
+  const renderAdminPanelMenu = () => {
+    if (user.role !== 'admin') {
+      return;
+    }
+
+    if (isAdminRoute === true) {
+      return (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push('/')}>
+              <Sparkles className="mr-2 w-4 h-4" />
+              <span>Panel de Ciudadano</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </>
+      );
+    }
+
+    if (!isAdminRoute) {
+      return (
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={() => router.push('/admin')}>
+              <Sparkles className="mr-2 w-4 h-4" />
+              <span>Panel de Admin</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </>
+      );
+    }
   }
 
   return (
@@ -112,17 +148,7 @@ export function NavUser({
             <span>Ajustes</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        {user.role === 'admin' && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push('/admin')}>
-                <Sparkles className="mr-2 w-4 h-4" />
-                <span>Panel de Admin</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </>
-        )}
+        {renderAdminPanelMenu()}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleLogoutClick}

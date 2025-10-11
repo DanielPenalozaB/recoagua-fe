@@ -80,7 +80,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
     setIsSubmitting(true);
     try {
       // Convert rainfall string to number for API call
-      const rainfall = formData.rainfall && formData.rainfall !== '' 
+      const rainfall = formData.rainfall && formData.rainfall !== ''
         ? parseFloat(formData.rainfall.replace(',', '.'))
         : undefined;
 
@@ -98,7 +98,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
       } else {
         await createCityMutation.mutateAsync(cityData);
       }
-      
+
       // Redirect to cities list after successful creation
       push('/admin/cities');
     } catch (error) {

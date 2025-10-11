@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import { LevelsCreateEditForm } from "@/features/levels";
 
-export default async function EditUserPage({ params }: { params: Promise<{ level_id: string }> }) {
+export default async function EditLevelPage({ params }: { params: Promise<{ level_id: string }> }) {
   const { level_id } = await params;
 
   return (

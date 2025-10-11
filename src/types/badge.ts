@@ -1,7 +1,4 @@
-export enum BadgeStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
+import { Status } from "./common";
 
 export interface Badge {
   id: number;
@@ -9,7 +6,7 @@ export interface Badge {
   description: string;
   imageUrl: string;
   requirements: string;
-  status: BadgeStatus;
+  status: Status;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -20,7 +17,7 @@ export interface CreateBadgeDto {
   description: string;
   imageUrl?: string;
   requirements: string;
-  status: BadgeStatus;
+  status: Status;
 }
 
 export interface UpdateBadgeDto extends Partial<CreateBadgeDto> {}

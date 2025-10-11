@@ -5,12 +5,13 @@ import { Badge as BadgeComponent } from '@/components/ui'
 import { Checkbox } from '@/components/ui/checkbox'
 import { LongText } from '@/components/ui/long-text'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/types/badge'
+import { Zone } from '@/types/zone'
 import { type ColumnDef } from '@tanstack/react-table'
 import { callTypes, statusTypeTranslation } from '../data/data'
 import { DataTableRowActions } from './data-table-row-actions'
+import { Thermometer } from 'lucide-react'
 
-export const badgesColumns: ColumnDef<Badge>[] = [
+export const zonesColumns: ColumnDef<Zone>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -55,21 +56,6 @@ export const badgesColumns: ColumnDef<Badge>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'imageUrl',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Imagen' />
-    ),
-    cell: ({ row }) => (
-      <img
-        src={row.original.imageUrl}
-        alt={row.original.name}
-        className='w-full max-h-16 h-full object-contain'
-      />
-    ),
-    enableHiding: false,
-    enableSorting: false,
-  },
-  {
     accessorKey: 'description',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Descripción' />
@@ -79,16 +65,73 @@ export const badgesColumns: ColumnDef<Badge>[] = [
     ),
   },
   {
+    accessorKey: 'rainfall',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Precipitación' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-fit text-nowrap'>{row.getValue('rainfall')}</div>
+    ),
+  },
+  {
+    accessorKey: 'latitude',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Latitud' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-fit text-nowrap'>{row.getValue('latitude')}</div>
+    ),
+  },
+  {
+    accessorKey: 'longitude',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Longitud' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-fit text-nowrap'>{row.getValue('longitude')}</div>
+    ),
+  },
+  {
+    accessorKey: 'altitude',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Altitud' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-fit text-nowrap'>{row.getValue('altitude')}</div>
+    ),
+  },
+  {
+    accessorKey: 'soilType',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Suelo' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-fit text-nowrap'>{row.getValue('soilType')}</div>
+    ),
+  },
+  {
+    accessorKey: 'avgTemperature',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Temperatura media' />
+    ),
+    cell: ({ row }) => (
+      <div className='flex items-center gap-1'>
+        <Thermometer className='size-4 text-neutral-500' />
+        {row.getValue('avgTemperature')}°C
+      </div>
+    ),
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Estado' />
     ),
     cell: ({ row }) => {
       const { status } = row.original
-      const badgeColor = callTypes.get(status)
+      const zoneColor = callTypes.get(status)
       return (
         <div className='flex space-x-2'>
-          <BadgeComponent variant='outline' className={cn('capitalize', badgeColor)}>
+          <BadgeComponent variant='outline' className={cn('capitalize', zoneColor)}>
             {statusTypeTranslation.get(status)}
           </BadgeComponent>
         </div>

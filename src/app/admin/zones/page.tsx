@@ -2,11 +2,11 @@
 
 import { Main } from '@/components/layout/main'
 import { ProfileDropdown, Separator, SidebarTrigger, ThemeSwitch } from '@/components/ui'
-import { CitiesPrimaryButtons, CitiesProvider, CitiesTable } from '@/features/cities'
+import { ZonesPrimaryButtons, ZonesProvider, ZonesTable } from '@/features/zones'
 
-export default function CitiesPage() {
+export default function ZonesPage() {
   return (
-    <CitiesProvider>
+    <ZonesProvider>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
@@ -23,17 +23,17 @@ export default function CitiesPage() {
       <Main>
         <div className='flex flex-wrap justify-between items-center space-y-2 mb-2'>
           <div>
-            <h2 className='font-bold text-2xl tracking-tight'>Ciudades</h2>
+            <h2 className='font-bold text-2xl tracking-tight'>Zonas</h2>
             <p className='text-muted-foreground'>
-              Gestiona las ciudades de la plataforma
+              Gestiona las zonas de la plataforma
             </p>
           </div>
-          <CitiesPrimaryButtons />
+          <ZonesPrimaryButtons />
         </div>
         <div className='lg:flex-row flex-1 lg:space-x-12 lg:space-y-0 -mx-4 px-4 py-1 overflow-auto'>
-          <CitiesTable />
+          <ZonesTable />
         </div>
       </Main>
-    </CitiesProvider>
+    </ZonesProvider>
   )
 }

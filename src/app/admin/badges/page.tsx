@@ -4,7 +4,7 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown, Separator, SidebarTrigger, ThemeSwitch } from '@/components/ui'
 import { BadgesPrimaryButtons, BadgesProvider, BadgesTable } from '@/features/badges'
 
-export default function LevelsPage() {
+export default function BadgesPage() {
   return (
     <BadgesProvider>
       <header className="flex justify-between items-center gap-2 h-16 shrink-0">

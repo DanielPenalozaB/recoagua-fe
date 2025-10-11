@@ -13,7 +13,7 @@ import {
 } from "@/components/ui";
 import { ChallengesCreateEditForm } from "@/features/challenges";
 
-export default async function EditUserPage({ params }: { params: Promise<{ challenge_id: string }> }) {
+export default async function EditChallengePage({ params }: { params: Promise<{ challenge_id: string }> }) {
   const { challenge_id } = await params;
 
   return (
