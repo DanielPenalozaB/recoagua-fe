@@ -34,16 +34,22 @@ export interface CreateGuideDto {
   status?: GuideStatus;
 }
 
-export interface UpdateGuideDto extends Partial<CreateGuideDto> {
-  id: number;
-}
+export interface UpdateGuideDto extends Partial<CreateGuideDto> {}
 
 export interface GuideFilterDto {
-  search?: string;
-  status?: GuideStatus;
-  language?: string;
+  // Pagination
   page?: number;
   limit?: number;
+
+  // Search filters
+  name?: string;
+
+  // Multi-select filters
+  status?: string | string[];
+
+  // Sorting (optional - for future use)
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface GuideProgress {
