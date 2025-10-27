@@ -1,10 +1,12 @@
 export enum BlockType {
   TEXT = 'text',
-  IMAGE = 'image',
   VIDEO = 'video',
+  IMAGE = 'image',
+  QUESTION = 'question',
+  INTERACTIVE = 'interactive',
   QUIZ = 'quiz',
-  SURVEY = 'survey'
 }
+
 
 export enum QuestionType {
   MULTIPLE_CHOICE = 'multiple_choice',

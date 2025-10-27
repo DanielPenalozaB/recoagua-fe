@@ -121,7 +121,6 @@ export const usersColumns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const { status } = row.original;
       const badgeColor = callTypes.get(status);
-      console.log(badgeColor);
 
       return (
         <div className='flex space-x-2'>

@@ -29,12 +29,9 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
 )
 
-const FormField = <
-  TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
->({
-  ...props
-}: ControllerProps<TFieldValues, TName>) => {
+// Use a non-generic ControllerProps here to avoid type incompatibilities
+// when passing a `control` from useForm<T>() across different form shapes.
+const FormField = ({ ...props }: ControllerProps<any, any>) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
       <Controller {...props} />

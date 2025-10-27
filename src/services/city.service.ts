@@ -18,7 +18,7 @@ export class CityService extends ApiService {
     if (filters?.sortBy) queryParams.append('sortBy', filters.sortBy);
     if (filters?.sortOrder) queryParams.append('sortOrder', filters.sortOrder);
 
-    return this.get(`/cities?${queryParams.toString()}`);
+    return this.publicGet(`/cities?${queryParams.toString()}`);
   }
 
   async getCity(id: number): Promise<ApiResponse<City>> {

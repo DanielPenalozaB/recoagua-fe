@@ -95,4 +95,17 @@ export class ApiService {
       method: 'DELETE',
     });
   }
+
+  protected async publicGet<T>(endpoint: string): Promise<T> {
+  const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || `HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
 }

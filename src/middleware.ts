@@ -8,12 +8,11 @@ export default withAuth(
     const { nextUrl } = req
     const isAuth = !!token
     const isAuthPage = nextUrl.pathname.startsWith('/auth/')
-    const isApiAuthRoute = nextUrl.pathname.startsWith('/api/auth/')
     const isUnauthorizedPage = nextUrl.pathname === '/unauthorized'
     const isPublicPage = ['/about', '/contact', '/privacy', '/terms'].includes(nextUrl.pathname)
 
     // Allow API auth routes and public pages
-    if (isApiAuthRoute || isPublicPage || isUnauthorizedPage) {
+    if (isPublicPage || isUnauthorizedPage) {
       return NextResponse.next()
     }
 
@@ -60,8 +59,7 @@ export default withAuth(
         const { pathname } = req.nextUrl
 
         // Always allow access to auth pages, API routes, public pages, and unauthorized page
-        if (pathname.startsWith('/auth/') || 
-            pathname.startsWith('/api/') ||
+        if (pathname.startsWith('/auth/') ||
             pathname === '/unauthorized' ||
             ['/', '/about', '/contact', '/privacy', '/terms'].includes(pathname)) {
           return true

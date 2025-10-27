@@ -6,9 +6,16 @@ export class GuideService extends ApiService {
   async getGuides(filters?: GuideFilterDto): Promise<PaginationResponse<Guide>> {
     const queryParams = new URLSearchParams();
 
-    if (filters?.search) queryParams.append('search', filters.search);
-    if (filters?.status) queryParams.append('status', filters.status.toLowerCase());
-    if (filters?.language) queryParams.append('language', filters.language);
+    if (filters?.name) queryParams.append('name', filters.name);
+
+    if (filters?.status) {
+      if (Array.isArray(filters.status)) {
+        filters.status.forEach(status => queryParams.append('status', status));
+      } else {
+        queryParams.append('status', filters.status);
+      }
+    }
+
     if (filters?.page) queryParams.append('page', filters.page.toString());
     if (filters?.limit) queryParams.append('limit', filters.limit.toString());
 

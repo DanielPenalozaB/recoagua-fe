@@ -156,7 +156,6 @@ export function ZonesCreateEditForm({ zoneId }: ZonesCreateEditFormProps) {
   useEffect(() => {
     if (getZoneMutation?.isSuccess) {
       const zone = getZoneMutation.data.data;
-      console.log('Zone data for editing:', zone);
 
       form.setValue('name', zone.name);
       form.setValue('description', zone.description || '');
@@ -171,7 +170,6 @@ export function ZonesCreateEditForm({ zoneId }: ZonesCreateEditFormProps) {
 
       if (zone.city) {
         form.setValue('cityId', zone.city.id.toString());
-        console.log('City ID:', zone.city.id);
       }
     }
   }, [getZoneMutation?.isSuccess]);

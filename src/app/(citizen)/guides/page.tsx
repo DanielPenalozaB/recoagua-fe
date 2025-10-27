@@ -25,7 +25,7 @@ export default function CitizenGuidesPage() {
     page: currentPage,
     limit: 9,
     status,
-    search: debouncedSearch
+    name: debouncedSearch
   });
 
   const handlePageChange = (page: number) => {
