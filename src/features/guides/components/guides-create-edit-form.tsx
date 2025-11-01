@@ -41,6 +41,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import {
+	type Block,
+	BlockType,
+	type DynamicType,
+	type ModuleStatus,
+	type QuestionType,
+} from "@/types/block";
 import { GuideDifficulty, GuideStatus } from "@/types/guide";
 import { useCreateGuide, useGuide, useUpdateGuide } from "../hooks/use-guide";
 
@@ -90,67 +97,6 @@ interface CreateRelationalPairDto {
 	leftItem: string;
 	rightItem: string;
 	correctPair: boolean;
-}
-
-enum ModuleStatus {
-	DRAFT = "draft",
-	PUBLISHED = "published",
-	ARCHIVED = "archived",
-}
-
-enum BlockType {
-	TEXT = "text",
-	VIDEO = "video",
-	IMAGE = "image",
-	QUESTION = "question",
-	INTERACTIVE = "interactive",
-	QUIZ = "quiz",
-}
-
-enum DynamicType {
-	DRAG_DROP = "drag_drop",
-	MATCHING = "matching",
-	SORTING = "sorting",
-	FILL_BLANKS = "fill_blanks",
-	SIMULATION = "simulation",
-}
-
-enum QuestionType {
-	MULTIPLE_CHOICE = "multiple_choice",
-	TRUE_FALSE = "true_false",
-	OPEN_ENDED = "open_ended",
-	MATCHING = "matching",
-	ORDERING = "ordering",
-}
-
-interface Answer {
-	id: string;
-	text: string;
-	isCorrect: boolean;
-	feedback: string;
-	order: number;
-}
-
-interface RelationalPair {
-	id: string;
-	leftItem: string;
-	rightItem: string;
-	correctPair: boolean;
-}
-
-interface Block {
-	id: string;
-	type: BlockType;
-	order: number;
-	statement: string;
-	description: string;
-	resourceUrl: string;
-	points: number;
-	feedback: string;
-	dynamicType: string;
-	questionType: string;
-	answers: Answer[];
-	relationalPairs: RelationalPair[];
 }
 
 interface Module {
@@ -391,7 +337,11 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 		setExpandedModules((prev) => new Set([...prev, newModule.id]));
 	};
 
-	const updateModule = (moduleId: string, field: string, value: any) => {
+	const updateModule = (
+		moduleId: string,
+		field: keyof Module,
+		value: string | number,
+	) => {
 		setModules((prev) =>
 			prev.map((module) =>
 				module.id === moduleId ? { ...module, [field]: value } : module,
@@ -453,7 +403,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 		moduleId: string,
 		blockId: string,
 		field: string,
-		value: any,
+		value: unknown,
 	) => {
 		setModules((prev) =>
 			prev.map((module) =>
@@ -462,7 +412,11 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 							...module,
 							blocks: module.blocks.map((block) => {
 								if (block.id === blockId) {
-									const updatedBlock = { ...block, [field]: value };
+									// keep the block typed, but allow assigning a dynamic property safely
+									const updatedBlock = {
+										...block,
+										[field]: value,
+									} as unknown as Block;
 
 									// Clear dependent fields when type changes
 									if (field === "type") {
@@ -474,7 +428,10 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 									}
 
 									// Clear answers when changing to matching
-									if (field === "questionType" && value === "matching") {
+									if (
+										field === "questionType" &&
+										String(value) === "matching"
+									) {
 										updatedBlock.answers = [];
 									}
 
@@ -486,12 +443,13 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 										updatedBlock.relationalPairs = [];
 									}
 
-									// Validate media URL
+									// Validate media URL (ensure value is treated as string for validation)
 									if (field === "resourceUrl") {
+										const urlString = String(value);
 										if (block.type === "video") {
-											validateMediaUrl(blockId, value, "video");
+											validateMediaUrl(blockId, urlString, "video");
 										} else if (block.type === "image") {
-											validateMediaUrl(blockId, value, "image");
+											validateMediaUrl(blockId, urlString, "image");
 										}
 									}
 
@@ -566,7 +524,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 		blockId: string,
 		answerId: string,
 		field: string,
-		value: any,
+		value: string | number | boolean,
 	) => {
 		setModules((prev) =>
 			prev.map((module) =>
@@ -651,7 +609,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 		blockId: string,
 		pairId: string,
 		field: string,
-		value: any,
+		value: string | number | boolean,
 	) => {
 		setModules((prev) =>
 			prev.map((module) =>
@@ -749,14 +707,14 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 				language: formData.language,
 				totalPoints: calculateTotalPoints(),
 				modules: modules.map(
-					(module, moduleIndex): CreateModuleDto => ({
+					(module, _moduleIndex): CreateModuleDto => ({
 						name: module.name,
 						description: module.description,
 						order: module.order,
 						points: module.points,
 						status: module.status as ModuleStatus,
 						blocks: module.blocks.map(
-							(block, blockIndex): CreateBlockDto => ({
+							(block, _blockIndex): CreateBlockDto => ({
 								type: block.type as BlockType,
 								order: block.order,
 								statement: block.statement,
@@ -768,7 +726,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 								questionType: (block.questionType as QuestionType) || undefined,
 								answers:
 									block.answers?.map(
-										(answer, answerIndex): CreateAnswerDto => ({
+										(answer, _answerIndex): CreateAnswerDto => ({
 											text: answer.text,
 											isCorrect: answer.isCorrect,
 											feedback: answer.feedback || undefined,
@@ -777,7 +735,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 									) || undefined,
 								relationalPairs:
 									block.relationalPairs?.map(
-										(pair, pairIndex): CreateRelationalPairDto => ({
+										(pair, _pairIndex): CreateRelationalPairDto => ({
 											leftItem: pair.leftItem,
 											rightItem: pair.rightItem,
 											correctPair: pair.correctPair,
@@ -818,23 +776,28 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 			form.setValue("language", guide.language || "es");
 
 			if (guide.modules) {
-				// Convert module IDs from number to string for local state
-				const localModules = guide.modules.map((module: any) => ({
+				// Convert module IDs from number to string for local state and coerce backend strings to local enums
+				const localModules: Module[] = guide.modules.map((module) => ({
 					...module,
 					id: `module-${module.id}`,
 					blocks:
-						module.blocks?.map((block: any) => ({
+						module.blocks?.map((block) => ({
 							...block,
 							id: `block-${block.id}`,
+							type: block.type as unknown as BlockType,
+							questionType:
+								(block.questionType as unknown as QuestionType) || "",
+							dynamicType: (block.dynamicType as unknown as DynamicType) || "",
+							resourceUrl: block.resourceUrl || "",
 							answers:
-								block.answers?.map((answer: any) => ({
+								block.answers?.map((answer) => ({
 									...answer,
 									id: `answer-${answer.id}`,
 								})) || [],
 							relationalPairs:
-								block.relationalPairs?.map((pair: any) => ({
+								block.relationalPairs?.map((pair) => ({
 									...pair,
-									id: `pair-${pair.id}`,
+									id: `pair-${pair.leftItem}-${pair.rightItem}`,
 								})) || [],
 						})) || [],
 				}));
@@ -920,7 +883,9 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 														className="bg-white"
 														{...field}
 														onChange={(e) =>
-															field.onChange(parseInt(e.target.value, 10) || 0)
+															field.onChange(
+																Number.parseInt(e.target.value, 10) || 0,
+															)
 														}
 													/>
 												</FormControl>
@@ -1184,7 +1149,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																		updateModule(
 																			module.id,
 																			"order",
-																			parseInt(e.target.value, 10) || 0,
+																			Number.parseInt(e.target.value, 10) || 0,
 																		)
 																	}
 																/>
@@ -1219,7 +1184,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																		updateModule(
 																			module.id,
 																			"points",
-																			parseInt(e.target.value, 10) || 0,
+																			Number.parseInt(e.target.value, 10) || 0,
 																		)
 																	}
 																/>
@@ -1513,8 +1478,9 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																											module.id,
 																											block.id,
 																											"order",
-																											parseInt(
+																											Number.parseInt(
 																												e.target.value,
+																												10,
 																											) || 0,
 																										)
 																									}
@@ -1698,8 +1664,9 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																											module.id,
 																											block.id,
 																											"points",
-																											parseInt(
+																											Number.parseInt(
 																												e.target.value,
+																												10,
 																											) || 0,
 																										)
 																									}

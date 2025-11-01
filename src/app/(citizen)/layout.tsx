@@ -1,4 +1,4 @@
-// src/components/CitizenLayout.tsx
+/** biome-ignore-all lint/suspicious/noExplicitAny: Allow any */
 /** biome-ignore-all lint/suspicious/noShadowRestrictedNames: Don't shadow Map */
 "use client";
 
@@ -86,7 +86,7 @@ export default function CitizenLayout({
 						</div>
 					</div>
 				</nav>
-				<main className={`w-full ${!isMapRoute ? "max-w-4xl mx-auto" : ""}`}>
+				<main className={`w-full ${isMapRoute ? "" : "max-w-4xl mx-auto"}`}>
 					{children}
 				</main>
 				<nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[400]">

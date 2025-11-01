@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Allow any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
