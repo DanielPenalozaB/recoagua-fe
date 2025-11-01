@@ -1,44 +1,47 @@
-"use client"
+"use client";
 
-import useDialogState from '@/hooks/use-dialog-state'
-import { Zone } from '@/types/zone'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from "react";
+import useDialogState from "@/hooks/use-dialog-state";
+import type { Zone } from "@/types/zone";
 
-type ZonesDialogType = 'delete'
+type ZonesDialogType = "delete";
 
 type ZonesContextType = {
-  open: ZonesDialogType | null
-  setOpen: (str: ZonesDialogType | null) => void
-  currentRow: Zone | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<Zone | null>>
-}
+	open: ZonesDialogType | null;
+	setOpen: (str: ZonesDialogType | null) => void;
+	currentRow: Zone | null;
+	setCurrentRow: React.Dispatch<React.SetStateAction<Zone | null>>;
+};
 
-const ZonesContext = React.createContext<ZonesContextType | null>(null)
+const ZonesContext = React.createContext<ZonesContextType | null>(null);
 
-export function ZonesProvider({ children }: { readonly children: React.ReactNode }) {
-  const [open, setOpen] = useDialogState<ZonesDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<Zone | null>(null)
+export function ZonesProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
+	const [open, setOpen] = useDialogState<ZonesDialogType>(null);
+	const [currentRow, setCurrentRow] = useState<Zone | null>(null);
 
-  const zonesContextValue = useMemo(() => ({
-    open,
-    setOpen,
-    currentRow,
-    setCurrentRow,
-  }), [open, setOpen, currentRow, setCurrentRow])
+	const zonesContextValue = useMemo(
+		() => ({
+			open,
+			setOpen,
+			currentRow,
+			setCurrentRow,
+		}),
+		[open, setOpen, currentRow],
+	);
 
-  return (
-    <ZonesContext value={zonesContextValue}>
-      {children}
-    </ZonesContext>
-  )
+	return <ZonesContext value={zonesContextValue}>{children}</ZonesContext>;
 }
 
 export const useZones = () => {
-  const zonesContext = React.useContext(ZonesContext)
+	const zonesContext = React.useContext(ZonesContext);
 
-  if (!zonesContext) {
-    throw new Error('useZones has to be used within <ZonesContext>')
-  }
+	if (!zonesContext) {
+		throw new Error("useZones has to be used within <ZonesContext>");
+	}
 
-  return zonesContext
-}
+	return zonesContext;
+};

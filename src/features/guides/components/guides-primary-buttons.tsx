@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { BookOpen } from 'lucide-react'
-import Link from 'next/link'
+import { BookOpen } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export function GuidesPrimaryButtons() {
-  return (
-    <div className='flex gap-2'>
-      <Link href="/admin/guides/create" className='flex items-center gap-2'>
-        <Button className='space-x-1'>
-          <span>Crear guía</span> <BookOpen size={18} />
-        </Button>
-      </Link>
-    </div>
-  )
+	return (
+		<div className="flex gap-2">
+			<Link href="/admin/guides/create" className="flex items-center gap-2">
+				<Button className="space-x-1">
+					<span>Crear guía</span> <BookOpen size={18} />
+				</Button>
+			</Link>
+		</div>
+	);
 }

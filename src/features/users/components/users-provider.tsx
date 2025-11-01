@@ -1,44 +1,47 @@
-"use client"
+"use client";
 
-import useDialogState from '@/hooks/use-dialog-state'
-import { User } from '@/types/user'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState } from "react";
+import useDialogState from "@/hooks/use-dialog-state";
+import type { User } from "@/types/user";
 
-type UsersDialogType = 'invite' | 'add' | 'edit' | 'delete'
+type UsersDialogType = "invite" | "add" | "edit" | "delete";
 
 type UsersContextType = {
-  open: UsersDialogType | null
-  setOpen: (str: UsersDialogType | null) => void
-  currentRow: User | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<User | null>>
-}
+	open: UsersDialogType | null;
+	setOpen: (str: UsersDialogType | null) => void;
+	currentRow: User | null;
+	setCurrentRow: React.Dispatch<React.SetStateAction<User | null>>;
+};
 
-const UsersContext = React.createContext<UsersContextType | null>(null)
+const UsersContext = React.createContext<UsersContextType | null>(null);
 
-export function UsersProvider({ children }: { readonly children: React.ReactNode }) {
-  const [open, setOpen] = useDialogState<UsersDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<User | null>(null)
+export function UsersProvider({
+	children,
+}: {
+	readonly children: React.ReactNode;
+}) {
+	const [open, setOpen] = useDialogState<UsersDialogType>(null);
+	const [currentRow, setCurrentRow] = useState<User | null>(null);
 
-  const usersContextValue = useMemo(() => ({
-    open,
-    setOpen,
-    currentRow,
-    setCurrentRow,
-  }), [open, setOpen, currentRow, setCurrentRow])
+	const usersContextValue = useMemo(
+		() => ({
+			open,
+			setOpen,
+			currentRow,
+			setCurrentRow,
+		}),
+		[open, setOpen, currentRow],
+	);
 
-  return (
-    <UsersContext value={usersContextValue}>
-      {children}
-    </UsersContext>
-  )
+	return <UsersContext value={usersContextValue}>{children}</UsersContext>;
 }
 
 export const useUsers = () => {
-  const usersContext = React.useContext(UsersContext)
+	const usersContext = React.useContext(UsersContext);
 
-  if (!usersContext) {
-    throw new Error('useUsers has to be used within <UsersContext>')
-  }
+	if (!usersContext) {
+		throw new Error("useUsers has to be used within <UsersContext>");
+	}
 
-  return usersContext
-}
+	return usersContext;
+};

@@ -1,8 +1,5 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-const badgeStatusSchema = z.union([
-  z.literal('active'),
-  z.literal('inactive'),
-])
+const badgeStatusSchema = z.union([z.literal("active"), z.literal("inactive")]);
 
-export type BadgeStatus = z.infer<typeof badgeStatusSchema>
+export type BadgeStatus = z.infer<typeof badgeStatusSchema>;

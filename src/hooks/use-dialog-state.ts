@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 /**
  * Custom hook for confirm dialog
@@ -9,12 +9,12 @@ import { useState } from 'react';
  * @example const [open, setOpen] = useDialogState<"approve" | "reject">()
  */
 export default function useDialogState<T extends string | boolean>(
-  initialState: T | null = null
+	initialState: T | null = null,
 ) {
-  const [dialogState, setDialogState] = useState<T | null>(initialState);
+	const [dialogState, setDialogState] = useState<T | null>(initialState);
 
-  const setOpen = (str: T | null) =>
-    setDialogState((prev) => (prev === str ? null : str));
+	const setOpen = (str: T | null) =>
+		setDialogState((prev) => (prev === str ? null : str));
 
-  return [dialogState, setOpen] as const;
+	return [dialogState, setOpen] as const;
 }

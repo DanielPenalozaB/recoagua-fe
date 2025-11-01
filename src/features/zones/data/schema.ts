@@ -1,8 +1,5 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-const zoneStatusSchema = z.union([
-  z.literal('active'),
-  z.literal('inactive'),
-])
+const zoneStatusSchema = z.union([z.literal("active"), z.literal("inactive")]);
 
-export type ZoneStatus = z.infer<typeof zoneStatusSchema>
+export type ZoneStatus = z.infer<typeof zoneStatusSchema>;

@@ -1,20 +1,24 @@
-"use client"
+"use client";
 
-import { useTableState, TableState, UseTableStateReturn } from './use-table-state'
-import { useMemo } from 'react'
+import { useMemo } from "react";
+import {
+	type TableState,
+	type UseTableStateReturn,
+	useTableState,
+} from "./use-table-state";
 
-export interface TableFilter<T = any> {
-  columnId: string
-  value: T
+export interface TableFilter<T = unknown> {
+	columnId: string;
+	value: T;
 }
 
 export interface UseDataTableOptions<TFilters> {
-  defaultPageSize?: number
-  buildFilters: (tableState: TableState) => TFilters
+	defaultPageSize?: number;
+	buildFilters: (tableState: TableState) => TFilters;
 }
 
 export interface UseDataTableReturn<TFilters> extends UseTableStateReturn {
-  filters: TFilters
+	filters: TFilters;
 }
 
 /**
@@ -46,30 +50,30 @@ export interface UseDataTableReturn<TFilters> extends UseTableStateReturn {
  * ```
  */
 export function useDataTable<TFilters>(
-  options: UseDataTableOptions<TFilters>
+	options: UseDataTableOptions<TFilters>,
 ): UseDataTableReturn<TFilters> {
-  const { defaultPageSize = 10, buildFilters } = options
+	const { defaultPageSize = 10, buildFilters } = options;
 
-  // Get table state management
-  const tableState = useTableState({ defaultPageSize })
+	// Get table state management
+	const tableState = useTableState({ defaultPageSize });
 
-  // Build filters from current table state
-  const filters = useMemo(() => {
-    return buildFilters({
-      pagination: tableState.pagination,
-      columnFilters: tableState.columnFilters,
-      globalFilter: tableState.globalFilter,
-      sorting: {}, // Can be extended later
-    })
-  }, [
-    tableState.pagination,
-    tableState.columnFilters,
-    tableState.globalFilter,
-    buildFilters
-  ])
+	// Build filters from current table state
+	const filters = useMemo(() => {
+		return buildFilters({
+			pagination: tableState.pagination,
+			columnFilters: tableState.columnFilters,
+			globalFilter: tableState.globalFilter,
+			sorting: {}, // Can be extended later
+		});
+	}, [
+		tableState.pagination,
+		tableState.columnFilters,
+		tableState.globalFilter,
+		buildFilters,
+	]);
 
-  return {
-    ...tableState,
-    filters,
-  }
+	return {
+		...tableState,
+		filters,
+	};
 }
