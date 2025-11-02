@@ -1682,7 +1682,9 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																								<div className="space-y-2">
 																									<Label>Tipo Dinámico *</Label>
 																									<Select
-																										value={block.dynamicType ?? ""}
+																										value={
+																											block.dynamicType ?? ""
+																										}
 																										onValueChange={(value) =>
 																											updateBlock(
 																												module.id,
@@ -1729,7 +1731,9 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																										Tipo de Pregunta *
 																									</Label>
 																									<Select
-																										value={block.questionType ?? ""}
+																										value={
+																											block.questionType ?? ""
+																										}
 																										onValueChange={(value) =>
 																											updateBlock(
 																												module.id,

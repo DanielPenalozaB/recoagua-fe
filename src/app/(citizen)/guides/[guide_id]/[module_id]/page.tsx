@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/a11y/useMediaCaption: <explanation> */
 "use client";
 
 import { CornerUpLeft } from "lucide-react";
@@ -47,6 +46,13 @@ const VideoBlock = ({ block }: { block: Block }) => {
 						controls
 						className="w-full h-full object-contain bg-black"
 					>
+						<track
+							kind="captions"
+							src={block.resourceUrl || "data:text/vtt;charset=utf-8,WEBVTT"}
+							srcLang="es"
+							label="Español"
+							default
+						/>
 						Tu navegador no soporta el elemento de video.
 					</video>
 				) : (
