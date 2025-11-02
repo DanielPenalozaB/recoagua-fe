@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/a11y/useMediaCaption: <explanation> */
 "use client";
 
 import { CornerUpLeft } from "lucide-react";
@@ -7,8 +8,131 @@ import OptionsSelect from "@/components/citizen/modules/options-select";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useModule } from "@/hooks/use-modules";
+import type { Block } from "@/types/block";
 import type { Module } from "@/types/module";
 
+// Block rendering components
+const TextBlock = ({ block }: { block: Block }) => (
+	<div className="space-y-4">
+		<div className="prose max-w-none">
+			<p className="text-gray-700 whitespace-pre-wrap">{block.description}</p>
+		</div>
+	</div>
+);
+
+const VideoBlock = ({ block }: { block: Block }) => {
+	const getEmbedUrl = (url: string) => {
+		// Convert YouTube URLs to embed format
+		if (url.includes("youtube.com/watch?v=")) {
+			const videoId = url.split("v=")[1]?.split("&")[0];
+			return `https://www.youtube.com/embed/${videoId}`;
+		}
+		if (url.includes("youtu.be/")) {
+			const videoId = url.split("youtu.be/")[1]?.split("?")[0];
+			return `https://www.youtube.com/embed/${videoId}`;
+		}
+		// For direct video URLs, return as is
+		return url;
+	};
+
+	return (
+		<div className="space-y-4">
+			{block.description && (
+				<p className="text-gray-700">{block.description}</p>
+			)}
+			<div className="aspect-video w-full overflow-hidden rounded-lg border-2 border-neutral-200">
+				{block.resourceUrl?.match(/\.(mp4|webm|ogg)$/i) ? (
+					<video
+						src={block.resourceUrl}
+						controls
+						className="w-full h-full object-contain bg-black"
+					>
+						Tu navegador no soporta el elemento de video.
+					</video>
+				) : (
+					<iframe
+						src={getEmbedUrl(block.resourceUrl || "")}
+						className="w-full h-full"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowFullScreen
+						title={block.statement}
+					/>
+				)}
+			</div>
+		</div>
+	);
+};
+
+const ImageBlock = ({ block }: { block: Block }) => (
+	<div className="space-y-4">
+		{block.description && <p className="text-gray-700">{block.description}</p>}
+		<div className="overflow-hidden rounded-lg border-2 border-neutral-200">
+			<img
+				src={block.resourceUrl || ""}
+				alt={block.statement}
+				className="w-full h-auto object-contain max-h-[600px] mx-auto"
+			/>
+		</div>
+	</div>
+);
+
+const QuestionBlock = ({
+	block,
+	onSubmit,
+}: {
+	block: Block;
+	onSubmit: (selectedOptions: number[]) => Promise<void>;
+}) => (
+	<div className="space-y-4">
+		{block.description && (
+			<p className="text-gray-600 mb-4">{block.description}</p>
+		)}
+		<OptionsSelect
+			options={block.answers}
+			questionType={block.questionType}
+			onSubmit={onSubmit}
+		/>
+	</div>
+);
+
+const InteractiveBlock = ({ block }: { block: Block }) => (
+	<div className="space-y-4">
+		{block.description && <p className="text-gray-700">{block.description}</p>}
+		<div className="p-6 bg-blue-50 border-2 border-blue-200 rounded-lg">
+			<p className="text-center text-blue-800 font-medium">
+				🎮 Actividad interactiva: {block.dynamicType}
+			</p>
+			<p className="text-center text-sm text-blue-600 mt-2">
+				Este tipo de bloque requiere implementación específica según el tipo
+				dinámico.
+			</p>
+		</div>
+	</div>
+);
+
+const QuizBlock = ({
+	block,
+	onSubmit,
+}: {
+	block: Block;
+	onSubmit: (selectedOptions: number[]) => Promise<void>;
+}) => (
+	<div className="space-y-4">
+		<div className="p-4 bg-purple-50 border-l-4 border-purple-500 rounded">
+			<p className="text-sm font-medium text-purple-900">📋 Quiz</p>
+			{block.description && (
+				<p className="text-sm text-purple-700 mt-1">{block.description}</p>
+			)}
+		</div>
+		<OptionsSelect
+			options={block.answers}
+			questionType={block.questionType}
+			onSubmit={onSubmit}
+		/>
+	</div>
+);
+
+// Main component
 export default function GuideModulePage({
 	params,
 }: {
@@ -17,8 +141,6 @@ export default function GuideModulePage({
 	const { module_id } = use(params);
 	const { data, isLoading, error } = useModule(Number(module_id));
 	const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
-
-	console.log(data, isLoading, error);
 
 	if (isLoading) {
 		return (
@@ -70,7 +192,6 @@ export default function GuideModulePage({
 	}
 
 	const handleAnswerSubmit = async (selectedOptions: number[]) => {
-		// Here you would typically send the answer to your backend
 		console.log("Selected options:", selectedOptions);
 
 		// Simulate API call
@@ -96,6 +217,54 @@ export default function GuideModulePage({
 	const moduleData: Module = data.data;
 	const currentBlock = moduleData.blocks[currentBlockIndex];
 
+	// Render appropriate block component based on type
+	const renderBlock = () => {
+		switch (currentBlock.type) {
+			case "text":
+				return <TextBlock block={currentBlock} />;
+			case "video":
+				return <VideoBlock block={currentBlock} />;
+			case "image":
+				return <ImageBlock block={currentBlock} />;
+			case "question":
+				return (
+					<QuestionBlock block={currentBlock} onSubmit={handleAnswerSubmit} />
+				);
+			case "quiz":
+				return <QuizBlock block={currentBlock} onSubmit={handleAnswerSubmit} />;
+			case "interactive":
+				return <InteractiveBlock block={currentBlock} />;
+			default:
+				return (
+					<div className="p-4 bg-gray-100 rounded-lg">
+						<p className="text-gray-600">
+							Tipo de bloque no soportado: {currentBlock.type}
+						</p>
+					</div>
+				);
+		}
+	};
+
+	// Get block type icon
+	const getBlockTypeIcon = (type: string) => {
+		switch (type) {
+			case "text":
+				return "📝";
+			case "video":
+				return "🎥";
+			case "image":
+				return "🖼️";
+			case "question":
+				return "❓";
+			case "interactive":
+				return "🎮";
+			case "quiz":
+				return "📋";
+			default:
+				return "📄";
+		}
+	};
+
 	return (
 		<div className="mx-auto p-6 container">
 			<div className="flex justify-between items-center gap-4 bg-white mb-6 p-4 border-2 border-neutral-200 rounded-xl">
@@ -119,21 +288,50 @@ export default function GuideModulePage({
 				</div>
 			</div>
 
-			<div className="">
+			<div className="bg-white border-2 border-neutral-200 rounded-xl p-6">
+				{/* Block header */}
 				<div className="mb-6">
-					<h2 className="mb-2 font-bold text-neutral-800 text-xl">
+					<div className="flex items-center gap-2 mb-2">
+						<span className="text-2xl">
+							{getBlockTypeIcon(currentBlock.type)}
+						</span>
+						<span className="text-xs font-medium text-neutral-500 uppercase tracking-wide">
+							{currentBlock.type}
+						</span>
+					</div>
+					<h2 className="font-bold text-neutral-800 text-xl">
 						{currentBlock.statement}
 					</h2>
 				</div>
-				<OptionsSelect
-					options={currentBlock.answers}
-					questionType={currentBlock.questionType}
-					onSubmit={handleAnswerSubmit}
-				/>
+
+				{/* Block content */}
+				{renderBlock()}
+
+				{/* Feedback section */}
+				{currentBlock.feedback && (
+					<div className="mt-6 p-4 bg-teal-50 border-l-4 border-teal-500 rounded">
+						<p className="text-sm font-medium text-teal-900">
+							💡 Retroalimentación
+						</p>
+						<p className="text-sm text-teal-700 mt-1">
+							{currentBlock.feedback}
+						</p>
+					</div>
+				)}
+
+				{/* Points indicator */}
+				{currentBlock.points > 0 && (
+					<div className="mt-4 flex justify-end">
+						<div className="px-3 py-1 bg-neutral-100 rounded-full text-sm font-medium text-neutral-700">
+							⭐ {currentBlock.points} puntos
+						</div>
+					</div>
+				)}
 			</div>
-			{/* Navigation between blocks (simplified) */}
+
+			{/* Navigation between blocks */}
 			{moduleData.blocks.length > 1 && (
-				<div className="flex justify-between">
+				<div className="flex justify-between mt-6">
 					<Button
 						onClick={handlePrevBlock}
 						disabled={currentBlockIndex === 0}

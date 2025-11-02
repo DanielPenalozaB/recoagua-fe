@@ -87,7 +87,7 @@ export default function CitizenGuidesDetailPage({
 
 	return (
 		<div className="mx-auto p-6 container">
-			<div className="flex justify-between items-center gap-4 bg-teal-500 mb-16 px-4 py-3 rounded-xl">
+			<div className="flex justify-between items-center gap-4 bg-teal-500 mb-16 px-4 py-3 rounded-xl outline-4 outline-teal-400">
 				<div className="flex items-start gap-4 text-white">
 					<Link
 						title="Regresar a las guías"
@@ -106,7 +106,7 @@ export default function CitizenGuidesDetailPage({
 						<Button
 							variant="ghost"
 							title="Ver detalles"
-							className="hover:bg-teal-400/50 text-teal-200 hover:text-teal-200 cursor-pointer"
+							className="hover:bg-teal-400/50 text-teal-200 hover:text-teal-200 cursor-pointer h-11"
 						>
 							<TableOfContents className="size-6" />
 						</Button>
@@ -169,24 +169,41 @@ export default function CitizenGuidesDetailPage({
 				{data.data.modules.map((module) => (
 					<Popover key={`guide-module-${module.id}`}>
 						<PopoverTrigger asChild>
-							<button
-								type="button"
-								className="group relative focus:outline-none w-24 h-[75px] cursor-pointer"
-							>
-								<div className="bottom-px left-1/2 z-0 absolute rounded-lg outline-[3px] outline-teal-600/50 outline-offset-[6px] w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2" />
-								<div className="bottom-0 left-1/2 z-0 absolute bg-teal-600 rounded-lg outline-[3px] outline-teal-600 -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2" />
-								<div className="bottom-[28px] left-1/2 z-0 absolute bg-teal-600 w-[75px] h-3 -translate-x-1/2" />
-								<div className="bottom-3 left-1/2 absolute bg-teal-500 rounded-lg outline-[3px] outline-teal-600 -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2" />
-								<div className="bottom-6 left-1/2 absolute bg-teal-600 rounded-sm outline-[3px] outline-teal-600 -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 -translate-x-1/2" />
-								<div className="bottom-10 left-1/2 z-8 absolute bg-teal-600 w-11 h-4 group-active:h-0 group-hover:h-3 transition-all -translate-x-1/2 duration-150 ease-out" />
-								<div className="bottom-10 group-active:bottom-6! group-hover:bottom-9 left-1/2 z-10 absolute bg-teal-500 rounded-sm outline-[3px] outline-teal-600 -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 transition-all -translate-x-1/2 duration-150 ease-out" />
-							</button>
+							<div className="relative focus:outline-none w-24 h-[75px]">
+								<button
+									type="button"
+									className="group relative focus:outline-none w-24 h-[75px] cursor-pointer"
+								>
+									{ /* Bottom outline */}
+									<div className="bottom-px left-1/2 z-0 absolute rounded-lg outline-[3px] outline-teal-600/50 outline-offset-[6px] w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2" />
+									{ /* Bottom shadow */}
+									<div className="bottom-0 left-1/2 z-0 absolute bg-teal-600 rounded-lg outline-[3px] outline-teal-600 -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2" />
+									{ /* Bottom body */}
+									<div className="bottom-[28px] left-1/2 z-0 absolute bg-teal-600 w-[75px] h-3 -translate-x-1/2" />
+									{ /* Bottom cap */}
+									<div className="bottom-3 left-1/2 absolute bg-teal-500 rounded-lg outline-[3px] outline-teal-600 -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2" />
+									{ /* Top shadow */}
+									<div className="bottom-6 left-1/2 absolute bg-teal-600 rounded-sm outline-[3px] outline-teal-600 -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 -translate-x-1/2" />
+									{ /* Top body */}
+									<div className="bottom-10 left-1/2 z-8 absolute bg-teal-600 w-11 h-4 group-active:h-0 group-hover:h-3 transition-all -translate-x-1/2 duration-150 ease-out" />
+									{ /* Top cap */}
+									<div className="bottom-10 group-active:bottom-6! group-hover:bottom-9 left-1/2 z-10 absolute bg-teal-500 rounded-sm outline-[3px] outline-teal-600 -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 transition-all -translate-x-1/2 duration-150 ease-out" />
+									<span className="absolute bottom-[2.85rem] group-active:bottom-7! group-hover:bottom-10 justify-center text-teal-600 left-1/2 -translate-x-1/2 z-10 rotate-x-35 font-bold transition-all duration-150 ease-out">{module.order}</span>
+								</button>
+								<span className="absolute top-1/2 -translate-y-1/2 left-[calc(100%+1rem)] min-w-52 text-lg font-bold text-neutral-400 select-none">{module.name}</span>
+							</div>
 						</PopoverTrigger>
 						<PopoverContent className="flex flex-col gap-4 shadow-md p-4 border border-neutral-200 rounded-2xl w-72">
 							<div className="flex flex-col gap-2 text-neutral-600">
-								{module.name && (
-									<h2 className="font-bold text-lg">{module.name}</h2>
-								)}
+								<div className="flex items-top justify-between gap-1">
+									{module.name && (
+										<h2 className="font-bold text-lg leading-5">{module.name}</h2>
+									)}
+									<span className="flex items-center gap-1 text-yellow-500 font-medium max-h-fit py-0.5 px-2 rounded-full bg-yellow-100 border border-yellow-300 text-xs">
+										<Trophy className="size-3.5 text-yellow-500" />
+										{module.points}
+									</span>
+								</div>
 								{module.description && (
 									<p className="text-sm line-clamp-2">{module.description}</p>
 								)}

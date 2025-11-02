@@ -377,8 +377,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 			resourceUrl: "",
 			points: 0,
 			feedback: "",
-			dynamicType: "",
-			questionType: "",
+			dynamicType: null,
+			questionType: null,
 			answers: [],
 			relationalPairs: [],
 		};
@@ -420,8 +420,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 
 									// Clear dependent fields when type changes
 									if (field === "type") {
-										updatedBlock.questionType = "";
-										updatedBlock.dynamicType = "";
+										updatedBlock.questionType = null;
+										updatedBlock.dynamicType = null;
 										updatedBlock.answers = [];
 										updatedBlock.relationalPairs = [];
 										updatedBlock.resourceUrl = "";
@@ -1682,7 +1682,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																								<div className="space-y-2">
 																									<Label>Tipo Dinámico *</Label>
 																									<Select
-																										value={block.dynamicType}
+																										value={block.dynamicType ?? ""}
 																										onValueChange={(value) =>
 																											updateBlock(
 																												module.id,
@@ -1729,7 +1729,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 																										Tipo de Pregunta *
 																									</Label>
 																									<Select
-																										value={block.questionType}
+																										value={block.questionType ?? ""}
 																										onValueChange={(value) =>
 																											updateBlock(
 																												module.id,

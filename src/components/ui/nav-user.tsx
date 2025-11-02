@@ -1,7 +1,7 @@
 // src/components/ui/nav-user.tsx
 "use client";
 
-import { ChevronsUpDown, LogOut, User, Settings, Sparkles } from "lucide-react";
+import { ChevronsUpDown, LogOut, User2, Settings, Sparkles } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -16,15 +16,10 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { handleLogout } from "@/lib/auth-utils";
 import { getInitials } from "@/lib/utils";
+import { User, UserRole } from "@/types/user";
 
 interface NavUserProps {
-	readonly user: {
-		name: string;
-		email: string;
-		avatar: string;
-		role: string;
-		city: { id: number; name: string } | null;
-	};
+	readonly user: User;
 	readonly validateMobile?: boolean;
 }
 
@@ -80,12 +75,24 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 		}
 	};
 
+	const handleUserRole = (role: UserRole) => {
+		switch (role) {
+			case UserRole.ADMIN:
+				return "Admin";
+			case UserRole.MODERATOR:
+				return "Moderador";
+			case UserRole.CITIZEN:
+			default:
+				return "Ciudadano";
+		}
+	};
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<button className="flex items-center gap-3 hover:bg-gray-100 p-1 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 transition-all">
 					<Avatar className="rounded-lg w-8 h-8">
-						<AvatarImage src={user.avatar} alt={user.name} />
+						<AvatarImage alt={user.name} />
 						<AvatarFallback className="rounded-lg">
 							{getInitials(user.name)}
 						</AvatarFallback>
@@ -111,7 +118,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 				<DropdownMenuLabel className="p-0 font-normal">
 					<div className="flex items-center gap-2 px-1 py-1.5 text-sm text-left">
 						<Avatar className="rounded-lg w-8 h-8">
-							<AvatarImage src={user.avatar} alt={user.name} />
+							<AvatarImage alt={user.name} />
 							<AvatarFallback className="rounded-lg">
 								{getInitials(user.name)}
 							</AvatarFallback>
@@ -120,7 +127,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 							<span className="font-medium truncate">{user.name}</span>
 							<span className="text-xs truncate">{user.email}</span>
 							<span className="text-muted-foreground text-xs truncate capitalize">
-								{user.role}
+								{handleUserRole(user.role)}
 								{user.city ? ` • ${user.city.name}` : ""}
 							</span>
 						</div>
@@ -129,7 +136,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem onClick={handleProfileClick}>
-						<User className="mr-2 w-4 h-4" />
+						<User2 className="mr-2 w-4 h-4" />
 						<span>Perfil</span>
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={handleSettingsClick}>

@@ -53,8 +53,8 @@ export interface Block {
 	resourceUrl: string;
 	points: number;
 	feedback: string;
-	dynamicType: string;
-	questionType: string;
+	dynamicType: DynamicType | null;
+	questionType: QuestionType | null;
 	answers: Answer[];
 	relationalPairs: RelationalPair[];
 }

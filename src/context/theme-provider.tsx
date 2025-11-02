@@ -53,8 +53,8 @@ export function ThemeProvider({
 
 	// Optimized: Memoize the resolved theme calculation to prevent unnecessary re-computations
 	const resolvedTheme = useMemo((): ResolvedTheme => {
-		if (theme === "system" && typeof globalThis !== "undefined") {
-			return globalThis.matchMedia("(prefers-color-scheme: dark)").matches
+		if (theme === "system" && typeof window !== "undefined") {
+			return window.matchMedia("(prefers-color-scheme: dark)").matches
 				? "dark"
 				: "light";
 		}

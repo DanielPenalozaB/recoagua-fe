@@ -9,7 +9,7 @@ import { type Answer, QuestionType } from "@/types/block";
 
 interface OptionsSelectProps {
 	readonly options: Answer[];
-	readonly questionType: QuestionType;
+	readonly questionType: QuestionType | null;
 	readonly onSubmit: (selectedOptions: number[]) => Promise<void>;
 }
 
@@ -53,7 +53,7 @@ export default function OptionsSelect({
 	const getOptionState = (option: Answer) => {
 		if (!submitted) return "default";
 
-		if (selectedOptions.includes(option.id)) {
+		if (selectedOptions.includes(Number(option.id))) {
 			return option.isCorrect ? "correct" : "incorrect";
 		}
 
@@ -65,20 +65,29 @@ export default function OptionsSelect({
 			<div className="gap-3 grid">
 				{options.map((option) => {
 					const state = getOptionState(option);
-					const isSelected = selectedOptions.includes(option.id);
+					const isSelected = selectedOptions.includes(Number(option.id));
 
 					return (
-						<div
+						<button
 							key={option.id}
+							type="button"
+							role="option"
+							aria-selected={isSelected}
 							className={`
-                p-4 rounded-xl border-2 transition-all cursor-pointer
-                ${state === "default" && "border-gray-200 hover:border-gray-300"}
-                ${state === "correct" && "border-green-500 bg-green-50"}
-                ${state === "incorrect" && "border-red-500 bg-red-50"}
-                ${state === "missed" && "border-green-500 bg-green-50"}
-                ${isSelected && state === "default" && "border-blue-500 bg-blue-50"}
-              `}
-							onClick={() => handleOptionSelect(option.id)}
+								w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer
+								${state === "default" && "border-gray-200 hover:border-gray-300"}
+								${state === "correct" && "border-green-500 bg-green-50"}
+								${state === "incorrect" && "border-red-500 bg-red-50"}
+								${state === "missed" && "border-green-500 bg-green-50"}
+								${isSelected && state === "default" && "border-blue-500 bg-blue-50"}
+							`}
+							onClick={() => handleOptionSelect(Number(option.id))}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									e.preventDefault();
+									handleOptionSelect(Number(option.id));
+								}
+							}}
 						>
 							<div className="flex items-center gap-3">
 								{isMultipleSelect ? (
@@ -132,7 +141,7 @@ export default function OptionsSelect({
 									{option.feedback}
 								</div>
 							)}
-						</div>
+						</button>
 					);
 				})}
 			</div>
