@@ -33,6 +33,7 @@ import {
 import { useSession } from "next-auth/react";
 import { NavMainGroups } from "./nav-main-groups";
 import { Skeleton } from "./skeleton";
+import { UserRole, UserStatus } from "@/types/user";
 
 export const adminNavGroups = [
 	{
@@ -361,12 +362,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	}
 
 	const userData = {
-		name: session.user.name ?? "User",
-		email: session.user.email ?? "",
-		avatar: session.user.image ?? "",
-		role: session.user.role ?? "user",
-		city: session.user.city ?? null,
-	};
+			id: session.user.id || 0,
+			name: session.user.name || "Usuario",
+			email: session.user.email || "",
+			role: session.user.role || UserRole.CITIZEN,
+			city: session.user.city || null,
+			language: session.user.language || "es",
+			createdAt: "",
+			updatedAt: "",
+			status: session.user.status || UserStatus.ACTIVE,
+		};
 
 	return (
 		<Sidebar variant="inset" {...props}>

@@ -34,7 +34,7 @@ export const useCreateBlock = () => {
 		mutationFn: (blockData: CreateBlockDto) =>
 			blockService.createBlock(blockData),
 		onSuccess: (data) => {
-			queryClient.invalidateQueries({ queryKey: blockKeys.list(data.id) });
+			queryClient.invalidateQueries({ queryKey: blockKeys.list(Number(data.id)) });
 			toast.success("Block created successfully");
 		},
 		onError: (error: Error) => {
@@ -50,8 +50,8 @@ export const useUpdateBlock = () => {
 		mutationFn: ({ id, data }: { id: number; data: UpdateBlockDto }) =>
 			blockService.updateBlock(id, data),
 		onSuccess: (data) => {
-			queryClient.invalidateQueries({ queryKey: blockKeys.detail(data.id) });
-			queryClient.invalidateQueries({ queryKey: blockKeys.list(data.id) });
+			queryClient.invalidateQueries({ queryKey: blockKeys.detail(Number(data.id)) });
+			queryClient.invalidateQueries({ queryKey: blockKeys.list(Number(data.id)) });
 			toast.success("Block updated successfully");
 		},
 		onError: (error: Error) => {

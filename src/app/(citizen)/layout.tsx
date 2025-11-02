@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { NavUser } from "@/components/ui/nav-user";
 import { MapboxProvider } from "@/context/mapbox-context";
+import { type User, UserRole, UserStatus } from "@/types/user";
 
 interface NavItem {
 	route: string;
@@ -63,12 +64,16 @@ export default function CitizenLayout({
 		return null;
 	}
 
-	const userData = {
+	const userData: User = {
+		id: session.user.id || 0,
 		name: session.user.name || "Usuario",
 		email: session.user.email || "",
-		avatar: session.user.image || "",
-		role: session.user.role || "citizen",
+		role: session.user.role || UserRole.CITIZEN,
 		city: session.user.city || null,
+		language: session.user.language || "es",
+		createdAt: "",
+		updatedAt: "",
+		status: session.user.status || UserStatus.ACTIVE,
 	};
 
 	return (
