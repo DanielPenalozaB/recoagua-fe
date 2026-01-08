@@ -71,38 +71,6 @@ export const adminNavGroups = [
 					},
 				],
 			},
-			{
-				title: "Módulos",
-				url: "/admin/modules",
-				icon: Component,
-				isActive: false,
-				items: [
-					{
-						title: "Todos los módulos",
-						url: "/admin/modules",
-					},
-					{
-						title: "Nuevo módulo",
-						url: "/admin/modules/create",
-					},
-				],
-			},
-			{
-				title: "Bloques",
-				url: "/admin/blocks",
-				icon: Layers,
-				isActive: false,
-				items: [
-					{
-						title: "Todos los bloques",
-						url: "/admin/blocks",
-					},
-					{
-						title: "Nuevo bloque",
-						url: "/admin/blocks/create",
-					},
-				],
-			},
 		],
 	},
 	{

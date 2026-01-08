@@ -72,7 +72,7 @@ export const guidesColumns: ColumnDef<Guide>[] = [
 		cell: ({ row }) => (
 			<div className="flex items-center gap-1">
 				<Star className="size-4 text-neutral-500" />
-				{row.getValue("score")}
+				{row.original.totalPoints}
 			</div>
 		),
 	},

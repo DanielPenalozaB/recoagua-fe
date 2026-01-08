@@ -51,7 +51,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 				<>
 					<DropdownMenuSeparator />
 					<DropdownMenuGroup>
-						<DropdownMenuItem onClick={() => router.push("/")}>
+						<DropdownMenuItem className="text-neutral-800" onClick={() => router.push("/")}>
 							<Sparkles className="mr-2 w-4 h-4" />
 							<span>Panel de Ciudadano</span>
 						</DropdownMenuItem>
@@ -65,7 +65,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 				<>
 					<DropdownMenuSeparator />
 					<DropdownMenuGroup>
-						<DropdownMenuItem onClick={() => router.push("/admin")}>
+						<DropdownMenuItem className="text-neutral-800" onClick={() => router.push("/admin")}>
 							<Sparkles className="mr-2 w-4 h-4" />
 							<span>Panel de Admin</span>
 						</DropdownMenuItem>
@@ -111,7 +111,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 				</button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
-				className="rounded-lg w-56"
+				className="rounded-lg w-56 bg-gray-50"
 				align="end"
 				sideOffset={4}
 			>
@@ -123,7 +123,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 								{getInitials(user.name)}
 							</AvatarFallback>
 						</Avatar>
-						<div className="flex-1 grid text-sm text-left leading-tight">
+						<div className="flex-1 grid text-sm text-left leading-tight text-neutral-800">
 							<span className="font-medium truncate">{user.name}</span>
 							<span className="text-xs truncate">{user.email}</span>
 							<span className="text-muted-foreground text-xs truncate capitalize">
@@ -135,11 +135,11 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={handleProfileClick}>
+					<DropdownMenuItem className="text-neutral-800" onClick={handleProfileClick}>
 						<User2 className="mr-2 w-4 h-4" />
 						<span>Perfil</span>
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={handleSettingsClick}>
+					<DropdownMenuItem className="text-neutral-800" onClick={handleSettingsClick}>
 						<Settings className="mr-2 w-4 h-4" />
 						<span>Ajustes</span>
 					</DropdownMenuItem>

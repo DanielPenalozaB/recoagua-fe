@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
 		if (isLoading) {
 			return (
 				<div className="loading-section text-center">
-					<p className="text-xl font-bold mb-2 text-neutral-800">
+					<p className="text-xl font-bold mb-2 text-neutral-800 dark:text-neutral-600">
 						Enviando petición de restablecimiento de contraseña...
 					</p>
 					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto"></div>
@@ -111,7 +111,7 @@ export default function ForgotPasswordPage() {
 			return (
 				<div className="flex items-center flex-col gap-4">
 					<CompletedTask className="size-48" />
-					<h2 className="text-xl font-bold text-neutral-800 text-center">
+					<h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200 text-center">
 						Petición de restablecimiento de contraseña enviada
 					</h2>
 					<p className="text-sm text-neutral-600 text-center">
@@ -125,7 +125,7 @@ export default function ForgotPasswordPage() {
 		if (errorMessage) {
 			return (
 				<div className="error-section text-center">
-					<h2 className="text-xl font-bold mb-2 text-neutral-800">
+					<h2 className="text-xl font-bold mb-2 text-neutral-800 dark:text-neutral-200">
 						Falló la petición
 					</h2>
 					<p className="text-neutral-600 mb-4">{errorMessage}</p>
@@ -141,10 +141,10 @@ export default function ForgotPasswordPage() {
 
 		return (
 			<div className="flex flex-col gap-4">
-				<h2 className="text-xl font-bold text-neutral-800">
+				<h2 className="text-xl font-bold dark:text-neutral-200 text-neutral-800">
 					Restablecer tu contraseña
 				</h2>
-				<p className="text-sm text-neutral-600">
+				<p className="text-sm text-neutral-600 dark:text-neutral-400">
 					Ingresa tu email y te enviaremos un enlace para restablecer tu
 					contraseña.
 				</p>

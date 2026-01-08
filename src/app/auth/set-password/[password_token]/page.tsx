@@ -142,7 +142,7 @@ export default function SetPasswordPage({
 		if (isLoading) {
 			return (
 				<div className="loading-section text-center">
-					<p className="text-xl font-bold mb-2 text-neutral-800">
+					<p className="text-xl font-bold mb-2 text-neutral-800 dark:text-neutral-200">
 						Validando token...
 					</p>
 					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
@@ -153,10 +153,10 @@ export default function SetPasswordPage({
 		if (!isValidToken && errorMessage) {
 			return (
 				<div className="error-section text-center">
-					<h2 className="text-xl font-bold mb-2 text-neutral-800">
+					<h2 className="text-xl font-bold mb-2 text-neutral-800 dark:text-neutral-200">
 						Token Inválido
 					</h2>
-					<p className="text-neutral-600 mb-4">{errorMessage}</p>
+					<p className="text-neutral-600 dark:text-neutral-400 mb-4">{errorMessage}</p>
 					<a
 						href="/auth/forgot-password"
 						className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*="size-"])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer bg-neutral-900 text-white shadow-xs hover:bg-neutral-900/90 h-9 px-4 py-2 has-[>svg]:px-3'
@@ -170,10 +170,10 @@ export default function SetPasswordPage({
 		if (isValidToken) {
 			return (
 				<div className="password-setup-section">
-					<h2 className="text-xl font-bold mb-4 text-neutral-800 text-center">
+					<h2 className="text-xl font-bold mb-4 text-neutral-800 dark:text-neutral-200 text-center">
 						Establecer Contraseña
 					</h2>
-					<p className="text-sm text-neutral-600 mb-6 text-center">
+					<p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6 text-center">
 						Por favor, ingresa tu nueva contraseña
 					</p>
 					<Form {...form}>
