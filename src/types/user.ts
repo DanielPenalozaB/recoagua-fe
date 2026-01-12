@@ -1,4 +1,5 @@
 import type { City } from "./city";
+import type { Level } from "./level";
 
 export enum UserRole {
 	ADMIN = "admin",
@@ -20,6 +21,8 @@ export interface User {
 	role: UserRole;
 	city: City | null;
 	status: UserStatus;
+	experience: number;
+	level: Level | null;
 	createdAt: string;
 	updatedAt: string;
 }

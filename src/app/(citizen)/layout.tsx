@@ -74,6 +74,8 @@ export default function CitizenLayout({
 		createdAt: "",
 		updatedAt: "",
 		status: session.user.status || UserStatus.ACTIVE,
+		experience: 0,
+		level: null,
 	};
 
 	return (

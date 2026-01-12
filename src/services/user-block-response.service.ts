@@ -16,6 +16,9 @@ export interface UserProgressUpdate {
   completedAt: string | null;
 }
 
+import type { Badge } from "@/types/badge";
+import type { Level } from "@/types/level";
+
 export interface BlockSubmissionResult {
   id: number;
   blockId: number;
@@ -23,6 +26,9 @@ export interface BlockSubmissionResult {
   earnedPoints: number;
   submittedAt: string;
   progress: UserProgressUpdate;
+  leveledUp: boolean;
+  newLevel: Level | null;
+  awardedBadges: Badge[];
 }
 
 export class UserBlockResponseService extends ApiService {

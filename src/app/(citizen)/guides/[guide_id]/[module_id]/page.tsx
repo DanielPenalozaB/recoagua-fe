@@ -9,9 +9,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useModule } from "@/hooks/use-modules";
 import type { Block } from "@/types/block";
 import type { Module } from "@/types/module";
+import type { Level } from "@/types/level";
 import { toast } from "sonner";
-import { userBlockResponseService } from "@/services/user-block-response.service";
+import { userBlockResponseService, type BlockSubmissionResult } from "@/services/user-block-response.service";
 import { useRouter } from "next/navigation";
+import { LevelUpModal } from "@/components/citizen/gamification/level-up-modal";
 
 // Block rendering components
 const TextBlock = ({
@@ -191,6 +193,10 @@ export default function GuideModulePage({
   const { data, isLoading, error } = useModule(Number(module_id));
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Gamification state
+  const [levelUpData, setLevelUpData] = useState<Level | null>(null);
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
 
   if (isLoading) {
     return (
@@ -241,10 +247,44 @@ export default function GuideModulePage({
     );
   }
 
+  const handleGamificationFeedback = (result: BlockSubmissionResult) => {
+    // Check for badges
+    if (result.awardedBadges && result.awardedBadges.length > 0) {
+      result.awardedBadges.forEach((badge) => {
+        toast("¡Nueva insignia desbloqueada!", {
+          description: badge.name,
+          icon: badge.imageUrl ? (
+            <img 
+              src={badge.imageUrl} 
+              alt={badge.name}
+              className="w-8 h-8 object-contain rounded-full bg-neutral-100 p-1" 
+            />
+          ) : (
+            <span className="text-2xl">🏆</span>
+          ),
+          duration: 5000,
+        });
+      });
+    }
+
+    // Check for level up
+    if (result.leveledUp && result.newLevel) {
+      setLevelUpData(result.newLevel);
+      setShowLevelUpModal(true);
+      // Play level up sound if desired (reuse feedback sound logic or new one)
+    }
+  };
+
   const recordInteraction = async (payload: any) => {
     setIsSubmitting(true);
     try {
       const result = await userBlockResponseService.submitResponse(payload);
+      
+      // Handle gamification feedback immediately after successful response
+      if (result.data) {
+        handleGamificationFeedback(result.data);
+      }
+      
       return result;
     } catch (err) {
       console.error("Integration Error:", err);
@@ -306,10 +346,15 @@ export default function GuideModulePage({
     const contentTypes = ["video", "image", "interactive"];
     if (contentTypes.includes(currentBlock.type)) {
       try {
-        await userBlockResponseService.submitResponse({
+        const result = await userBlockResponseService.submitResponse({
           blockId: currentBlock.id,
           resourceViewed: true,
         });
+        
+        if (result.data) {
+           handleGamificationFeedback(result.data);
+        }
+
       } catch (err) {
         console.error("Failed to register content view", err);
       }
@@ -430,6 +475,12 @@ export default function GuideModulePage({
 
   return (
     <div className="mx-auto p-6 container">
+      <LevelUpModal 
+        level={levelUpData} 
+        open={showLevelUpModal} 
+        onOpenChange={setShowLevelUpModal} 
+      />
+
       <div className="flex justify-between items-center gap-4 bg-white mb-6 p-4 border-2 border-neutral-200 rounded-xl">
         <div className="flex items-center gap-4 text-neutral-600">
           <Link
