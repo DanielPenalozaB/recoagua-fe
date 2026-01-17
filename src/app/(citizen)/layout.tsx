@@ -76,6 +76,13 @@ export default function CitizenLayout({
 		status: session.user.status || UserStatus.ACTIVE,
 		experience: 0,
 		level: null,
+		completedGuides: [],
+		inProgressGuides: [],
+		levelsObtained: [],
+		badges: [],
+		challenges: [],
+		completedGuidesCount: 0,
+		badgesCount: 0,
 	};
 
 	return (

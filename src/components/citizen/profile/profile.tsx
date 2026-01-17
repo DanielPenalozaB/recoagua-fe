@@ -46,8 +46,6 @@ type ProfileFormValues = z.infer<typeof changePasswordFormSchema>;
 export default function Profile() {
   const { data: user, isLoading, isError } = useUserProfile();
 
-  console.log(user);
-
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(changePasswordFormSchema),
     mode: "onChange",
