@@ -1,23 +1,22 @@
 "use client";
 
-import * as React from "react";
 import {
-  BookOpen,
-  LifeBuoy,
-  PieChart,
-  Settings2,
-  Users,
+  Award,
   BarChart3,
+  BookOpen,
   Component,
   Droplets,
-  Target,
-  Award,
-  Trophy,
-  MapPin,
-  Globe,
   Flag,
+  Globe,
   Layers,
+  LifeBuoy,
+  MapPin,
+  Settings2,
+  Target,
+  Trophy,
+  Users,
 } from "lucide-react";
+import * as React from "react";
 
 import { NavSecondary } from "@/components/ui/nav-secondary";
 import { NavUser } from "@/components/ui/nav-user";
@@ -30,10 +29,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { User, UserRole, UserStatus } from "@/types/user";
 import { useSession } from "next-auth/react";
 import { NavMainGroups } from "./nav-main-groups";
 import { Skeleton } from "./skeleton";
-import { User, UserRole, UserStatus } from "@/types/user";
 
 export const adminNavGroups = [
   {
@@ -64,10 +63,6 @@ export const adminNavGroups = [
           {
             title: "Nueva guía",
             url: "/admin/guides/create",
-          },
-          {
-            title: "Categorías",
-            url: "/admin/guides/categories",
           },
         ],
       },
@@ -317,13 +312,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     status: session.user.status || UserStatus.ACTIVE,
     experience: 0,
     level: null,
-		completedGuides: [],
-		inProgressGuides: [],
-		levelsObtained: [],
-		badges: [],
-		challenges: [],
-		completedGuidesCount: 0,
-		badgesCount: 0
+    completedGuides: [],
+    inProgressGuides: [],
+    levelsObtained: [],
+    badges: [],
+    challenges: [],
+    completedGuidesCount: 0,
+    badgesCount: 0,
   };
 
   return (

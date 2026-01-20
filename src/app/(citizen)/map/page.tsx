@@ -95,7 +95,7 @@ export default function MapPage() {
               )}
               <div className="space-y-1 text-sm !bg-neutral-100 p-2 rounded">
                 {popupInfo.rainfall && (
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2">
                     <span className="font-medium text-blue-600 dark:text-blue-400">
                       Lluvia:
                     </span>
@@ -105,7 +105,7 @@ export default function MapPage() {
                   </div>
                 )}
                 {popupInfo.altitude && (
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2">
                     <span className="font-medium text-gray-600 dark:text-gray-400">
                       Altitud:
                     </span>
@@ -115,7 +115,7 @@ export default function MapPage() {
                   </div>
                 )}
                 {popupInfo.avgTemperature && (
-                  <div className="flex justify-between">
+                  <div className="flex justify-between gap-2">
                     <span className="font-medium text-orange-600 dark:text-orange-400">
                       Temp:
                     </span>
