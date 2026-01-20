@@ -11,7 +11,6 @@ import {
   Layers,
   LifeBuoy,
   MapPin,
-  Settings2,
   Target,
   Trophy,
   Users,
@@ -129,26 +128,6 @@ export const adminNavGroups = [
         icon: Users,
         isActive: false,
         items: [],
-      },
-      {
-        title: "Configuración",
-        url: "/admin/settings",
-        icon: Settings2,
-        isActive: false,
-        items: [
-          {
-            title: "General",
-            url: "/admin/settings/general",
-          },
-          {
-            title: "Seguridad",
-            url: "/admin/settings/security",
-          },
-          {
-            title: "Permisos",
-            url: "/admin/settings/permissions",
-          },
-        ],
       },
     ],
   },
