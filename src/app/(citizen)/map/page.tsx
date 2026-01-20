@@ -1,117 +1,144 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: Allow any */
-/** biome-ignore-all lint/suspicious/noShadowRestrictedNames: Don't use Map */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Map, {
-	FullscreenControl,
-	GeolocateControl,
-	Marker,
-	NavigationControl,
-	Popup,
-	ScaleControl,
+  FullscreenControl,
+  GeolocateControl,
+  Marker,
+  NavigationControl,
+  Popup,
+  ScaleControl,
 } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import Pin from "@/components/citizen/map/pin";
+import { zoneService } from "@/services/zone.service";
+import type { Zone } from "@/types/zone";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? "";
 
-const cities = [
-	{
-		city: "Centro de Cali",
-		state: "NY",
-		latitude: 3.4516,
-		longitude: -76.532,
-		image:
-			"https://upload.wikimedia.org/wikipedia/commons/c/c7/Manhattan_skyline.jpg",
-	},
-	{
-		city: "Parque del Perro",
-		state: "CA",
-		latitude: 3.4402,
-		longitude: -76.5078,
-		image:
-			"https://upload.wikimedia.org/wikipedia/commons/a/af/San_Francisco_from_Treasure_Island.jpg",
-	},
-];
-
 export default function MapPage() {
-	const [popupInfo, setPopupInfo] = useState<any | null>(null);
+  const [popupInfo, setPopupInfo] = useState<Zone | null>(null);
+  const [zones, setZones] = useState<Zone[]>([]);
 
-	const pins = useMemo(
-		() =>
-			cities.map((city, index) => (
-				<Marker
-					key={`marker-${index.toString()}`}
-					longitude={city.longitude}
-					latitude={city.latitude}
-					anchor="bottom"
-					onClick={(e) => {
-						e.originalEvent.stopPropagation();
-						setPopupInfo(city);
-					}}
-				>
-					<Pin />
-				</Marker>
-			)),
-		[],
-	);
+  useEffect(() => {
+    const fetchZones = async () => {
+      try {
+        const response = await zoneService.getZones({ limit: 100 });
+        setZones(response.data);
+      } catch (error) {
+        console.error("Failed to fetch zones:", error);
+      }
+    };
 
-	return (
-		<div className="w-full h-screen">
-			<Map
-				initialViewState={{
-					latitude: 3.4516,
-					longitude: -76.532,
-					zoom: 13,
-					bearing: 0,
-					pitch: 0,
-				}}
-				style={{ width: "100%", height: "100%" }}
-				mapStyle="mapbox://styles/mapbox/standard"
-				mapboxAccessToken={TOKEN}
-			>
-				{/* Controls */}
-				<GeolocateControl position="top-left" />
-				<FullscreenControl position="top-left" />
-				<NavigationControl position="top-left" />
-				<ScaleControl />
+    fetchZones();
+  }, []);
 
-				{/* Markers */}
-				{pins}
+  const pins = useMemo(
+    () =>
+      zones.map((zone) => (
+        <Marker
+          key={`marker-${zone.id}`}
+          longitude={zone.longitude}
+          latitude={zone.latitude}
+          anchor="bottom"
+          onClick={(e) => {
+            e.originalEvent.stopPropagation();
+            setPopupInfo(zone);
+          }}
+        >
+          <Pin />
+        </Marker>
+      )),
+    [zones],
+  );
 
-				{/* Popup */}
-				{popupInfo && (
-					<Popup
-						anchor="top"
-						longitude={Number(popupInfo.longitude)}
-						latitude={Number(popupInfo.latitude)}
-						onClose={() => setPopupInfo(null)}
-					>
-						<div className="text-sm">
-							<strong>
-								{popupInfo.city}, {popupInfo.state}
-							</strong>{" "}
-							|{" "}
-							<a
-								className="text-blue-500 underline"
-								target="_blank"
-								rel="noopener noreferrer"
-								href={`http://en.wikipedia.org/w/index.php?title=Special:Search&search=${popupInfo.city}, ${popupInfo.state}`}
-							>
-								Wikipedia
-							</a>
-						</div>
-						<img
-							alt={popupInfo.city}
-							className="mt-2 rounded"
-							width="100%"
-							src={popupInfo.image}
-						/>
-					</Popup>
-				)}
-			</Map>
-		</div>
-	);
+  return (
+    <div className="w-full h-screen">
+      <Map
+        initialViewState={{
+          latitude: 3.4516,
+          longitude: -76.532,
+          zoom: 11,
+          bearing: 0,
+          pitch: 0,
+        }}
+        style={{ width: "100%", height: "100%" }}
+        mapStyle="mapbox://styles/mapbox/standard"
+        mapboxAccessToken={TOKEN}
+      >
+        {/* Controls */}
+        <GeolocateControl position="top-left" />
+        <FullscreenControl position="top-left" />
+        <NavigationControl position="top-left" />
+        <ScaleControl />
+
+        {/* Markers */}
+        {pins}
+
+        {/* Popup */}
+        {popupInfo && (
+          <Popup
+            anchor="top"
+            longitude={Number(popupInfo.longitude)}
+            latitude={Number(popupInfo.latitude)}
+            onClose={() => setPopupInfo(null)}
+          >
+            <div className="p-2 max-w-xs">
+              <h3 className="font-bold text-lg mb-1 !text-neutral-600">
+                {popupInfo.name}
+              </h3>
+              {popupInfo.description && (
+                <p className="!text-gray-400 text-sm mb-2">
+                  {popupInfo.description}
+                </p>
+              )}
+              <div className="space-y-1 text-sm !bg-neutral-100 p-2 rounded">
+                {popupInfo.rainfall && (
+                  <div className="flex justify-between">
+                    <span className="font-medium text-blue-600 dark:text-blue-400">
+                      Lluvia:
+                    </span>
+                    <span className="!text-neutral-400">
+                      {popupInfo.rainfall} mm
+                    </span>
+                  </div>
+                )}
+                {popupInfo.altitude && (
+                  <div className="flex justify-between">
+                    <span className="font-medium text-gray-600 dark:text-gray-400">
+                      Altitud:
+                    </span>
+                    <span className="!text-neutral-400">
+                      {popupInfo.altitude} msnm
+                    </span>
+                  </div>
+                )}
+                {popupInfo.avgTemperature && (
+                  <div className="flex justify-between">
+                    <span className="font-medium text-orange-600 dark:text-orange-400">
+                      Temp:
+                    </span>
+                    <span className="!text-neutral-400">
+                      {popupInfo.avgTemperature}°C
+                    </span>
+                  </div>
+                )}
+              </div>
+              {popupInfo.recommendations && (
+                <div className="mt-2 text-xs !text-teal-500 italic border-t pt-2">
+                  💡 {popupInfo.recommendations}
+                </div>
+              )}
+              {popupInfo.city && (
+                <div className="mt-2 text-xs text-gray-400 text-right">
+                  📍 {popupInfo.city.name}
+                </div>
+              )}
+            </div>
+          </Popup>
+        )}
+      </Map>
+    </div>
+  );
 }
