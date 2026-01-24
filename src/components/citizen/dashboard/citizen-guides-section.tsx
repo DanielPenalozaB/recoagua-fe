@@ -14,7 +14,7 @@ export default function CitizenGuidesSection() {
     isLoading: loadingGuides,
     error,
   } = useGuides({
-    status: GuideStatus.DRAFT,
+    status: GuideStatus.PUBLISHED,
     limit: 5,
     hideCompleted: true,
   });

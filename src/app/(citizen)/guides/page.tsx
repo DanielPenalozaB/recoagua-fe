@@ -72,17 +72,17 @@ export default function CitizenGuidesPage() {
         <div
           key={guide.id}
           className={cn(
-            "flex flex-col gap-4 p-6 border rounded-2xl hover:outline-[#CCFBF1] hover:outline-2 min-w-3xs max-w-3xs min-h-max max-h-[338px] transition-all duration-300 ease-in-out",
+            "flex flex-col gap-4 p-6 border rounded-2xl hover:outline-[#CCFBF1] hover:outline-2 min-w-3xs max-w-3xs max-h-[338px] transition-all duration-300 ease-in-out",
             guide.isCompleted === true
               ? "bg-neutral-500 border-neutral-600"
-              : "bg-white border-neutral-200"
+              : "bg-white border-neutral-200",
           )}
         >
           <div className="flex items-center gap-4">
             <span
               className={cn(
-                "font-bold text-2xl",
-                guide.isCompleted === true ? "text-white" : "text-neutral-600"
+                "font-bold text-2xl line-clamp-3",
+                guide.isCompleted === true ? "text-white" : "text-neutral-600",
               )}
             >
               {guide.name}
@@ -90,10 +90,10 @@ export default function CitizenGuidesPage() {
           </div>
           <p
             className={cn(
-              "h-full",
+              "h-full line-clamp-3",
               guide.isCompleted === true
                 ? "text-neutral-300"
-                : "text-neutral-600"
+                : "text-neutral-600",
             )}
           >
             {guide.description}
@@ -101,27 +101,26 @@ export default function CitizenGuidesPage() {
           <div
             className={cn(
               "flex items-center gap-2",
-              guide.isCompleted === true ? "text-neutral-400" : "text-[#14B8A6]"
+              guide.isCompleted === true
+                ? "text-neutral-400"
+                : "text-[#14B8A6]",
             )}
           >
             <Clock className="size-4" />
             <span>{guide.estimatedDuration} min</span>
           </div>
-          <a
-            href={`/guides/${guide.id}`}
-            className={cn(
-              "flex justify-center items-center gap-2 px-4 py-2 rounded-lg w-full transition-all duration-200 ease-in-out cursor-pointer",
-              guide.isCompleted === true
-                ? "bg-neutral-200 hover:bg-teal-100 text-neutral-500"
-                : "bg-[#0D9488] hover:bg-[#14b8a9] text-[#CCFBF1]"
-            )}
-            onClick={(e) => {
-              e.preventDefault();
-              router.push(`/guides/${guide.id}`);
-            }}
-          >
-            {guide.isCompleted === true ? "Repasar lección" : "Iniciar lección"}
-          </a>
+          {guide.isCompleted === false && (
+            <a
+              href={`/guides/${guide.id}`}
+              className="flex justify-center items-center gap-2 px-4 py-2 rounded-lg w-full transition-all duration-200 ease-in-out cursor-pointer bg-[#0D9488] hover:bg-[#14b8a9] text-[#CCFBF1]"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push(`/guides/${guide.id}`);
+              }}
+            >
+              Iniciar lección
+            </a>
+          )}
         </div>
       ));
     } else {

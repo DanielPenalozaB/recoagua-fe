@@ -1,18 +1,10 @@
 "use client";
 
-import { FunnelXIcon } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { capitalize } from "@/lib/utils";
 import { GuideStatus } from "@/types/guide";
+import { FunnelXIcon } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 
 interface GuidesFiltersProps {
   readonly search?: string;
@@ -45,7 +37,7 @@ export default function GuidesFilters({
             Limpiar filtros
           </Button>
         ))}
-      <Select
+      {/*<Select
         value={status ?? ""}
         onValueChange={(value) => setStatus(value as GuideStatus)}
       >
@@ -63,7 +55,7 @@ export default function GuidesFilters({
             </SelectItem>
           ))}
         </SelectContent>
-      </Select>
+      </Select>*/}
       <Input
         type="search"
         placeholder="Buscar"

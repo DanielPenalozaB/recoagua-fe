@@ -151,7 +151,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modules, setModules] = useState<Module[]>([]);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [expandedBlocks, setExpandedBlocks] = useState<Set<number>>(new Set());
   const [mediaPreview, setMediaPreview] = useState<{
@@ -212,7 +212,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
   const validateMediaUrl = (
     blockId: number,
     url: string,
-    type: "video" | "image"
+    type: "video" | "image",
   ) => {
     if (!url) {
       setMediaPreview((prev) => ({
@@ -227,7 +227,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
   };
 
   const validateBlock = (
-    block: Block
+    block: Block,
   ): { isValid: boolean; errors: string[] } => {
     const errors: string[] = [];
 
@@ -281,7 +281,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
           if (block.questionType === "true_false") {
             if (block.answers.length !== 2) {
               errors.push(
-                "Verdadero/Falso debe tener exactamente 2 respuestas"
+                "Verdadero/Falso debe tener exactamente 2 respuestas",
               );
             }
             if (correctAnswers.length !== 1) {
@@ -340,12 +340,12 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
   const updateModule = (
     moduleId: string,
     field: keyof Module,
-    value: string | number
+    value: string | number,
   ) => {
     setModules((prev) =>
       prev.map((module) =>
-        module.id === moduleId ? { ...module, [field]: value } : module
-      )
+        module.id === moduleId ? { ...module, [field]: value } : module,
+      ),
     );
   };
 
@@ -393,8 +393,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                 { ...newBlock, order: module.blocks.length + 1 },
               ],
             }
-          : module
-      )
+          : module,
+      ),
     );
     setExpandedBlocks((prev) => new Set([...prev, newBlock.id]));
   };
@@ -403,7 +403,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
     moduleId: string,
     blockId: number,
     field: string,
-    value: unknown
+    value: unknown,
   ) => {
     setModules((prev) =>
       prev.map((module) =>
@@ -458,8 +458,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                 return block;
               }),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
@@ -471,8 +471,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
               ...module,
               blocks: module.blocks.filter((block) => block.id !== blockId),
             }
-          : module
-      )
+          : module,
+      ),
     );
     setMediaPreview((prev) => {
       const newPreview = { ...prev };
@@ -511,11 +511,11 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                         },
                       ],
                     }
-                  : block
+                  : block,
               ),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
@@ -524,7 +524,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
     blockId: number,
     answerId: string,
     field: string,
-    value: string | number | boolean
+    value: string | number | boolean,
   ) => {
     setModules((prev) =>
       prev.map((module) =>
@@ -538,21 +538,21 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                       answers: block.answers.map((answer) =>
                         answer.id === answerId
                           ? { ...answer, [field]: value }
-                          : answer
+                          : answer,
                       ),
                     }
-                  : block
+                  : block,
               ),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
   const deleteAnswer = (
     moduleId: string,
     blockId: number,
-    answerId: string
+    answerId: string,
   ) => {
     setModules((prev) =>
       prev.map((module) =>
@@ -564,14 +564,14 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                   ? {
                       ...block,
                       answers: block.answers.filter(
-                        (answer) => answer.id !== answerId
+                        (answer) => answer.id !== answerId,
                       ),
                     }
-                  : block
+                  : block,
               ),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
@@ -596,11 +596,11 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                         },
                       ],
                     }
-                  : block
+                  : block,
               ),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
@@ -609,7 +609,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
     blockId: number,
     pairId: string,
     field: string,
-    value: string | number | boolean
+    value: string | number | boolean,
   ) => {
     setModules((prev) =>
       prev.map((module) =>
@@ -621,21 +621,21 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                   ? {
                       ...block,
                       relationalPairs: block.relationalPairs.map((pair) =>
-                        pair.id === pairId ? { ...pair, [field]: value } : pair
+                        pair.id === pairId ? { ...pair, [field]: value } : pair,
                       ),
                     }
-                  : block
+                  : block,
               ),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
   const deleteRelationalPair = (
     moduleId: string,
     blockId: number,
-    pairId: string
+    pairId: string,
   ) => {
     setModules((prev) =>
       prev.map((module) =>
@@ -647,14 +647,14 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                   ? {
                       ...block,
                       relationalPairs: block.relationalPairs.filter(
-                        (pair) => pair.id !== pairId
+                        (pair) => pair.id !== pairId,
                       ),
                     }
-                  : block
+                  : block,
               ),
             }
-          : module
-      )
+          : module,
+      ),
     );
   };
 
@@ -664,7 +664,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
         total +
         module.blocks.reduce(
           (blockTotal, block) => blockTotal + block.points,
-          0
+          0,
         )
       );
     }, 0);
@@ -690,7 +690,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
   const onSubmit = async (formData: GuideFormValues) => {
     if (!canSubmitForm()) {
       alert(
-        "Por favor, completa todos los campos requeridos y corrige los errores de validación."
+        "Por favor, completa todos los campos requeridos y corrige los errores de validación.",
       );
       return;
     }
@@ -731,7 +731,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                       isCorrect: answer.isCorrect,
                       feedback: answer.feedback || undefined,
                       order: answer.order,
-                    })
+                    }),
                   ) || undefined,
                 relationalPairs:
                   block.relationalPairs?.map(
@@ -739,12 +739,12 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                       leftItem: pair.leftItem,
                       rightItem: pair.rightItem,
                       correctPair: pair.correctPair,
-                    })
+                    }),
                   ) || undefined,
                 isValidBlockStructure: true,
-              })
+              }),
             ),
-          })
+          }),
         ),
       };
 
@@ -758,7 +758,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
     } catch (error) {
       console.error("Ocurrió un error:", error);
       alert(
-        "Error al guardar la guía. Por favor, verifica que todos los campos estén completos."
+        "Error al guardar la guía. Por favor, verifica que todos los campos estén completos.",
       );
     } finally {
       setIsSubmitting(false);
@@ -884,7 +884,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                             {...field}
                             onChange={(e) =>
                               field.onChange(
-                                Number.parseInt(e.target.value, 10) || 0
+                                Number.parseInt(e.target.value, 10) || 0,
                               )
                             }
                           />
@@ -940,7 +940,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                 value={difficulty.toLowerCase()}
                               >
                                 {renderDifficultyLabel(
-                                  difficulty as GuideDifficulty
+                                  difficulty as GuideDifficulty,
                                 )}
                               </SelectItem>
                             ))}
@@ -1128,7 +1128,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                     updateModule(
                                       module.id,
                                       "name",
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                   placeholder="Ej: Introducción, Fundamentos, Práctica..."
@@ -1151,7 +1151,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                     updateModule(
                                       module.id,
                                       "order",
-                                      Number.parseInt(e.target.value, 10) || 0
+                                      Number.parseInt(e.target.value, 10) || 0,
                                     )
                                   }
                                 />
@@ -1166,7 +1166,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                   updateModule(
                                     module.id,
                                     "description",
-                                    e.target.value
+                                    e.target.value,
                                   )
                                 }
                                 placeholder="Describe el contenido del módulo"
@@ -1186,7 +1186,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                     updateModule(
                                       module.id,
                                       "points",
-                                      Number.parseInt(e.target.value, 10) || 0
+                                      Number.parseInt(e.target.value, 10) || 0,
                                     )
                                   }
                                 />
@@ -1325,7 +1325,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                             <div className="flex items-center gap-2">
                                               <CardTitle className="text-base">
                                                 {renderBlockTypeIcon(
-                                                  block.type
+                                                  block.type,
                                                 )}{" "}
                                                 Bloque {blockIndex + 1}:{" "}
                                                 {block.statement ||
@@ -1411,7 +1411,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                     <li key={idx.toString()}>
                                                       {error}
                                                     </li>
-                                                  )
+                                                  ),
                                                 )}
                                               </ul>
                                             </AlertDescription>
@@ -1445,7 +1445,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       module.id,
                                                       block.id,
                                                       "type",
-                                                      value
+                                                      value,
                                                     )
                                                   }
                                                 >
@@ -1486,8 +1486,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       "order",
                                                       Number.parseInt(
                                                         e.target.value,
-                                                        10
-                                                      ) || 0
+                                                        10,
+                                                      ) || 0,
                                                     )
                                                   }
                                                 />
@@ -1503,7 +1503,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                     module.id,
                                                     block.id,
                                                     "statement",
-                                                    e.target.value
+                                                    e.target.value,
                                                   )
                                                 }
                                                 placeholder="Título o pregunta principal del bloque"
@@ -1524,7 +1524,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                     module.id,
                                                     block.id,
                                                     "description",
-                                                    e.target.value
+                                                    e.target.value,
                                                   )
                                                 }
                                                 placeholder="Descripción o contexto adicional"
@@ -1544,7 +1544,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                         module.id,
                                                         block.id,
                                                         "resourceUrl",
-                                                        e.target.value
+                                                        e.target.value,
                                                       )
                                                     }
                                                     placeholder={
@@ -1568,7 +1568,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       onClick={() =>
                                                         window.open(
                                                           block.resourceUrl,
-                                                          "_blank"
+                                                          "_blank",
                                                         )
                                                       }
                                                     >
@@ -1617,7 +1617,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                 isValid: false,
                                                                 type: "image",
                                                               },
-                                                            })
+                                                            }),
                                                           );
                                                         }}
                                                       />
@@ -1646,7 +1646,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                     module.id,
                                                     block.id,
                                                     "feedback",
-                                                    e.target.value
+                                                    e.target.value,
                                                   )
                                                 }
                                                 placeholder="Mensaje de retroalimentación al completar este bloque"
@@ -1672,8 +1672,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       "points",
                                                       Number.parseInt(
                                                         e.target.value,
-                                                        10
-                                                      ) || 0
+                                                        10,
+                                                      ) || 0,
                                                     )
                                                   }
                                                   min="0"
@@ -1696,7 +1696,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                         module.id,
                                                         block.id,
                                                         "dynamicType",
-                                                        value
+                                                        value,
                                                       )
                                                     }
                                                   >
@@ -1710,20 +1710,8 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       <SelectValue placeholder="Seleccionar tipo" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                      <SelectItem value="drag_drop">
-                                                        Arrastrar y Soltar
-                                                      </SelectItem>
                                                       <SelectItem value="matching">
                                                         Emparejamiento
-                                                      </SelectItem>
-                                                      <SelectItem value="sorting">
-                                                        Ordenamiento
-                                                      </SelectItem>
-                                                      <SelectItem value="fill_blanks">
-                                                        Llenar Espacios
-                                                      </SelectItem>
-                                                      <SelectItem value="simulation">
-                                                        Simulación
                                                       </SelectItem>
                                                     </SelectContent>
                                                   </Select>
@@ -1745,7 +1733,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                         module.id,
                                                         block.id,
                                                         "questionType",
-                                                        value
+                                                        value,
                                                       )
                                                     }
                                                   >
@@ -1837,7 +1825,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       onClick={() =>
                                                         addRelationalPair(
                                                           module.id,
-                                                          block.id
+                                                          block.id,
                                                         )
                                                       }
                                                       size="sm"
@@ -1883,7 +1871,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                       pair.leftItem
                                                                     }
                                                                     onChange={(
-                                                                      e
+                                                                      e,
                                                                     ) =>
                                                                       updateRelationalPair(
                                                                         module.id,
@@ -1891,7 +1879,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                         pair.id,
                                                                         "leftItem",
                                                                         e.target
-                                                                          .value
+                                                                          .value,
                                                                       )
                                                                     }
                                                                     placeholder="Concepto, término..."
@@ -1912,7 +1900,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                       pair.rightItem
                                                                     }
                                                                     onChange={(
-                                                                      e
+                                                                      e,
                                                                     ) =>
                                                                       updateRelationalPair(
                                                                         module.id,
@@ -1920,7 +1908,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                         pair.id,
                                                                         "rightItem",
                                                                         e.target
-                                                                          .value
+                                                                          .value,
                                                                       )
                                                                     }
                                                                     placeholder="Definición, descripción..."
@@ -1938,14 +1926,14 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                     pair.correctPair
                                                                   }
                                                                   onCheckedChange={(
-                                                                    checked
+                                                                    checked,
                                                                   ) =>
                                                                     updateRelationalPair(
                                                                       module.id,
                                                                       block.id,
                                                                       pair.id,
                                                                       "correctPair",
-                                                                      checked
+                                                                      checked,
                                                                     )
                                                                   }
                                                                 />
@@ -1960,7 +1948,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                   deleteRelationalPair(
                                                                     module.id,
                                                                     block.id,
-                                                                    pair.id
+                                                                    pair.id,
                                                                   )
                                                                 }
                                                                 className="text-destructive hover:text-destructive"
@@ -1970,7 +1958,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                               </Button>
                                                             </div>
                                                           </Card>
-                                                        )
+                                                        ),
                                                       )}
                                                     </div>
                                                   )}
@@ -1999,7 +1987,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       onClick={() =>
                                                         addAnswer(
                                                           module.id,
-                                                          block.id
+                                                          block.id,
                                                         )
                                                       }
                                                       size="sm"
@@ -2032,7 +2020,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                       {block.answers.map(
                                                         (
                                                           answer,
-                                                          answerIndex
+                                                          answerIndex,
                                                         ) => (
                                                           <Card
                                                             key={answer.id}
@@ -2052,7 +2040,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                       answer.text
                                                                     }
                                                                     onChange={(
-                                                                      e
+                                                                      e,
                                                                     ) =>
                                                                       updateAnswer(
                                                                         module.id,
@@ -2060,7 +2048,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                         answer.id,
                                                                         "text",
                                                                         e.target
-                                                                          .value
+                                                                          .value,
                                                                       )
                                                                     }
                                                                     placeholder="Texto de la respuesta"
@@ -2079,14 +2067,14 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                         answer.isCorrect
                                                                       }
                                                                       onCheckedChange={(
-                                                                        checked
+                                                                        checked,
                                                                       ) =>
                                                                         updateAnswer(
                                                                           module.id,
                                                                           block.id,
                                                                           answer.id,
                                                                           "isCorrect",
-                                                                          checked
+                                                                          checked,
                                                                         )
                                                                       }
                                                                     />
@@ -2102,7 +2090,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                     deleteAnswer(
                                                                       module.id,
                                                                       block.id,
-                                                                      answer.id
+                                                                      answer.id,
                                                                     )
                                                                   }
                                                                   className="text-destructive hover:text-destructive"
@@ -2122,7 +2110,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                     answer.feedback
                                                                   }
                                                                   onChange={(
-                                                                    e
+                                                                    e,
                                                                   ) =>
                                                                     updateAnswer(
                                                                       module.id,
@@ -2130,7 +2118,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                       answer.id,
                                                                       "feedback",
                                                                       e.target
-                                                                        .value
+                                                                        .value,
                                                                     )
                                                                   }
                                                                   placeholder="Mensaje que verá el usuario al seleccionar esta respuesta"
@@ -2140,7 +2128,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                               </div>
                                                             </div>
                                                           </Card>
-                                                        )
+                                                        ),
                                                       )}
                                                     </div>
                                                   )}
@@ -2175,7 +2163,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                     onClick={() =>
                                                       addRelationalPair(
                                                         module.id,
-                                                        block.id
+                                                        block.id,
                                                       )
                                                     }
                                                     size="sm"
@@ -2221,7 +2209,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                     pair.leftItem
                                                                   }
                                                                   onChange={(
-                                                                    e
+                                                                    e,
                                                                   ) =>
                                                                     updateRelationalPair(
                                                                       module.id,
@@ -2229,7 +2217,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                       pair.id,
                                                                       "leftItem",
                                                                       e.target
-                                                                        .value
+                                                                        .value,
                                                                     )
                                                                   }
                                                                   placeholder="Concepto..."
@@ -2250,7 +2238,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                     pair.rightItem
                                                                   }
                                                                   onChange={(
-                                                                    e
+                                                                    e,
                                                                   ) =>
                                                                     updateRelationalPair(
                                                                       module.id,
@@ -2258,7 +2246,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                       pair.id,
                                                                       "rightItem",
                                                                       e.target
-                                                                        .value
+                                                                        .value,
                                                                     )
                                                                   }
                                                                   placeholder="Definición..."
@@ -2277,7 +2265,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                                 deleteRelationalPair(
                                                                   module.id,
                                                                   block.id,
-                                                                  pair.id
+                                                                  pair.id,
                                                                 )
                                                               }
                                                               className="text-destructive hover:text-destructive"
@@ -2287,7 +2275,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                                                             </Button>
                                                           </div>
                                                         </Card>
-                                                      )
+                                                      ),
                                                     )}
                                                   </div>
                                                 )}
@@ -2345,7 +2333,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                     <p className="text-sm text-muted-foreground">
                       {
                         modules.filter(
-                          (m) => m.name.trim() && m.blocks.length > 0
+                          (m) => m.name.trim() && m.blocks.length > 0,
                         ).length
                       }{" "}
                       completos
@@ -2355,7 +2343,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
 
                 <div className="flex items-center gap-2">
                   {modules.every((m) =>
-                    m.blocks.every((b) => validateBlock(b).isValid)
+                    m.blocks.every((b) => validateBlock(b).isValid),
                   ) ? (
                     <CheckCircle2 className="w-5 h-5 text-green-500" />
                   ) : (
@@ -2372,7 +2360,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
                           acc +
                           m.blocks.filter((b) => validateBlock(b).isValid)
                             .length,
-                        0
+                        0,
                       )}{" "}
                       válidos
                     </p>

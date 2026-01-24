@@ -4,7 +4,6 @@ import { Droplets, HelpCircle, Home, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import CalculatorResults from "@/components/citizen/calculator/calculator-results";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -140,7 +139,7 @@ export default function CalculatorPage() {
     try {
       console.log("calculatorChallengeId", calculatorChallengeId);
       const response = await userChallengeService.completeChallenge(
-        calculatorChallengeId
+        calculatorChallengeId,
       );
 
       if (response.data) {
@@ -336,14 +335,6 @@ export default function CalculatorPage() {
               value={[area]}
               onValueChange={(value) => setArea(value[0])}
               className="w-full"
-            />
-            <Input
-              type="number"
-              value={area}
-              onChange={(e) => setArea(Number(e.target.value))}
-              className="w-20"
-              min={10}
-              max={500}
             />
           </div>
         </div>

@@ -212,7 +212,7 @@ export default function Profile() {
                   {user.data.badgesCount}
                 </span>
               </div>
-              <span className="font-medium text-neutral-500 text-base text-center sm:whitespace-nowrap">
+              <span className="font-medium !text-neutral-500 text-base text-center sm:whitespace-nowrap">
                 Insignias ganadas
               </span>
             </div>
@@ -240,7 +240,9 @@ export default function Profile() {
                   {user.data.inProgressGuides &&
                     user.data.inProgressGuides.length > 0 && (
                       <div className="flex flex-col gap-3">
-                        <h3 className="font-semibold text-lg">En progreso</h3>
+                        <h3 className="font-semibold text-lg !text-neutral-600">
+                          En progreso
+                        </h3>
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                           {user.data.inProgressGuides.map((guide) => (
                             <div
@@ -255,7 +257,11 @@ export default function Profile() {
                               </p>
                               <div className="flex justify-between items-center mt-3 text-sm">
                                 <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs">
-                                  {guide.difficulty}
+                                  {guide.difficulty === "beginner"
+                                    ? "Principiante"
+                                    : guide.difficulty === "intermediate"
+                                    ? "Intermedio"
+                                    : "Avanzado"}
                                 </span>
                                 <span className="text-neutral-400">
                                   {guide.totalPoints} pts
@@ -271,7 +277,9 @@ export default function Profile() {
                   {user.data.completedGuides &&
                     user.data.completedGuides.length > 0 && (
                       <div className="flex flex-col gap-3">
-                        <h3 className="font-semibold text-lg">Completadas</h3>
+                        <h3 className="font-semibold text-lg !text-neutral-600">
+                          Completadas
+                        </h3>
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                           {user.data.completedGuides.map((guide) => (
                             <div
@@ -286,7 +294,11 @@ export default function Profile() {
                               </p>
                               <div className="flex justify-between items-center mt-3 text-sm">
                                 <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs">
-                                  Completada
+                                  {guide.difficulty === "beginner"
+                                    ? "Principiante"
+                                    : guide.difficulty === "intermediate"
+                                    ? "Intermedio"
+                                    : "Avanzado"}
                                 </span>
                                 <span className="text-neutral-400">
                                   {guide.totalPoints} pts
@@ -311,7 +323,9 @@ export default function Profile() {
                   {/* Badges */}
                   {user.data.badges && user.data.badges.length > 0 && (
                     <div className="flex flex-col gap-3">
-                      <h3 className="font-semibold text-lg">Insignias</h3>
+                      <h3 className="font-semibold text-lg !text-neutral-600">
+                        Insignias
+                      </h3>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {user.data.badges.map((badge) => (
                           <div
@@ -346,7 +360,9 @@ export default function Profile() {
                   {/* Challenges */}
                   {user.data.challenges && user.data.challenges.length > 0 && (
                     <div className="flex flex-col gap-3">
-                      <h3 className="font-semibold text-lg">Desafíos</h3>
+                      <h3 className="font-semibold text-lg !text-neutral-600">
+                        Desafíos
+                      </h3>
                       <div className="grid gap-4 md:grid-cols-2">
                         {user.data.challenges.map((challenge) => (
                           <div
@@ -372,7 +388,7 @@ export default function Profile() {
 
                   {!user.data.badges?.length &&
                     !user.data.challenges?.length && (
-                      <div className="py-8 text-center text-neutral-500">
+                      <div className="py-8 text-center !text-neutral-500">
                         Aún no tienes logros. ¡Completa guías y desafíos para
                         ganarlos!
                       </div>

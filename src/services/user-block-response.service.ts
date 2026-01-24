@@ -6,6 +6,7 @@ export interface SubmitResponseDto {
   selectedAnswerIds?: number[];
   customAnswer?: string;
   relationalPairId?: number;
+  relationalPairIds?: number[];
   resourceViewed?: boolean;
 }
 
@@ -36,7 +37,7 @@ export class UserBlockResponseService extends ApiService {
    * Records a user's interaction with a block (answer, quiz, or content view)
    */
   async submitResponse(
-    data: SubmitResponseDto
+    data: SubmitResponseDto,
   ): Promise<ApiResponse<BlockSubmissionResult>> {
     return this.post("/user-block-responses", data);
   }

@@ -4,6 +4,7 @@ import { CornerUpLeft } from "lucide-react";
 import Link from "next/link";
 import { use, useState } from "react";
 import OptionsSelect from "@/components/citizen/modules/options-select";
+import RelationalPairsBlock from "@/components/citizen/modules/relational-pairs-block";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useModule } from "@/hooks/use-modules";
@@ -11,53 +12,19 @@ import type { Block } from "@/types/block";
 import type { Module } from "@/types/module";
 import type { Level } from "@/types/level";
 import { toast } from "sonner";
-import { userBlockResponseService, type BlockSubmissionResult } from "@/services/user-block-response.service";
+import {
+  userBlockResponseService,
+  type BlockSubmissionResult,
+} from "@/services/user-block-response.service";
 import { useRouter } from "next/navigation";
 import { LevelUpModal } from "@/components/citizen/gamification/level-up-modal";
 
 // Block rendering components
-const TextBlock = ({
-  block,
-  onSubmit,
-  isSubmitting,
-}: {
-  block: Block;
-  onSubmit: (text: string) => Promise<void>;
-  isSubmitting: boolean;
-}) => {
-  const [answer, setAnswer] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    // Regex: Allow Alphanumeric, spaces, commas, and dots
-    const filteredValue = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s,.]/g, "");
-    setAnswer(filteredValue);
-  };
-
+const TextBlock = ({ block }: { block: Block }) => {
   return (
     <div className="space-y-4">
       <div className="prose max-w-none">
         <p className="text-gray-700 whitespace-pre-wrap">{block.description}</p>
-      </div>
-
-      <div className="mt-6 space-y-3">
-        <label className="text-sm font-medium text-neutral-600">
-          Tu respuesta:
-        </label>
-        <textarea
-          value={answer}
-          onChange={handleChange}
-          placeholder="Escribe aquí tu respuesta..."
-          className="w-full min-h-[120px] p-4 rounded-xl border-2 text-gray-500 border-neutral-200 focus:border-teal-500 focus:ring-0 transition-colors resize-none"
-          disabled={isSubmitting}
-        />
-        <Button
-          onClick={() => onSubmit(answer)}
-          disabled={isSubmitting || !answer.trim()}
-          className="w-full bg-teal-600 hover:bg-teal-700 text-white"
-        >
-          {isSubmitting ? "Enviando..." : "Enviar respuesta"}
-        </Button>
       </div>
     </div>
   );
@@ -131,7 +98,10 @@ const QuestionBlock = ({
   onSubmit,
 }: {
   block: Block;
-  onSubmit: (selectedOptions: number[]) => Promise<void>;
+  onSubmit: (
+    selectedOptions: number[],
+    extraData?: Partial<{ relationalPairIds: number[] }>,
+  ) => Promise<void>;
 }) => (
   <div className="space-y-4">
     {block.description && (
@@ -165,7 +135,10 @@ const QuizBlock = ({
   onSubmit,
 }: {
   block: Block;
-  onSubmit: (selectedOptions: number[]) => Promise<void>;
+  onSubmit: (
+    selectedOptions: number[],
+    extraData?: Partial<{ relationalPairIds: number[] }>,
+  ) => Promise<void>;
 }) => (
   <div className="space-y-4">
     <div className="p-4 bg-purple-50 border-l-4 border-purple-500 rounded">
@@ -193,7 +166,7 @@ export default function GuideModulePage({
   const { data, isLoading, error } = useModule(Number(module_id));
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Gamification state
   const [levelUpData, setLevelUpData] = useState<Level | null>(null);
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
@@ -254,10 +227,10 @@ export default function GuideModulePage({
         toast("¡Nueva insignia desbloqueada!", {
           description: badge.name,
           icon: badge.imageUrl ? (
-            <img 
-              src={badge.imageUrl} 
+            <img
+              src={badge.imageUrl}
               alt={badge.name}
-              className="w-8 h-8 object-contain rounded-full bg-neutral-100 p-1" 
+              className="w-8 h-8 object-contain rounded-full bg-neutral-100 p-1"
             />
           ) : (
             <span className="text-2xl">🏆</span>
@@ -279,12 +252,12 @@ export default function GuideModulePage({
     setIsSubmitting(true);
     try {
       const result = await userBlockResponseService.submitResponse(payload);
-      
+
       // Handle gamification feedback immediately after successful response
       if (result.data) {
         handleGamificationFeedback(result.data);
       }
-      
+
       return result;
     } catch (err) {
       console.error("Integration Error:", err);
@@ -297,20 +270,26 @@ export default function GuideModulePage({
 
   const playFeedbackSound = (type: "success" | "error") => {
     const audio = new Audio(
-      type === "success" ? "/success-sound.mp3" : "/error-sound.mp3"
+      type === "success" ? "/success-sound.mp3" : "/error-sound.mp3",
     );
     audio.play().catch((err) => console.error("Audio play failed:", err));
   };
 
-  const handleAnswerSubmit = async (selectedOptions: number[]) => {
+  const handleAnswerSubmit = async (
+    selectedOptions: number[],
+    extraData?: Partial<{ relationalPairIds: number[] }>,
+  ) => {
     if (!currentBlock) return;
 
     setIsSubmitting(true);
     try {
-      const result = await recordInteraction({
+      const payload: any = {
         blockId: currentBlock.id,
         selectedAnswerIds: selectedOptions,
-      });
+        ...extraData,
+      };
+
+      const result = await recordInteraction(payload);
 
       if (result) {
         if (result.data.isCorrect) {
@@ -343,18 +322,17 @@ export default function GuideModulePage({
     if (!currentBlock) return;
 
     // Content types that register progress when clicking "Next"
-    const contentTypes = ["video", "image", "interactive"];
+    const contentTypes = ["video", "image", "interactive", "text"];
     if (contentTypes.includes(currentBlock.type)) {
       try {
         const result = await userBlockResponseService.submitResponse({
           blockId: currentBlock.id,
           resourceViewed: true,
         });
-        
-        if (result.data) {
-           handleGamificationFeedback(result.data);
-        }
 
+        if (result.data) {
+          handleGamificationFeedback(result.data);
+        }
       } catch (err) {
         console.error("Failed to register content view", err);
       }
@@ -387,34 +365,10 @@ export default function GuideModulePage({
     }
   };
 
-  const handleTextSubmit = async (text: string) => {
-    if (!currentBlock) return;
-
-    const result = await recordInteraction({
-      blockId: currentBlock.id,
-      customAnswer: text,
-    });
-
-    if (result) {
-      // Check if this was the last block after submitting text
-      const isLastBlock = currentBlockIndex === moduleData.blocks.length - 1;
-
-      if (isLastBlock) {
-        toast.success("¡Módulo completado!");
-        setTimeout(() => {
-          router.push(`/guides/${data.data.guide.id}`);
-        }, 1500);
-      } else {
-        toast.success("Respuesta guardada");
-        handleNextBlock();
-      }
-    }
-  };
-
   const moduleData: Module = data?.data;
   const currentBlock = moduleData?.blocks[currentBlockIndex];
-  const isContentBlock = ["video", "image", "interactive"].includes(
-    currentBlock?.type || ""
+  const isContentBlock = ["video", "image", "interactive", "text"].includes(
+    currentBlock?.type || "",
   );
   const isLastBlock =
     currentBlockIndex === (moduleData?.blocks.length || 0) - 1;
@@ -423,13 +377,7 @@ export default function GuideModulePage({
   const renderBlock = () => {
     switch (currentBlock.type) {
       case "text":
-        return (
-          <TextBlock
-            block={currentBlock}
-            onSubmit={handleTextSubmit}
-            isSubmitting={isSubmitting}
-          />
-        );
+        return <TextBlock block={currentBlock} />;
       case "video":
         return <VideoBlock block={currentBlock} />;
       case "image":
@@ -441,6 +389,14 @@ export default function GuideModulePage({
       case "quiz":
         return <QuizBlock block={currentBlock} onSubmit={handleAnswerSubmit} />;
       case "interactive":
+        if (currentBlock.dynamicType === "matching") {
+          return (
+            <RelationalPairsBlock
+              block={currentBlock}
+              onSubmit={handleAnswerSubmit}
+            />
+          );
+        }
         return <InteractiveBlock block={currentBlock} />;
       default:
         return (
@@ -475,10 +431,10 @@ export default function GuideModulePage({
 
   return (
     <div className="mx-auto p-6 container">
-      <LevelUpModal 
-        level={levelUpData} 
-        open={showLevelUpModal} 
-        onOpenChange={setShowLevelUpModal} 
+      <LevelUpModal
+        level={levelUpData}
+        open={showLevelUpModal}
+        onOpenChange={setShowLevelUpModal}
       />
 
       <div className="flex justify-between items-center gap-4 bg-white mb-6 p-4 border-2 border-neutral-200 rounded-xl">
