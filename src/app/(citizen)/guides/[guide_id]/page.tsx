@@ -42,7 +42,7 @@ export default function CitizenGuidesDetailPage({
   const userId = Number(session?.user?.id);
   const { data: progressData, isLoading: progressLoading } = useGuideProgress(
     Number(guide_id),
-    userId
+    userId,
   );
 
   const isLoading = guideLoading || progressLoading;
@@ -116,7 +116,7 @@ export default function CitizenGuidesDetailPage({
 
     const previousModule = modules.find((m) => m.order === order - 1);
     const prevProgress = userProgress.find(
-      (p) => p.module.id === previousModule?.id
+      (p) => p.module.id === previousModule?.id,
     );
 
     return prevProgress?.completionStatus === "completed"
@@ -130,7 +130,7 @@ export default function CitizenGuidesDetailPage({
         <div className="flex items-start gap-4 text-white">
           <Link
             title="Regresar a las guías"
-            href="/guides"
+            href={`/guides`}
             className="flex justify-center items-center hover:bg-teal-400/50 mt-2 rounded-md size-10 text-neutral-200"
           >
             <CornerUpLeft className="size-4" />
@@ -217,21 +217,23 @@ export default function CitizenGuidesDetailPage({
                 <div
                   className={cn(
                     "relative focus:outline-none w-24 h-[75px]",
-                    isLocked ? "opacity-60 grayscale" : ""
+                    isLocked ? "opacity-60 grayscale" : "",
                   )}
                 >
                   <button
                     type="button"
                     className={cn(
                       "group relative focus:outline-none w-24 h-[75px]",
-                      isLocked ? "cursor-not-allowed" : "cursor-pointer"
+                      isLocked ? "cursor-not-allowed" : "cursor-pointer",
                     )}
                   >
                     {/* Bottom outline */}
                     <div
                       className={cn(
                         "bottom-px left-1/2 z-0 absolute rounded-lg outline-[3px] outline-offset-[6px] w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2",
-                        isLocked ? "outline-gray-400/50" : "outline-teal-600/50"
+                        isLocked
+                          ? "outline-gray-400/50"
+                          : "outline-teal-600/50",
                       )}
                     />
                     {/* Bottom shadow */}
@@ -240,14 +242,14 @@ export default function CitizenGuidesDetailPage({
                         "bottom-0 left-1/2 z-0 absolute rounded-lg outline-[3px] -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "bg-gray-400 outline-gray-400"
-                          : "bg-teal-600 outline-teal-600"
+                          : "bg-teal-600 outline-teal-600",
                       )}
                     />
                     {/* Bottom body */}
                     <div
                       className={cn(
                         "bottom-[28px] left-1/2 z-0 absolute w-[75px] h-3 -translate-x-1/2",
-                        isLocked ? "bg-gray-400" : "bg-teal-600"
+                        isLocked ? "bg-gray-400" : "bg-teal-600",
                       )}
                     />
                     {/* Bottom cap */}
@@ -256,7 +258,7 @@ export default function CitizenGuidesDetailPage({
                         "bottom-3 left-1/2 absolute rounded-lg outline-[3px] -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "bg-teal-500 outline-gray-400"
-                          : "bg-teal-500 outline-teal-600"
+                          : "bg-teal-500 outline-teal-600",
                       )}
                     />
                     {/* Top shadow */}
@@ -265,26 +267,26 @@ export default function CitizenGuidesDetailPage({
                         "bottom-6 left-1/2 absolute rounded-sm outline-[3px] -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "bg-gray-400 outline-gray-400"
-                          : "bg-teal-600 outline-teal-600"
+                          : "bg-teal-600 outline-teal-600",
                       )}
                     />
                     {/* Top body */}
                     <div
                       className={cn(
                         "bottom-10 left-1/2 z-8 absolute w-11 h-4 group-active:h-0 group-hover:h-3 transition-all -translate-x-1/2 duration-150 ease-out",
-                        isLocked ? "bg-gray-400" : "bg-teal-600"
+                        isLocked ? "bg-gray-400" : "bg-teal-600",
                       )}
                     />
                     {/* Top cap */}
                     <div
                       className={cn(
                         "bottom-10 group-active:bottom-6! group-hover:bottom-9 left-1/2 z-10 absolute bg-teal-500 rounded-sm outline-[3px] -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 transition-all -translate-x-1/2 duration-150 ease-out",
-                        isLocked ? "outline-gray-400" : "outline-teal-600"
+                        isLocked ? "outline-gray-400" : "outline-teal-600",
                       )}
                     />
                     <span
                       className={cn(
-                        "absolute bottom-[2.85rem] group-active:bottom-7! group-hover:bottom-10 justify-center text-teal-600 left-1/2 -translate-x-1/2 z-10 rotate-x-35 font-bold transition-all duration-150 ease-out"
+                        "absolute bottom-[2.85rem] group-active:bottom-7! group-hover:bottom-10 justify-center text-teal-600 left-1/2 -translate-x-1/2 z-10 rotate-x-35 font-bold transition-all duration-150 ease-out",
                       )}
                     >
                       {module.order}

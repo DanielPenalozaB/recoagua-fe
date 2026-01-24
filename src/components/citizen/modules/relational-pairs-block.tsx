@@ -9,10 +9,8 @@ import { cn } from "@/lib/utils";
 
 interface RelationalPairsBlockProps {
   readonly block: Block;
-  readonly onSubmit: (
-    selectedPairIds: number[],
-    extraData?: Partial<{ relationalPairIds: number[] }>,
-  ) => Promise<void>;
+  readonly onChange: (pairs: number[]) => void;
+  readonly isSubmitted: boolean;
 }
 
 interface Item {
@@ -29,7 +27,8 @@ interface Match {
 
 export default function RelationalPairsBlock({
   block,
-  onSubmit,
+  onChange,
+  isSubmitted,
 }: RelationalPairsBlockProps) {
   const [leftItems, setLeftItems] = useState<Item[]>([]);
   const [rightItems, setRightItems] = useState<Item[]>([]);
@@ -39,8 +38,8 @@ export default function RelationalPairsBlock({
 
   const [matches, setMatches] = useState<Match[]>([]);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  // No internal submission state needed
+  // const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Initialize and shuffle
   useEffect(() => {
@@ -86,6 +85,15 @@ export default function RelationalPairsBlock({
     }
   }, [selectedLeft, selectedRight]);
 
+  // Bubble up matches whenever they change
+  useEffect(() => {
+    const correctMatches = matches.filter(
+      (m) => m.left.pairId === m.right.pairId,
+    );
+    const correctPairIds = correctMatches.map((m) => m.left.pairId);
+    onChange(correctPairIds);
+  }, [matches, onChange]);
+
   const handleUnmatch = (matchIndex: number) => {
     if (isSubmitted) return;
 
@@ -127,47 +135,7 @@ export default function RelationalPairsBlock({
     }
   };
 
-  const handleSubmit = async () => {
-    // Only allow submit if all items are matched
-    if (leftItems.length > 0 || rightItems.length > 0) {
-      toast.error("Debes relacionar todos los pares antes de verificar.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      // Find correctly paired items
-      // We assume the backend expects the IDs of the PAIRS that were correctly identified.
-      // Usually matching logic is: send list of pair IDs that were matched correctly?
-      // Or maybe the backend wants to know which pairId was matched with which?
-      // Based on typical simple implementations: we check correctness on client for UI feedback,
-      // but send data to server for scoring.
-      //
-      // User request says: "expect the user to match the related or correct pairs"
-      // Service `SubmitResponseDto` has `selectedAnswerIds`.
-      //
-      // If we look at `OptionsSelect`, it sends `selectedOptions` (array of IDs).
-      // Here, each "Relationship" is effectively an answer.
-      // If a user matches Pair(1).left with Pair(1).right, that is a correct identification of Pair 1.
-      // If a user matches Pair(1).left with Pair(2).right, that is incorrect.
-      //
-      // I will send the IDs of the pairs that were CORRECTLY matched.
-      // If Pair 1 was mismatched, I won't send ID 1.
-
-      const correctMatches = matches.filter(
-        (m) => m.left.pairId === m.right.pairId,
-      );
-      const correctPairIds = correctMatches.map((m) => m.left.pairId);
-
-      // We send IDs via `extraData` to key `relationalPairIds` so backend logic picks it up correctly
-      await onSubmit([], { relationalPairIds: correctPairIds });
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error submitting pairs:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Removed handleSubmit
 
   return (
     <div className="space-y-8 select-none">
@@ -330,21 +298,6 @@ export default function RelationalPairsBlock({
           </div>
         </div>
       )}
-
-      {/* Submit Button */}
-      <div className="pt-4">
-        <Button
-          onClick={handleSubmit}
-          disabled={isSubmitting || isSubmitted || leftItems.length > 0}
-          className="w-full md:w-auto bg-green-600 hover:bg-green-700 disabled:opacity-50 px-8 py-4 rounded-xl font-bold text-white text-lg shadow-lg shadow-green-200 disabled:shadow-none transition-all"
-        >
-          {(() => {
-            if (isSubmitting) return "Verificando...";
-            if (isSubmitted) return "¡Verificado!";
-            return "Verificar Pares";
-          })()}
-        </Button>
-      </div>
     </div>
   );
 }

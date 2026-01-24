@@ -33,17 +33,21 @@ interface CollectionMethod {
 
 type RainfallData = Record<string, number>;
 
+/* WaterResults interface update matches component */
 export interface WaterResults {
   litersPerYear: number;
   savingsPerYear: number;
   co2Reduction: number;
+  litersPerPersonPerDay: number;
 }
 
 export default function CalculatorPage() {
-  const COLLECTION_METHODS: CollectionMethod[] = [
-    { id: "roof", name: "Recolección de Techo", efficiency: 0.8 },
-    { id: "surface", name: "Captación de Superficie", efficiency: 0.6 },
-    { id: "fog", name: "Atrapanieblas", efficiency: 0.4 },
+  const SURFACE_TYPES: CollectionMethod[] = [
+    { id: "metal", name: "Techo de Metal / Zinc", efficiency: 0.9 },
+    { id: "tiles", name: "Techo de Tejas / Concreto", efficiency: 0.8 },
+    { id: "flat", name: "Techo Plano / Terraza", efficiency: 0.75 },
+    { id: "fog", name: "Atrapanieblas (Malla Raschel)", efficiency: 0.5 },
+    { id: "green", name: "Techo Verde / Jardín", efficiency: 0.5 },
   ];
 
   const RAINFALL_DATA: RainfallData = {
@@ -53,9 +57,9 @@ export default function CalculatorPage() {
   };
 
   const [location, setLocation] = useState("centro");
-  const [method, setMethod] = useState(COLLECTION_METHODS[0].id);
-  const [area, setArea] = useState(100);
-  const [efficiency, setEfficiency] = useState(80);
+  const [method, setMethod] = useState(SURFACE_TYPES[0].id);
+  const [area, setArea] = useState(50);
+  const [people, setPeople] = useState(4);
   const [results, setResults] = useState<WaterResults>();
 
   // Gamification state
@@ -95,24 +99,29 @@ export default function CalculatorPage() {
 
   const calculateResults = () => {
     const selectedMethod =
-      COLLECTION_METHODS.find((m) => m.id === method) || COLLECTION_METHODS[0];
+      SURFACE_TYPES.find((m) => m.id === method) || SURFACE_TYPES[0];
     const rainfall = RAINFALL_DATA[location];
     const methodEfficiency = selectedMethod.efficiency;
-    const userEfficiency = efficiency / 100;
 
     // Formula: Area (m²) × Rainfall (mm/year) × Efficiency = Liters per year
-    const litersPerYear = area * rainfall * methodEfficiency * userEfficiency;
+    const litersPerYear = area * rainfall * methodEfficiency;
 
-    // Approximate savings (assuming water costs $0.002 per liter)
+    // Approximate savings (assuming water costs $0.002 per liter, example rate)
     const savingsPerYear = litersPerYear * 0.002;
 
-    // Approximate CO2 reduction (0.5kg CO2 per 1000L of water)
+    // Approximate CO2 reduction (0.5kg CO2 per 1000L of water pumped/treated)
     const co2Reduction = (litersPerYear / 1000) * 0.5;
+
+    // Liters per person per day
+    const litersPerPersonPerDay = litersPerYear / people / 365;
 
     setResults({
       litersPerYear: Math.round(litersPerYear),
       savingsPerYear: Math.round(savingsPerYear),
       co2Reduction: Number.parseFloat(co2Reduction.toFixed(2)),
+      litersPerPersonPerDay: Number.parseFloat(
+        litersPerPersonPerDay.toFixed(1),
+      ),
     });
   };
 
@@ -130,14 +139,11 @@ export default function CalculatorPage() {
 
     if (!calculatorChallengeId) {
       // If no challenge is linked, just show success without points or maybe generic message
-      // Or we could silently fail on the gamification part
-      console.log("No calculator challenge linked");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      console.log("calculatorChallengeId", calculatorChallengeId);
       const response = await userChallengeService.completeChallenge(
         calculatorChallengeId,
       );
@@ -175,8 +181,8 @@ export default function CalculatorPage() {
         }
       }
     } catch (error) {
+      // Check if error is existing completion (409 or similar message), ignore if so, or log
       console.error("Error awarding points:", error);
-      // Don't show error to user as the calculation itself was successful
     } finally {
       setIsSubmitting(false);
     }
@@ -193,193 +199,210 @@ export default function CalculatorPage() {
       <div className="card-header p-6 border-b w-full">
         <h3 className="card-title flex items-center gap-2 text-lg font-semibold !text-neutral-800">
           <Droplets className="h-5 w-5 text-blue-500" />
-          Simulación Interactiva
+          Calculadora de Cosecha de Agua
         </h3>
-        <p className="card-description text-sm text-gray-500">
-          Ajusta los parámetros para calcular tu potencial de recolección de
-          agua
+        <p className="card-description text-sm text-gray-500 mt-1">
+          Descubre cuánta agua podrías recolectar en tu hogar y el impacto
+          positivo que generarías.
         </p>
       </div>
 
-      <div className="card p-6 space-y-6 max-w-md w-full">
-        {/* Location Selection */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-gray-400" />
-            <Label
-              htmlFor="location"
-              className="text-sm font-medium !text-neutral-600 flex items-center gap-2"
-            >
-              <span>Ubicación</span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="size-4 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs rounded-lg text-sm !text-neutral-600">
-                    <p>
-                      La ubicación determina la cantidad de lluvia disponible
-                      para recolectar durante el año, siendo el factor principal
-                      que influye en el potencial hídrico de tu sistema.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Label>
+      <div className="p-6 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          {/* Intro / Instructions Box */}
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-blue-800 space-y-2">
+            <h4 className="font-semibold flex items-center gap-2">
+              <HelpCircle className="h-4 w-4" />
+              ¿Cómo funciona?
+            </h4>
+            <p>
+              El cálculo se basa en la precipitación promedio de tu zona, el
+              área de tu techo y el material del mismo (coeficiente de
+              escorrentía).
+            </p>
+            <p>
+              <strong>Fórmula básica:</strong> <br />
+              <span className="font-mono text-xs block mt-1">
+                Lluvia (mm) × Área (m²) × Eficiencia = Litros recolectados
+              </span>
+            </p>
           </div>
-          <Select value={location} onValueChange={setLocation}>
-            <SelectTrigger
-              id="location"
-              className="w-full !text-neutral-500 !bg-white"
-            >
-              <SelectValue placeholder="Selecciona una ubicación" />
-            </SelectTrigger>
-            <SelectContent className="!bg-white">
-              <SelectItem
-                value="norte"
-                className="!text-neutral-500 hover:!bg-neutral-100 hover:!text-neutral-600 [&[data-state=checked]]:!bg-teal-100"
-              >
-                Zona Norte (Árida)
-              </SelectItem>
-              <SelectItem
-                value="centro"
-                className="!text-neutral-500 hover:!bg-neutral-100 hover:!text-neutral-600 [&[data-state=checked]]:!bg-teal-100"
-              >
-                Zona Centro (Mediterránea)
-              </SelectItem>
-              <SelectItem
-                value="sur"
-                className="!text-neutral-500 hover:!bg-neutral-100 hover:!text-neutral-600 [&[data-state=checked]]:!bg-teal-100"
-              >
-                Zona Sur (Lluviosa)
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
 
-        {/* Collection Method */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="method"
-            className="text-sm font-medium !text-neutral-600 flex items-center gap-2"
-          >
-            <span>Método de Recolección</span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <HelpCircle className="size-4 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs rounded-lg text-sm">
-                  <p>
-                    Cada método tiene una eficiencia inherente basada en su
-                    capacidad para interceptar y canalizar el agua de lluvia sin
-                    pérdidas significativas.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Label>
-          <Select value={method} onValueChange={setMethod}>
-            <SelectTrigger
-              id="method"
-              className="w-full !text-neutral-500 !bg-white"
-            >
-              <SelectValue placeholder="Selecciona un método" />
-            </SelectTrigger>
-            <SelectContent className="!bg-white">
-              {COLLECTION_METHODS.map((method) => (
-                <SelectItem
-                  key={method.id}
-                  value={method.id}
-                  className="!text-neutral-500 hover:!bg-neutral-100 hover:!text-neutral-600 [&[data-state=checked]]:!bg-teal-100"
+          <div className="card p-6 space-y-6 border rounded-xl shadow-sm bg-white">
+            {/* Location Selection */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-gray-400" />
+                <Label
+                  htmlFor="location"
+                  className="text-sm font-medium !text-neutral-600"
                 >
-                  {method.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+                  Ubicación
+                </Label>
+              </div>
+              <Select value={location} onValueChange={setLocation}>
+                <SelectTrigger
+                  id="location"
+                  className="w-full !text-neutral-600 !bg-white border-neutral-200"
+                >
+                  <SelectValue placeholder="Selecciona una ubicación" />
+                </SelectTrigger>
+                <SelectContent className="!bg-white">
+                  <SelectItem
+                    value="norte"
+                    className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
+                  >
+                    Zona Norte (~50mm/año)
+                  </SelectItem>
+                  <SelectItem
+                    value="centro"
+                    className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
+                  >
+                    Zona Centro (~500mm/año)
+                  </SelectItem>
+                  <SelectItem
+                    value="sur"
+                    className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
+                  >
+                    Zona Sur (~2000mm/año)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-neutral-400">
+                Selecciona la zona más cercana a tu residencia para estimar la
+                lluvia anual.
+              </p>
+            </div>
 
-        {/* Area Input */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Home className="h-4 w-4 text-gray-400" />
-            <Label
-              htmlFor="area"
-              className="text-sm font-medium !text-neutral-600 flex items-center gap-2"
+            {/* Surface Type */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Home className="h-4 w-4 text-gray-400" />
+                <Label
+                  htmlFor="method"
+                  className="text-sm font-medium !text-neutral-600"
+                >
+                  Tipo de Superficie de Captación
+                </Label>
+              </div>
+              <Select value={method} onValueChange={setMethod}>
+                <SelectTrigger
+                  id="method"
+                  className="w-full !text-neutral-600 !bg-white border-neutral-200"
+                >
+                  <SelectValue placeholder="Selecciona un material" />
+                </SelectTrigger>
+                <SelectContent className="!bg-white">
+                  {SURFACE_TYPES.map((type) => (
+                    <SelectItem
+                      key={type.id}
+                      value={type.id}
+                      className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
+                    >
+                      {type.name} (Eficiencia: {type.efficiency * 100}%)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-neutral-400">
+                Distintos materiales pierden diferentes cantidades de agua
+                (absorción, evaporación).
+              </p>
+            </div>
+
+            {/* Area Input */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium !text-neutral-600">
+                    Área de Captación
+                  </span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="size-4 text-neutral-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs p-3">
+                        <p className="font-semibold mb-1">¿Cómo medir?</p>
+                        <p>
+                          No es el tamaño total de tu casa, sino el área del
+                          techo ("en planta") que conectará a las canaletas.
+                        </p>
+                        <p className="mt-1">
+                          Ej: Si tu techo mide 10m x 5m, el área es 50m².
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <span className="text-sm font-bold text-teal-600">
+                  {area} m²
+                </span>
+              </div>
+              <Slider
+                id="area"
+                min={10}
+                max={500}
+                step={5}
+                value={[area]}
+                onValueChange={(value) => setArea(value[0])}
+                className="py-4"
+              />
+            </div>
+
+            {/* People Input (New) */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="people"
+                  className="text-sm font-medium !text-neutral-600"
+                >
+                  Personas en el hogar
+                </Label>
+                <span className="text-sm font-bold text-teal-600">
+                  {people}
+                </span>
+              </div>
+              <Slider
+                id="people"
+                min={1}
+                max={10}
+                step={1}
+                value={[people]}
+                onValueChange={(value) => setPeople(value[0])}
+                className="py-4"
+              />
+              <p className="text-xs text-neutral-400">
+                Número de habitantes para calcular disponibilidad personal.
+              </p>
+            </div>
+
+            <Button
+              onClick={calculateAndEarnPoints}
+              disabled={isSubmitting}
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white shadow-md transition-all mt-4"
             >
-              <span>Área de Captación (m²): {area}</span>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="size-4 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs rounded-lg text-sm">
-                    <p>
-                      La superficie total expuesta a la lluvia que puede
-                      capturar agua. Es la proyección horizontal del área de
-                      captación, medida en metros cuadrados. A mayor área, mayor
-                      volumen de agua recolectable por cada milímetro de lluvia.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </Label>
-          </div>
-          <div className="flex gap-4 items-center">
-            <Slider
-              id="area"
-              min={10}
-              max={500}
-              step={10}
-              value={[area]}
-              onValueChange={(value) => setArea(value[0])}
-              className="w-full"
-            />
+              {isSubmitting ? "Calculando..." : "Calcular Potencial"}
+            </Button>
           </div>
         </div>
 
-        {/* Efficiency Slider */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="efficiency"
-            className="text-sm font-medium !text-neutral-600 flex items-center gap-2"
-          >
-            <span>Eficiencia del Sistema (%): {efficiency}</span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <HelpCircle className="size-4 cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs rounded-lg text-sm">
-                  <p>
-                    El porcentaje de agua de lluvia que efectivamente se logra
-                    capturar y almacenar. Considera las pérdidas por
-                    evaporación, derrames, filtración y la calidad del sistema
-                    de canalización y filtrado instalado.
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Label>
-          <Slider
-            id="efficiency"
-            min={10}
-            max={100}
-            step={5}
-            value={[efficiency]}
-            onValueChange={(value) => setEfficiency(value[0])}
-            className="w-full"
-          />
+        {/* Results Section */}
+        <div className="space-y-6">
+          {results ? (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <CalculatorResults results={results} />
+            </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center p-8 border-2 border-dashed border-neutral-200 rounded-xl text-neutral-400">
+              <Droplets className="h-12 w-12 mb-4 opacity-20" />
+              <p className="text-center">
+                Configura los parámetros y presiona "Calcular Potencial" para
+                ver tus resultados aquí.
+              </p>
+            </div>
+          )}
         </div>
-        <Button
-          onClick={calculateAndEarnPoints}
-          disabled={isSubmitting}
-          className="w-full bg-[#0D9488] hover:bg-[#0D9488]/90 text-white"
-        >
-          {isSubmitting ? "Calculando..." : "Calcular y Ganar Puntos"}
-        </Button>
-        {results && <CalculatorResults results={results} />}
       </div>
     </div>
   );

@@ -2,13 +2,14 @@
 
 import { CornerUpLeft } from "lucide-react";
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useCallback, useState } from "react";
 import OptionsSelect from "@/components/citizen/modules/options-select";
 import RelationalPairsBlock from "@/components/citizen/modules/relational-pairs-block";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea"; // Added Import
 import { useModule } from "@/hooks/use-modules";
-import type { Block } from "@/types/block";
+import { type Block, QuestionType } from "@/types/block"; // Added QuestionType
 import type { Module } from "@/types/module";
 import type { Level } from "@/types/level";
 import { toast } from "sonner";
@@ -95,25 +96,55 @@ const ImageBlock = ({ block }: { block: Block }) => (
 
 const QuestionBlock = ({
   block,
-  onSubmit,
+  answerState,
+  onStateChange,
+  isSubmitted,
 }: {
   block: Block;
-  onSubmit: (
-    selectedOptions: number[],
-    extraData?: Partial<{ relationalPairIds: number[] }>,
-  ) => Promise<void>;
-}) => (
-  <div className="space-y-4">
-    {block.description && (
-      <p className="text-gray-600 mb-4">{block.description}</p>
-    )}
-    <OptionsSelect
-      options={block.answers}
-      questionType={block.questionType}
-      onSubmit={onSubmit}
-    />
-  </div>
-);
+  answerState: {
+    selectedOptions: number[];
+    customAnswer: string;
+    relationalPairs: number[];
+  };
+  onStateChange: (key: string, value: any) => void;
+  isSubmitted: boolean;
+}) => {
+  if (block.questionType === QuestionType.OPEN_ENDED) {
+    return (
+      <div className="space-y-4">
+        {block.description && (
+          <p className="text-gray-600 mb-4">{block.description}</p>
+        )}
+        <div className="space-y-4">
+          <Textarea
+            placeholder="Escribe tu respuesta aquí..."
+            value={answerState.customAnswer}
+            onChange={(e) => onStateChange("customAnswer", e.target.value)}
+            disabled={isSubmitted}
+            className="min-h-[120px] border border-neutral-200 rounded-lg !text-neutral-600"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {block.description && (
+        <p className="text-gray-600 mb-4">{block.description}</p>
+      )}
+      <OptionsSelect
+        options={block.answers}
+        questionType={block.questionType}
+        selectedOptions={answerState.selectedOptions}
+        onOptionSelect={(selected) =>
+          onStateChange("selectedOptions", selected)
+        }
+        submitted={isSubmitted}
+      />
+    </div>
+  );
+};
 
 const InteractiveBlock = ({ block }: { block: Block }) => (
   <div className="space-y-4">
@@ -132,13 +163,16 @@ const InteractiveBlock = ({ block }: { block: Block }) => (
 
 const QuizBlock = ({
   block,
-  onSubmit,
+  answerState,
+  onStateChange,
+  isSubmitted,
 }: {
   block: Block;
-  onSubmit: (
-    selectedOptions: number[],
-    extraData?: Partial<{ relationalPairIds: number[] }>,
-  ) => Promise<void>;
+  answerState: {
+    selectedOptions: number[];
+  };
+  onStateChange: (key: string, value: any) => void;
+  isSubmitted: boolean;
 }) => (
   <div className="space-y-4">
     <div className="p-4 bg-purple-50 border-l-4 border-purple-500 rounded">
@@ -150,7 +184,9 @@ const QuizBlock = ({
     <OptionsSelect
       options={block.answers}
       questionType={block.questionType}
-      onSubmit={onSubmit}
+      selectedOptions={answerState.selectedOptions}
+      onOptionSelect={(selected) => onStateChange("selectedOptions", selected)}
+      submitted={isSubmitted}
     />
   </div>
 );
@@ -166,6 +202,48 @@ export default function GuideModulePage({
   const { data, isLoading, error } = useModule(Number(module_id));
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Unified Block Interaction State
+  const [blockInteractionState, setBlockInteractionState] = useState<{
+    selectedOptions: number[];
+    customAnswer: string;
+    relationalPairs: number[];
+  }>({
+    selectedOptions: [],
+    customAnswer: "",
+    relationalPairs: [],
+  });
+
+  // Reset state when block changes
+  const [lastBlockIndex, setLastBlockIndex] = useState(0);
+  if (currentBlockIndex !== lastBlockIndex) {
+    setBlockInteractionState({
+      selectedOptions: [],
+      customAnswer: "",
+      relationalPairs: [],
+    });
+    setLastBlockIndex(currentBlockIndex);
+  }
+
+  const handleStateChange = (key: string, value: any) => {
+    setBlockInteractionState((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleRelationalPairsChange = useCallback((pairs: number[]) => {
+    setBlockInteractionState((prev) => ({
+      ...prev,
+      relationalPairs: pairs,
+    }));
+  }, []);
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  // Reset submitted state when block changes
+  if (currentBlockIndex !== lastBlockIndex) {
+    setIsSubmitted(false);
+  }
 
   // Gamification state
   const [levelUpData, setLevelUpData] = useState<Level | null>(null);
@@ -275,41 +353,58 @@ export default function GuideModulePage({
     audio.play().catch((err) => console.error("Audio play failed:", err));
   };
 
-  const handleAnswerSubmit = async (
-    selectedOptions: number[],
-    extraData?: Partial<{ relationalPairIds: number[] }>,
-  ) => {
+  const handleAnswerSubmit = async () => {
     if (!currentBlock) return;
 
     setIsSubmitting(true);
     try {
+      // Determine correctness locally for Open Ended (always correct)
+      if (currentBlock.questionType === "open_ended") {
+        // Proceed to record interaction but treat as success
+      }
+
       const payload: any = {
         blockId: currentBlock.id,
-        selectedAnswerIds: selectedOptions,
-        ...extraData,
       };
+
+      if (
+        currentBlock.type === "interactive" &&
+        currentBlock.dynamicType === "matching"
+      ) {
+        payload.relationalPairIds = blockInteractionState.relationalPairs;
+      } else if (
+        currentBlock.type === "question" &&
+        currentBlock.questionType === "open_ended"
+      ) {
+        payload.customAnswer = blockInteractionState.customAnswer;
+      } else {
+        // Standard questions/quizzes
+        payload.selectedAnswerIds = blockInteractionState.selectedOptions;
+      }
 
       const result = await recordInteraction(payload);
 
       if (result) {
-        if (result.data.isCorrect) {
-          playFeedbackSound("success"); // Play success sound
-          toast.success(`¡Correcto! +${result.data.earnedPoints} puntos`);
+        setIsSubmitted(true); // Mark as submitted to disable inputs and show result UI
+
+        if (
+          result.data.isCorrect ||
+          currentBlock.questionType === "open_ended" ||
+          (currentBlock.dynamicType === "matching" &&
+            blockInteractionState.relationalPairs.length ===
+              (currentBlock.relationalPairs?.length || 0))
+        ) {
+          playFeedbackSound("success");
+          const pointsToShow = result.data.earnedPoints || currentBlock.points;
+          toast.success(
+            currentBlock.questionType === "open_ended"
+              ? "Respuesta guardada"
+              : `¡Correcto! +${pointsToShow} puntos`,
+          );
         } else {
-          playFeedbackSound("error"); // Play error sound
+          playFeedbackSound("error");
           toast.error("Esa no es la respuesta correcta");
         }
-
-        const isLastBlock = currentBlockIndex === moduleData.blocks.length - 1;
-
-        setTimeout(() => {
-          if (isLastBlock) {
-            toast.success("Módulo finalizado");
-            router.push(`/guides/${data.data.guide.id}`);
-          } else {
-            handleNextBlock();
-          }
-        }, 1500);
       }
     } catch (err) {
       toast.error("Error al enviar la respuesta");
@@ -342,7 +437,17 @@ export default function GuideModulePage({
   const handleNextBlock = async () => {
     const isLastBlock = currentBlockIndex === moduleData.blocks.length - 1;
 
-    await registerContentStep();
+    // Only register content view if not already submitted (interactive blocks submit earlier)
+    if (!isSubmitted) {
+      await registerContentStep();
+    }
+
+    setIsSubmitted(false); // Reset for next block
+    setBlockInteractionState({
+      selectedOptions: [],
+      customAnswer: "",
+      relationalPairs: [],
+    });
 
     if (isLastBlock) {
       toast.success("¡Módulo completado!", {
@@ -384,16 +489,29 @@ export default function GuideModulePage({
         return <ImageBlock block={currentBlock} />;
       case "question":
         return (
-          <QuestionBlock block={currentBlock} onSubmit={handleAnswerSubmit} />
+          <QuestionBlock
+            block={currentBlock}
+            answerState={blockInteractionState}
+            onStateChange={handleStateChange}
+            isSubmitted={isSubmitted}
+          />
         );
       case "quiz":
-        return <QuizBlock block={currentBlock} onSubmit={handleAnswerSubmit} />;
+        return (
+          <QuizBlock
+            block={currentBlock}
+            answerState={blockInteractionState}
+            onStateChange={handleStateChange}
+            isSubmitted={isSubmitted}
+          />
+        );
       case "interactive":
         if (currentBlock.dynamicType === "matching") {
           return (
             <RelationalPairsBlock
               block={currentBlock}
-              onSubmit={handleAnswerSubmit}
+              onChange={handleRelationalPairsChange}
+              isSubmitted={isSubmitted}
             />
           );
         }
@@ -500,6 +618,7 @@ export default function GuideModulePage({
       </div>
 
       {/* Navigation between blocks */}
+
       <div className="flex justify-between mt-6">
         <Button
           onClick={handlePrevBlock}
@@ -508,19 +627,65 @@ export default function GuideModulePage({
         >
           Anterior
         </Button>
-        {(isContentBlock || currentBlockIndex < moduleData.blocks.length) && (
-          <Button
-            onClick={handleNextBlock}
-            disabled={isSubmitting}
-            className="bg-teal-600 hover:bg-teal-700 text-white"
-          >
-            {isSubmitting
-              ? "Cargando..."
-              : isLastBlock
-              ? "Finalizar"
-              : "Continuar"}
-          </Button>
-        )}
+
+        {/* Render "Verify" or "Continue" logic */}
+        {(() => {
+          const needsVerification = [
+            "question",
+            "quiz",
+            "interactive",
+          ].includes(currentBlock.type);
+          const canSubmit =
+            (currentBlock.type === "question" &&
+              currentBlock.questionType === "open_ended" &&
+              blockInteractionState.customAnswer.trim().length > 0) ||
+            (currentBlock.type === "question" &&
+              currentBlock.questionType !== "open_ended" &&
+              blockInteractionState.selectedOptions.length > 0) ||
+            (currentBlock.type === "quiz" &&
+              blockInteractionState.selectedOptions.length > 0) ||
+            (currentBlock.dynamicType === "matching" &&
+              blockInteractionState.relationalPairs.length > 0); // Logic: Pairs block validates itself? No, we used to check if all matched. Ideally we check if pairs count == expected.
+
+          // For matching, we might want to ensure ALL items are paired.
+          // But let's simplify check: can submit if there's anything in relationalPairs?
+          // Actually, previously RelationalPairsBlock prevented submit if not fully matched.
+          // We can check block.relationalPairs.length (pairs count) vs state pairs count.
+          // If block.relationalPairs is available.
+          const isMatchingComplete =
+            currentBlock.dynamicType === "matching"
+              ? blockInteractionState.relationalPairs.length ===
+                (currentBlock.relationalPairs?.length || 0)
+              : true;
+
+          const isReadyToSubmit = canSubmit && isMatchingComplete;
+
+          if (needsVerification && !isSubmitted) {
+            return (
+              <Button
+                onClick={handleAnswerSubmit}
+                disabled={isSubmitting || !isReadyToSubmit}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                {isSubmitting
+                  ? "Verificando..."
+                  : currentBlock.questionType === "open_ended"
+                  ? "Enviar"
+                  : "Verificar"}
+              </Button>
+            );
+          }
+
+          return (
+            <Button
+              onClick={handleNextBlock}
+              disabled={isSubmitting}
+              className="bg-teal-600 hover:bg-teal-700 text-white"
+            >
+              {isLastBlock ? "Finalizar" : "Continuar"}
+            </Button>
+          );
+        })()}
       </div>
     </div>
   );
