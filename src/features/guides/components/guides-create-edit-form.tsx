@@ -768,12 +768,16 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
   useEffect(() => {
     if (getGuideMutation?.isSuccess) {
       const guide = getGuideMutation.data.data;
-      form.setValue("name", guide.name);
-      form.setValue("description", guide.description);
-      form.setValue("estimatedDuration", guide.estimatedDuration);
-      form.setValue("difficulty", guide.difficulty);
-      form.setValue("status", guide.status);
-      form.setValue("language", guide.language || "es");
+      form.setValue("name", guide.name, { shouldValidate: true });
+      form.setValue("description", guide.description, { shouldValidate: true });
+      form.setValue("estimatedDuration", guide.estimatedDuration, {
+        shouldValidate: true,
+      });
+      form.setValue("difficulty", guide.difficulty, { shouldValidate: true });
+      form.setValue("status", guide.status, { shouldValidate: true });
+      form.setValue("language", guide.language || "es", {
+        shouldValidate: true,
+      });
 
       if (guide.modules) {
         // Convert module IDs from number to string for local state and coerce backend strings to local enums
