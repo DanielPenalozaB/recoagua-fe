@@ -1,6 +1,6 @@
 "use client";
 
-import { Droplets, HelpCircle, Home, MapPin } from "lucide-react";
+import { Droplets, HelpCircle, Home, MapPin, BookOpen } from "lucide-react";
 import { useState, useEffect } from "react";
 import CalculatorResults from "@/components/citizen/calculator/calculator-results";
 import { Button } from "@/components/ui/button";
@@ -140,9 +140,9 @@ export default function CalculatorPage() {
   ];
 
   const RAINFALL_DATA: RainfallData = {
-    norte: 50,
-    centro: 500,
-    sur: 2000,
+    norte: 900,
+    centro: 1100,
+    sur: 1600,
   };
 
   const [location, setLocation] = useState("centro");
@@ -314,6 +314,20 @@ export default function CalculatorPage() {
                 >
                   Ubicación
                 </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="size-3 text-neutral-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-3">
+                      <p className="font-semibold mb-1">Sobre estos datos</p>
+                      <p>
+                        Valores aproximados basados en promedios históricos del
+                        IDEAM y CVC para el valle geográfico del río Cauca.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <Select value={location} onValueChange={setLocation}>
                 <SelectTrigger
@@ -327,19 +341,19 @@ export default function CalculatorPage() {
                     value="norte"
                     className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
                   >
-                    Zona Norte (~50mm/año)
+                    Zona Norte (~900mm/año)
                   </SelectItem>
                   <SelectItem
                     value="centro"
                     className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
                   >
-                    Zona Centro (~500mm/año)
+                    Zona Centro (~1100mm/año)
                   </SelectItem>
                   <SelectItem
                     value="sur"
                     className="cursor-pointer text-neutral-600 focus:bg-neutral-100 focus:text-neutral-900"
                   >
-                    Zona Sur (~2000mm/año)
+                    Zona Sur (~1600mm/año)
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -599,7 +613,7 @@ export default function CalculatorPage() {
         </div>
       </div>
       {/* Educational Content Section */}
-      <div className="w-full max-w-4xl p-6 mt-4 mb-12">
+      <div className="w-full max-w-4xl p-6 my-4">
         <h3 className="text-xl font-bold text-neutral-800 mb-4 border-b pb-2">
           Sobre la Recolección de Agua Lluvia en Cali
         </h3>
@@ -641,14 +655,66 @@ export default function CalculatorPage() {
                 Impacto en la Comunidad
               </h4>
               <p className="text-sm">
-                Estudios en Cali (Sierra y Londoño, 2022) han evidenciado
-                reducciones significativas en el consumo de agua potable en
-                edificaciones que usan estos sistemas. Además, la adopción es
-                más exitosa cuando se acompaña de educación y orientación
-                técnica.
+                Instituciones como la{" "}
+                <strong>Pontificia Universidad Javeriana Cali</strong> han
+                implementado sistemas exitosos de captación de agua lluvia en su
+                campus, logrando reducciones significativas en el consumo de
+                agua potable y sirviendo como modelo para edificaciones
+                sostenibles en la región.
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* References Section */}
+      <div className="w-full max-w-4xl px-6 mb-12">
+        <div className="border rounded-lg p-4 bg-neutral-50/50">
+          <h4 className="text-sm font-semibold flex items-center gap-2 text-neutral-700 mb-3">
+            <BookOpen className="h-4 w-4" />
+            Referencias y Normativa
+          </h4>
+          <ul className="space-y-2 text-xs text-neutral-500">
+            <li>
+              •{" "}
+              <a
+                href="https://minvivienda.gov.co/normativa/resolucion-0330-2017"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600 hover:underline"
+              >
+                <strong>
+                  Ministerio de Vivienda, Ciudad y Territorio (2022).
+                </strong>{" "}
+                Resolución 0330: Reglamento Técnico del Sector de Agua Potable y
+                Saneamiento Básico – RAS.
+              </a>
+            </li>
+            <li>
+              •{" "}
+              <a
+                href="https://www.javerianacali.edu.co/ecocampus/trabajamos-en/agua"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600 hover:underline"
+              >
+                <strong>Pontificia Universidad Javeriana Cali.</strong> Uso
+                eficiente y ahorro del agua.
+              </a>
+            </li>
+            <li>
+              •{" "}
+              <a
+                href="https://www.who.int/es/publications/i/item/9789240045064"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-600 hover:underline"
+              >
+                <strong>Organización Mundial de la Salud (2023).</strong> Guías
+                para la calidad del agua de consumo humano.
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
