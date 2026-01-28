@@ -197,19 +197,22 @@ export default function CalculatorPage() {
 
     const rainfall = RAINFALL_DATA[location];
     const surfaceEfficiency = selectedMethod.efficiency;
-    const systemEfficiency = selectedSystem.efficiency; // New factor
+    const systemEfficiency = selectedSystem.efficiency;
 
-    // Formula: Area (m²) × Rainfall (mm/year) × Surface Efficiency × System Efficiency
+    // 1. Calculate Total Harvestable Volume
+    // Formula: Area (m²) * Rainfall (mm/year = L/m²/year) * Efficiency * System Efficiency
     const litersPerYear =
       area * rainfall * surfaceEfficiency * systemEfficiency;
 
-    // Approximate savings (assuming water costs ~$3.5 COP per liter in Cali)
-    const savingsPerYear = litersPerYear * 3.5;
+    // 2. Calculate Economic Savings
+    // Factor: 2.735 COP/L (Average of Stratum 2 and 4 in Cali, 2025-2026)
+    const savingsPerYear = litersPerYear * 2.735;
 
-    // Approximate CO2 reduction (0.5kg CO2 per 1000L of water pumped/treated)
+    // 3. Environmental Impact
+    // Factor: 0.5kg CO2 per 1000L (Estimate of pumping/treatment emissions avoided)
     const co2Reduction = (litersPerYear / 1000) * 0.5;
 
-    // Liters per person per day
+    // 4. Daily Availability per Person
     const litersPerPersonPerDay = litersPerYear / people / 365;
 
     setResults({
@@ -578,8 +581,13 @@ export default function CalculatorPage() {
               <p className="leading-relaxed">
                 Este simulador estima la cantidad de agua lluvia que puedes
                 recolectar basándose en cuatro factores clave: la lluvia en tu
-                zona, el tamaño de tu techo, el material del mismo y el tipo de
-                sistema de recolección que instales.
+                zona, el tamaño de tu techo, el material del mismo y el sistema
+                de recolección.
+                <br />
+                <span className="text-xs mt-1 block font-medium">
+                  * Ahorro estimado con promedio: $2.735 COP/Litro (Promedio
+                  Estrato 2 y 4, Cali 2026).
+                </span>
               </p>
             </div>
             <div className="bg-white/60 p-3 rounded border border-blue-200">
