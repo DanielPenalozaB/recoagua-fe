@@ -1,7 +1,7 @@
 name: Build and Deploy
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-push:
@@ -21,7 +21,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
           # This uses the Dockerfile we created above
-          file: ./Dockerfile 
+          file: ./Dockerfile
 
       - name: Deploy to Coolify
         run: |
