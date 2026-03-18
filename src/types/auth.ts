@@ -1,23 +1,23 @@
 import type { User } from "./user";
 
 export interface LoginRequest {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginResponse {
-	user: User;
-	accessToken: string;
-	refreshToken: string;
-	expiresIn: number;
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
 }
 
 export interface RefreshTokenRequest {
-	refreshToken: string;
+  refreshToken: string;
 }
 
 export interface RefreshTokenResponse {
-	accessToken: string;
-	refreshToken: string;
-	expiresIn: number;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
 }

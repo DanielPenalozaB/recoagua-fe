@@ -27,8 +27,8 @@ export interface UserEngagement {
 }
 
 export interface EducationalImpact {
-  globalAccuracy: number,
-  totalQuestionsAnswered: number
+  globalAccuracy: number;
+  totalQuestionsAnswered: number;
 }
 
 export interface DashboardStats {

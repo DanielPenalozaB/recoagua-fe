@@ -1,31 +1,31 @@
 export interface PaginationParams {
-	page?: number;
-	limit?: number;
-	sortBy?: string;
-	sortDirection?: "ASC" | "DESC";
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortDirection?: "ASC" | "DESC";
 }
 
 export interface PaginationMeta {
-	page: number;
-	limit: number;
-	totalItems: number;
-	totalPages: number;
-	hasPreviousPage: boolean;
-	hasNextPage: boolean;
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
 
 export interface PaginationResponse<T> {
-	data: T[];
-	meta: PaginationMeta;
+  data: T[];
+  meta: PaginationMeta;
 }
 
 export interface ApiResponse<T> {
-	success: boolean;
-	message: string;
-	data: T;
+  success: boolean;
+  message: string;
+  data: T;
 }
 
 export enum Status {
-	ACTIVE = "active",
-	INACTIVE = "inactive",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
