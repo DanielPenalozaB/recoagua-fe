@@ -26,8 +26,9 @@ jobs:
         with:
           push: true
           tags: ghcr.io/${{ env.REPO }}:latest
-          # This uses the Dockerfile we created above
           file: ./Dockerfile
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
 
       - name: Deploy to Coolify
         run: |
