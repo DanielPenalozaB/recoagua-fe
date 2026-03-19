@@ -15,6 +15,9 @@ RUN npm run build
 
 # Stage 3: Production runner
 FROM node:20-alpine AS runner
+# Install curl for Coolify's healthcheck
+RUN apk add --no-cache curl
+
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
