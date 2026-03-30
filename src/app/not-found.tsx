@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function NotFound() {
 	const { back } = useRouter();
@@ -19,9 +19,9 @@ export default function NotFound() {
 					<Button variant="outline" onClick={() => back()}>
 						Atrás
 					</Button>
-					<Button asChild>
-						<Link href="/">Regresar al inicio</Link>
-					</Button>
+					<Link href="/" className={buttonVariants()}>
+						Regresar al inicio
+					</Link>
 				</div>
 			</div>
 		</main>
