@@ -290,16 +290,24 @@ export default function CalculatorPage() {
 
   return (
     <div className="h-full flex flex-col items-center">
+      {/* Región de anuncios para tecnologías asistivas — gamificación */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="false"
+        className="sr-only"
+        id="gamification-announcer"
+      />
       <LevelUpModal
         level={levelUpData}
         open={showLevelUpModal}
         onOpenChange={setShowLevelUpModal}
       />
       <div className="card-header p-6 border-b w-full">
-        <h3 className="card-title flex items-center gap-2 text-lg font-semibold !text-neutral-800">
-          <Droplets className="h-5 w-5 text-blue-500" />
+        <h1 className="card-title flex items-center gap-2 text-lg font-semibold !text-neutral-800">
+          <Droplets aria-hidden="true" className="h-5 w-5 text-blue-500" />
           Calculadora de Cosecha de Agua
-        </h3>
+        </h1>
         <p className="card-description text-sm text-gray-500 mt-1">
           Descubre cuánta agua podrías recolectar en tu hogar y el impacto
           positivo que generarías.
@@ -310,7 +318,7 @@ export default function CalculatorPage() {
           <div className="card p-6 space-y-6 border rounded-xl shadow-sm bg-white">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gray-400" />
+                <MapPin aria-hidden="true" className="h-4 w-4 text-gray-400" />
                 <Label
                   htmlFor="location"
                   className="text-sm font-medium !text-neutral-600"
@@ -320,7 +328,10 @@ export default function CalculatorPage() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <HelpCircle className="size-3 text-neutral-400 cursor-help" />
+                      <HelpCircle
+                        aria-label="Información sobre los datos de ubicación"
+                        className="size-3 text-neutral-400 cursor-help"
+                      />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs p-3">
                       <p className="font-semibold mb-1">Sobre estos datos</p>
@@ -367,7 +378,7 @@ export default function CalculatorPage() {
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="p-1 bg-blue-100 rounded text-blue-600">
+                <div className="p-1 bg-blue-100 rounded text-blue-600" aria-hidden="true">
                   <Droplets className="h-4 w-4" />
                 </div>
                 <Label
@@ -453,7 +464,7 @@ export default function CalculatorPage() {
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Home className="h-4 w-4 text-gray-400" />
+                <Home aria-hidden="true" className="h-4 w-4 text-gray-400" />
                 <Label
                   htmlFor="method"
                   className="text-sm font-medium !text-neutral-600"
@@ -494,7 +505,10 @@ export default function CalculatorPage() {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <HelpCircle className="size-4 text-neutral-400 cursor-help" />
+                        <HelpCircle
+                          aria-label="Cómo medir el área de captación"
+                          className="size-4 text-neutral-400 cursor-help"
+                        />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3">
                         <p className="font-semibold mb-1">¿Cómo medir?</p>
@@ -520,6 +534,8 @@ export default function CalculatorPage() {
                 step={5}
                 value={[area]}
                 onValueChange={(value) => setArea(value[0])}
+                aria-label="Área de captación en metros cuadrados"
+                aria-valuetext={`${area} metros cuadrados`}
                 className="py-4"
               />
             </div>
@@ -542,6 +558,8 @@ export default function CalculatorPage() {
                 step={1}
                 value={[people]}
                 onValueChange={(value) => setPeople(value[0])}
+                aria-label="Personas en el hogar"
+                aria-valuetext={`${people} ${people === 1 ? "persona" : "personas"}`}
                 className="py-4"
               />
               <p className="text-xs text-neutral-400">
@@ -559,23 +577,29 @@ export default function CalculatorPage() {
         </div>
         {/* Results Section */}
         <div className="flex flex-col gap-6">
-          {results ? (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <CalculatorResults results={results} />
-            </div>
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center p-8 border-2 border-dashed border-neutral-200 rounded-xl text-neutral-400">
-              <Droplets className="h-12 w-12 mb-4 opacity-20" />
-              <p className="text-center">
-                Configura los parámetros y presiona "Calcular Potencial" para
-                ver tus resultados aquí.
-              </p>
-            </div>
-          )}
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label="Resultados del cálculo"
+          >
+            {results ? (
+              <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 duration-500">
+                <CalculatorResults results={results} />
+              </div>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center p-8 border-2 border-dashed border-neutral-200 rounded-xl text-neutral-400">
+                <Droplets aria-hidden="true" className="h-12 w-12 mb-4 opacity-20" />
+                <p className="text-center">
+                  Configura los parámetros y presiona "Calcular Potencial" para
+                  ver tus resultados aquí.
+                </p>
+              </div>
+            )}
+          </div>
           <div className="bg-blue-50 border border-blue-100 rounded-lg p-5 text-sm text-blue-800 space-y-4">
             <div>
               <h4 className="font-bold flex items-center gap-2 mb-2 text-blue-900">
-                <HelpCircle className="h-4 w-4" />
+                <HelpCircle aria-hidden="true" className="h-4 w-4" />
                 ¿Cómo funciona el cálculo?
               </h4>
               <p className="leading-relaxed">
@@ -622,9 +646,9 @@ export default function CalculatorPage() {
       </div>
       {/* Educational Content Section */}
       <div className="w-full max-w-4xl p-6 my-4">
-        <h3 className="text-xl font-bold text-neutral-800 mb-4 border-b pb-2">
+        <h2 className="text-xl font-bold text-neutral-800 mb-4 border-b pb-2">
           Sobre la Recolección de Agua Lluvia en Cali
-        </h3>
+        </h2>
         <div className="prose prose-sm prose-blue max-w-none text-neutral-600 space-y-4">
           <p>
             La recolección de agua lluvia es una alternativa viable para
@@ -679,7 +703,7 @@ export default function CalculatorPage() {
       <div className="w-full max-w-4xl px-6 mb-12">
         <div className="border rounded-lg p-4 bg-neutral-50/50">
           <h4 className="text-sm font-semibold flex items-center gap-2 text-neutral-700 mb-3">
-            <BookOpen className="h-4 w-4" />
+            <BookOpen aria-hidden="true" className="h-4 w-4" />
             Referencias y Normativa
           </h4>
           <ul className="space-y-2 text-xs text-neutral-500">

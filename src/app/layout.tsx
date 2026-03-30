@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a1a1a" },
+  ],
 };
 
 export default function RootLayout({
@@ -33,8 +37,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a href="#main-content" className="skip-link">
+          Saltar al contenido principal
+        </a>
         <Providers>{children}</Providers>
-        <Toaster />
+        <Toaster
+          richColors
+          closeButton
+          duration={7000}
+          position="top-right"
+        />
       </body>
     </html>
   );

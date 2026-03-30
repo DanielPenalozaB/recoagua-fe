@@ -14,6 +14,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import {
 	useCreateRegion,
 	useRegion,
@@ -57,6 +58,7 @@ export function RegionsCreateEditForm({
 		resolver: zodResolver(regionFormSchema),
 		defaultValues,
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const onSubmit = async (formData: RegionFormValues) => {
@@ -81,8 +83,10 @@ export function RegionsCreateEditForm({
 			// Redirect to regions list after successful creation
 			push("/admin/regions");
 		} catch (error) {
-			// Error handling is already done in the mutation
 			console.error("Failed to create region:", error);
+			const message = "Ocurrió un error al guardar la región. Intenta nuevamente.";
+			form.setError("root", { message });
+			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -147,13 +151,18 @@ export function RegionsCreateEditForm({
 							</FormItem>
 						)}
 					/>
+			</div>
+			{form.formState.errors.root && (
+				<div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+					<span>{form.formState.errors.root.message}</span>
 				</div>
-				<Button
-					type="button"
-					title="Cancelar"
-					variant="outline"
-					className="mr-2"
-					onClick={() => push("/admin/regions")}
+			)}
+			<Button
+				type="button"
+				title="Cancelar"
+				variant="outline"
+				className="mr-2"
+				onClick={() => push("/admin/regions")}
 					disabled={isSubmitting}
 				>
 					Cancelar

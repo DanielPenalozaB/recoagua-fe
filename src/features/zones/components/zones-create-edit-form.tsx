@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import { useCities } from "@/features/cities";
 import { Status } from "@/types/common";
 import type { CreateZoneDto } from "@/types/zone";
@@ -124,6 +125,7 @@ export function ZonesCreateEditForm({ zoneId }: ZonesCreateEditFormProps) {
     resolver: zodResolver(zoneFormSchema),
     defaultValues,
     mode: "onChange",
+    shouldFocusError: true,
   });
 
   const renderStatusLabel = (status: Status) => {
@@ -162,6 +164,9 @@ export function ZonesCreateEditForm({ zoneId }: ZonesCreateEditFormProps) {
       push("/admin/zones");
     } catch (error) {
       console.error("Ocurrió un error:", error);
+      const message = "Ocurrió un error al guardar la zona. Intenta nuevamente.";
+      form.setError("root", { message });
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -515,6 +520,11 @@ export function ZonesCreateEditForm({ zoneId }: ZonesCreateEditFormProps) {
         </div>
 
         {/* Action Buttons */}
+        {form.formState.errors.root && (
+          <div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <span>{form.formState.errors.root.message}</span>
+          </div>
+        )}
         <div className="flex gap-2 pt-4 border-t">
           <Button
             type="button"

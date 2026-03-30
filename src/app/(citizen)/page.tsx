@@ -11,9 +11,10 @@ export default function CitizenDashboard() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6">
-        <div className="h-48 bg-neutral-100 animate-pulse rounded-xl" />
-        <div className="h-48 bg-neutral-100 animate-pulse rounded-xl" />
+      <div aria-live="polite" aria-busy="true" aria-label="Cargando datos del perfil" className="p-6 space-y-6">
+        <div className="h-48 bg-neutral-100 motion-safe:animate-pulse rounded-xl" />
+        <div className="h-48 bg-neutral-100 motion-safe:animate-pulse rounded-xl" />
+        <span className="sr-only">Cargando…</span>
       </div>
     );
   }
@@ -29,7 +30,7 @@ export default function CitizenDashboard() {
           <div className="bg-white border rounded-2xl p-6 flex flex-col gap-4 shadow-sm">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-[#115E59] flex items-center gap-2">
-                <Trophy className="size-5 text-amber-500" />
+                <Trophy aria-hidden="true" className="size-5 text-amber-500" />
                 Tu Progreso
               </h2>
               <span className="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-sm font-medium">
@@ -42,18 +43,13 @@ export default function CitizenDashboard() {
                 <span>Experiencia</span>
                 <span className="font-bold">{user?.experience || 0} XP</span>
               </div>
-              <div className="w-full bg-neutral-100 rounded-full h-3 overflow-hidden">
-                {/* Placeholder progress bar logic, assuming 1000 points per level related calc could be added if next level data was available */}
-                <div
-                  className="bg-amber-500 h-full rounded-full"
-                  style={{
-                    width: `${Math.min(
-                      ((user?.experience || 0) % 1000) / 10,
-                      100,
-                    )}%`,
-                  }}
-                />
-              </div>
+              <progress
+                aria-label="Progreso de experiencia hacia el siguiente nivel"
+                value={Math.min(((user?.experience || 0) % 1000) / 10, 100)}
+                max={100}
+                aria-valuetext={`${user?.experience || 0} XP — ${Math.min(((user?.experience || 0) % 1000) / 10, 100).toFixed(0)}% hacia el siguiente nivel`}
+                className="w-full h-3 rounded-full overflow-hidden [&::-webkit-progress-bar]:bg-neutral-100 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:bg-amber-500 [&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:bg-amber-500 [&::-moz-progress-bar]:rounded-full"
+              />
               <p className="text-xs text-neutral-400 mt-1">
                 Completa más guías y desafíos para subir de nivel.
               </p>
@@ -61,7 +57,7 @@ export default function CitizenDashboard() {
 
             <div className="flex items-center gap-4 mt-2">
               <div className="flex items-center gap-2 bg-amber-50 px-3 py-2 rounded-lg">
-                <Star className="size-4 text-amber-600" />
+                <Star aria-hidden="true" className="size-4 text-amber-600" />
                 <span className="text-sm font-medium text-amber-800">
                   {user?.badgesCount || 0} Insignias
                 </span>
@@ -73,7 +69,7 @@ export default function CitizenDashboard() {
           <div className="bg-white border rounded-2xl p-6 flex flex-col gap-4 shadow-sm">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-[#115E59] flex items-center gap-2">
-                <MapPin className="size-5 text-teal-600" />
+                <MapPin aria-hidden="true" className="size-5 text-teal-600" />
                 Tu Ciudad
               </h2>
               <span className="text-sm text-neutral-500">
@@ -107,9 +103,9 @@ export default function CitizenDashboard() {
             <div className="mt-auto">
               <Link
                 href="/calculator"
-                className="w-full rounded-lg py-2 cursor-pointer px-4 flex text-sm justify-center items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white transition-colors"
+                className="w-full rounded-lg py-2 cursor-pointer px-4 flex text-sm justify-center items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
               >
-                <Droplet className="size-4" />
+                <Droplet aria-hidden="true" className="size-4" />
                 Calcular Potencial Hídrico
               </Link>
             </div>

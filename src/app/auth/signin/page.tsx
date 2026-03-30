@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -42,6 +42,7 @@ export default function SignIn() {
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInFormSchema),
     mode: "onChange",
+    shouldFocusError: true,
     defaultValues: {
       email: "",
       password: "",
@@ -67,9 +68,9 @@ export default function SignIn() {
       });
 
       if (result?.error) {
-        toast.error(
-          "Credenciales inválidas. Por favor, verifica tu email y contraseña.",
-        );
+        const msg = "Credenciales inválidas. Por favor, verifica tu email y contraseña.";
+        form.setError("root", { message: msg });
+        toast.error(msg);
       } else {
         setTimeout(() => {
           const searchParams = new URLSearchParams(window.location.search);
@@ -80,7 +81,9 @@ export default function SignIn() {
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("Ocurrió un error inesperado. Por favor, intenta de nuevo.");
+      const msg = "Ocurrió un error inesperado. Por favor, intenta de nuevo.";
+      form.setError("root", { message: msg });
+      toast.error(msg);
     }
   };
 
@@ -156,8 +159,8 @@ export default function SignIn() {
                               )}
                               <span className="sr-only">
                                 {showPassword
-                                  ? "Hide password"
-                                  : "Show password"}
+                                  ? "Ocultar contraseña"
+                                  : "Mostrar contraseña"}
                               </span>
                             </Button>
                           </div>
@@ -166,6 +169,17 @@ export default function SignIn() {
                       </FormItem>
                     )}
                   />
+
+                  {form.formState.errors.root && (
+                    <div
+                      role="alert"
+                      aria-live="assertive"
+                      className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                    >
+                      <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0" />
+                      <span>{form.formState.errors.root.message}</span>
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-3">
                     <Button

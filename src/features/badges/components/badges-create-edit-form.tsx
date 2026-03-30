@@ -24,6 +24,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import type { CreateBadgeDto } from "@/types/badge";
 import { Status } from "@/types/common";
 import { useBadge, useCreateBadge, useUpdateBadge } from "../hooks/use-badge";
@@ -89,6 +90,7 @@ export function BadgesCreateEditForm({ badgeId }: BadgesCreateEditFormProps) {
 		resolver: zodResolver(badgeFormSchema),
 		defaultValues,
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const renderStatusLabel = (status: Status) => {
@@ -121,6 +123,9 @@ export function BadgesCreateEditForm({ badgeId }: BadgesCreateEditFormProps) {
 			push("/admin/badges");
 		} catch (error) {
 			console.error("Ocurrió un error:", error);
+			const message = "Ocurrió un error al guardar la insignia. Intenta nuevamente.";
+			form.setError("root", { message });
+			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -264,13 +269,18 @@ export function BadgesCreateEditForm({ badgeId }: BadgesCreateEditFormProps) {
 						)}
 					/>
 				</div>
-				<div className="flex gap-2">
-					<Button
-						type="button"
-						variant="outline"
-						onClick={() => push("/admin/badges")}
-						disabled={isSubmitting}
-					>
+			{form.formState.errors.root && (
+				<div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+					<span>{form.formState.errors.root.message}</span>
+				</div>
+			)}
+			<div className="flex gap-2">
+				<Button
+					type="button"
+					variant="outline"
+					onClick={() => push("/admin/badges")}
+					disabled={isSubmitting}
+				>
 						Cancelar
 					</Button>
 					<Button

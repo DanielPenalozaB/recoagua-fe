@@ -30,7 +30,10 @@ export function LevelUpModal({
       <DialogContent className="sm:max-w-md text-center !bg-white">
         <div className="flex justify-center mb-4">
           <div className="bg-yellow-100 p-4 rounded-full">
-            <Sparkles className="w-12 h-12 text-yellow-600 animate-pulse" />
+            <Sparkles
+              aria-hidden="true"
+              className="w-12 h-12 text-yellow-600 motion-safe:animate-pulse"
+            />
           </div>
         </div>
         <DialogHeader>

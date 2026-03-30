@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { useCities } from "@/features/cities/hooks/use-city";
 import { UserRole } from "@/types/user";
+import { toast } from "sonner";
 import { useCreateUser, useUpdateUser, useUser } from "../hooks/use-user";
 
 const profileFormSchema = z.object({
@@ -72,6 +73,7 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
 		resolver: zodResolver(profileFormSchema),
 		defaultValues,
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const renderRoleLabel = (role: UserRole) => {
@@ -108,8 +110,10 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
 			// Redirect to users list after successful creation
 			push("/admin/users");
 		} catch (error) {
-			// Error handling is already done in the mutation
 			console.error("Failed to create user:", error);
+			const message = "Ocurrió un error al guardar el usuario. Intenta nuevamente.";
+			form.setError("root", { message });
+			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -249,6 +253,11 @@ export function UsersCreateEditForm({ userId }: UsersCreateEditFormProps) {
 						)}
 					/>
 				</div>
+				{form.formState.errors.root && (
+					<div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+						<span>{form.formState.errors.root.message}</span>
+					</div>
+				)}
 				<Button
 					type="button"
 					title="Cancelar"

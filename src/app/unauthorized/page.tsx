@@ -1,16 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function Unauthorized() {
-	const { back, push } = useRouter();
+	const { back } = useRouter();
 
 	return (
-		<div className="h-svh">
+		<main id="main-content" className="h-svh">
 			<div className="m-auto flex h-full w-full flex-col items-center justify-center gap-2">
-				<h1 className="text-[7rem] leading-tight font-bold">401</h1>
-				<span className="font-medium">Acceso no autorizado</span>
+				<p aria-hidden="true" className="text-[7rem] leading-tight font-bold">401</p>
+				<h1 className="text-2xl font-bold">Acceso no autorizado</h1>
 				<p className="text-muted-foreground text-center">
 					Por favor inicia sesión con las credenciales adecuadas <br /> para
 					acceder a este recurso
@@ -19,9 +20,11 @@ export default function Unauthorized() {
 					<Button variant="outline" onClick={() => back()}>
 						Atrás
 					</Button>
-					<Button onClick={() => push("/")}>Regresar al inicio</Button>
+					<Button asChild>
+						<Link href="/">Regresar al inicio</Link>
+					</Button>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 }

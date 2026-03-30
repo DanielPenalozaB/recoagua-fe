@@ -2,6 +2,7 @@
 "use client";
 
 import { ChevronsUpDown, LogOut, Sparkles, User2 } from "lucide-react";
+import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -33,10 +34,6 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
     router.push("/auth/signin");
   };
 
-  const handleProfileClick = () => {
-    router.push("/profile");
-  };
-
   const renderAdminPanelMenu = () => {
     if (user.role !== "admin") {
       return;
@@ -47,12 +44,11 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
         <>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="text-neutral-800"
-              onClick={() => router.push("/")}
-            >
-              <Sparkles className="mr-2 w-4 h-4" />
-              <span>Panel de Ciudadano</span>
+            <DropdownMenuItem asChild className="text-neutral-800">
+              <Link href="/">
+                <Sparkles aria-hidden="true" className="mr-2 w-4 h-4" />
+                <span>Panel de Ciudadano</span>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </>
@@ -64,12 +60,11 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
         <>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem
-              className="text-neutral-800"
-              onClick={() => router.push("/admin")}
-            >
-              <Sparkles className="mr-2 w-4 h-4" />
-              <span>Panel de Admin</span>
+            <DropdownMenuItem asChild className="text-neutral-800">
+              <Link href="/admin">
+                <Sparkles aria-hidden="true" className="mr-2 w-4 h-4" />
+                <span>Panel de Admin</span>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </>
@@ -92,7 +87,10 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-3 hover:bg-gray-100 p-1 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 transition-all">
+        <button
+          aria-label={validateMobile ? `Menú de usuario: ${user.name}` : undefined}
+          className="flex items-center gap-3 hover:bg-gray-100 p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-all"
+        >
           <Avatar className="rounded-lg w-8 h-8">
             <AvatarImage alt={user.name} />
             <AvatarFallback className="rounded-lg">
@@ -107,7 +105,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
                   {user.email}
                 </span>
               </div>
-              <ChevronsUpDown className="flex-shrink-0 ml-auto size-4" />
+              <ChevronsUpDown aria-hidden="true" className="flex-shrink-0 ml-auto size-4" />
             </>
           )}
         </button>
@@ -137,12 +135,11 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            className="text-neutral-800"
-            onClick={handleProfileClick}
-          >
-            <User2 className="mr-2 w-4 h-4" />
-            <span>Perfil</span>
+          <DropdownMenuItem asChild className="text-neutral-800">
+            <Link href="/profile">
+              <User2 aria-hidden="true" className="mr-2 w-4 h-4" />
+              <span>Perfil</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         {renderAdminPanelMenu()}
@@ -151,7 +148,7 @@ export function NavUser({ user, validateMobile = false }: NavUserProps) {
           onClick={handleLogoutClick}
           className="focus:bg-red-50 text-red-600 focus:text-red-700"
         >
-          <LogOut className="mr-2 w-4 h-4 text-red-600 focus:text-red-700" />
+          <LogOut aria-hidden="true" className="mr-2 w-4 h-4 text-red-600 focus:text-red-700" />
           <span>Cerrar sesión</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

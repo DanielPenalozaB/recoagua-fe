@@ -15,6 +15,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import type { CreateLevelDto } from "@/types/level";
 import { useCreateLevel, useLevel, useUpdateLevel } from "../hooks/use-level";
 
@@ -58,6 +59,7 @@ export function LevelsCreateEditForm({ levelId }: LevelCreateEditFormProps) {
 		resolver: zodResolver(levelFormSchema),
 		defaultValues,
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const onSubmit = async (formData: LevelFormValues) => {
@@ -80,8 +82,10 @@ export function LevelsCreateEditForm({ levelId }: LevelCreateEditFormProps) {
 			// Redirect to levels list after successful creation
 			push("/admin/levels");
 		} catch (error) {
-			// Error handling is already done in the mutation
 			console.error("Ocurrió un error:", error);
+			const message = "Ocurrió un error al guardar el nivel. Intenta nuevamente.";
+			form.setError("root", { message });
+			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -187,13 +191,18 @@ export function LevelsCreateEditForm({ levelId }: LevelCreateEditFormProps) {
 							</FormItem>
 						)}
 					/>
+			</div>
+			{form.formState.errors.root && (
+				<div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+					<span>{form.formState.errors.root.message}</span>
 				</div>
-				<Button
-					type="button"
-					title="Cancelar"
-					variant="outline"
-					className="mr-2"
-					onClick={() => push("/admin/levels")}
+			)}
+			<Button
+				type="button"
+				title="Cancelar"
+				variant="outline"
+				className="mr-2"
+				onClick={() => push("/admin/levels")}
 					disabled={isSubmitting}
 				>
 					Cancelar

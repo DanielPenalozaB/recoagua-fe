@@ -28,6 +28,7 @@ import {
 	ChallengeType,
 	type CreateChallengeDto,
 } from "@/types/challenge";
+import { toast } from "sonner";
 import {
 	useChallenge,
 	useCreateChallenge,
@@ -80,6 +81,7 @@ export function ChallengesCreateEditForm({
 		resolver: zodResolver(challengeFormSchema),
 		defaultValues,
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const renderDifficultyLabel = (role: ChallengeDifficulty) => {
@@ -146,8 +148,10 @@ export function ChallengesCreateEditForm({
 			// Redirect to challenges list after successful creation
 			push("/admin/challenges");
 		} catch (error) {
-			// Error handling is already done in the mutation
 			console.error("Ocurrió un error:", error);
+			const message = "Ocurrió un error al guardar el desafío. Intenta nuevamente.";
+			form.setError("root", { message });
+			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -323,13 +327,18 @@ export function ChallengesCreateEditForm({
 							</FormItem>
 						)}
 					/>
+			</div>
+			{form.formState.errors.root && (
+				<div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+					<span>{form.formState.errors.root.message}</span>
 				</div>
-				<Button
-					type="button"
-					title="Cancelar"
-					variant="outline"
-					className="mr-2"
-					onClick={() => push("/admin/challenges")}
+			)}
+			<Button
+				type="button"
+				title="Cancelar"
+				variant="outline"
+				className="mr-2"
+				onClick={() => push("/admin/challenges")}
 					disabled={isSubmitting}
 				>
 					Cancelar

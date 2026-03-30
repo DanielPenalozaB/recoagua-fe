@@ -21,6 +21,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 import {
 	useCity,
 	useCreateCity,
@@ -82,6 +83,7 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
 		resolver: zodResolver(cityFormSchema),
 		defaultValues,
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const onSubmit = async (formData: CityFormValues) => {
@@ -111,8 +113,10 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
 			// Redirect to cities list after successful creation
 			push("/admin/cities");
 		} catch (error) {
-			// Error handling is already done in the mutation
 			console.error("Failed to create city:", error);
+			const message = "Ocurrió un error al guardar la ciudad. Intenta nuevamente.";
+			form.setError("root", { message });
+			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -247,16 +251,21 @@ export function CitiesCreateEditForm({ cityId }: CitiesCreateEditFormProps) {
 									</SelectContent>
 								</Select>
 								<FormMessage />
-							</FormItem>
-						)}
-					/>
+			</FormItem>
+					)}
+				/>
+			</div>
+			{form.formState.errors.root && (
+				<div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+					<span>{form.formState.errors.root.message}</span>
 				</div>
-				<Button
-					type="button"
-					title="Cancelar"
-					variant="outline"
-					className="mr-2"
-					onClick={() => push("/admin/cities")}
+			)}
+			<Button
+				type="button"
+				title="Cancelar"
+				variant="outline"
+				className="mr-2"
+				onClick={() => push("/admin/cities")}
 					disabled={isSubmitting}
 				>
 					Cancelar

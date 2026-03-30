@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -59,6 +59,7 @@ export default function SignUp() {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpFormSchema),
     mode: "onChange",
+    shouldFocusError: true,
     defaultValues: {
       name: "",
       email: "",
@@ -87,7 +88,8 @@ export default function SignUp() {
 
       if (res.status === 400) {
         const payload = await res.json().catch(() => null);
-        const message = payload?.message ?? "Email already in use";
+        const message = payload?.message ?? "Este email ya está en uso.";
+        form.setError("root", { message });
         toast.error(message);
         setIsSubmitting(false);
         return;
@@ -96,6 +98,7 @@ export default function SignUp() {
       if (!res.ok) {
         const payload = await res.json().catch(() => null);
         const message = payload?.message ?? "Ocurrió un error al registrarse";
+        form.setError("root", { message });
         toast.error(message);
         setIsSubmitting(false);
         return;
@@ -108,7 +111,9 @@ export default function SignUp() {
       push("/auth/signin");
     } catch (error) {
       console.error("Register error:", error);
-      toast.error("Ocurrió un error inesperado. Intenta nuevamente.");
+      const message = "Ocurrió un error inesperado. Intenta nuevamente.";
+      form.setError("root", { message });
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -197,8 +202,8 @@ export default function SignUp() {
                               )}
                               <span className="sr-only">
                                 {showPassword
-                                  ? "Hide password"
-                                  : "Show password"}
+                                  ? "Ocultar contraseña"
+                                  : "Mostrar contraseña"}
                               </span>
                             </Button>
                           </div>
@@ -213,34 +218,43 @@ export default function SignUp() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Ciudad</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={(value) =>
-                              field.onChange(Number.parseInt(value, 10))
-                            }
-                            value={field.value ? field.value.toString() : ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full bg-white">
-                                <SelectValue placeholder="Selecciona una ciudad" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {data?.data.map((city) => (
-                                <SelectItem
-                                  key={city.id}
-                                  value={city.id.toString()}
-                                >
-                                  {city.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
+                        <Select
+                          onValueChange={(value) =>
+                            field.onChange(Number.parseInt(value, 10))
+                          }
+                          value={field.value ? field.value.toString() : ""}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full bg-white">
+                              <SelectValue placeholder="Selecciona una ciudad" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {data?.data.map((city) => (
+                              <SelectItem
+                                key={city.id}
+                                value={city.id.toString()}
+                              >
+                                {city.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                  {form.formState.errors.root && (
+                    <div
+                      role="alert"
+                      aria-live="assertive"
+                      className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                    >
+                      <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0" />
+                      <span>{form.formState.errors.root.message}</span>
+                    </div>
+                  )}
+
                   <div>
                     <Button
                       type="submit"

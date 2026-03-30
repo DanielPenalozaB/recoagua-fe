@@ -44,6 +44,7 @@ export default function ForgotPasswordPage() {
 			email: "",
 		},
 		mode: "onChange",
+		shouldFocusError: true,
 	});
 
 	const onSubmit = async (formData: FormValues) => {
@@ -98,19 +99,25 @@ export default function ForgotPasswordPage() {
 	const renderContent = () => {
 		if (isLoading) {
 			return (
-				<div className="loading-section text-center">
+				<div role="status" aria-live="polite" className="loading-section text-center">
 					<p className="text-xl font-bold mb-2 text-neutral-800 dark:text-neutral-600">
 						Enviando petición de restablecimiento de contraseña...
 					</p>
-					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto"></div>
+					<div className="motion-safe:animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto" />
+					<span className="sr-only">Procesando, por favor espera…</span>
 				</div>
 			);
 		}
 
 		if (showMessage) {
 			return (
-				<div className="flex items-center flex-col gap-4">
-					<CompletedTask className="size-48" />
+				<div
+					role="status"
+					aria-live="polite"
+					aria-atomic="true"
+					className="flex items-center flex-col gap-4"
+				>
+					<CompletedTask className="size-48" aria-hidden="true" />
 					<h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200 text-center">
 						Petición de restablecimiento de contraseña enviada
 					</h2>
@@ -124,17 +131,14 @@ export default function ForgotPasswordPage() {
 
 		if (errorMessage) {
 			return (
-				<div className="error-section text-center">
+				<div role="alert" aria-live="assertive" className="error-section text-center">
 					<h2 className="text-xl font-bold mb-2 text-neutral-800 dark:text-neutral-200">
 						Falló la petición
 					</h2>
 					<p className="text-neutral-600 mb-4">{errorMessage}</p>
-					<a
-						href="/auth/signin"
-						className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*="size-"])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer bg-neutral-900 text-white shadow-xs hover:bg-neutral-900/90 h-9 px-4 py-2 has-[>svg]:px-3'
-					>
-						Ir al inicio de sesión
-					</a>
+					<Button asChild>
+						<a href="/auth/signin">Ir al inicio de sesión</a>
+					</Button>
 				</div>
 			);
 		}

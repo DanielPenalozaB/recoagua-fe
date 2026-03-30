@@ -49,6 +49,7 @@ import {
   type QuestionType,
 } from "@/types/block";
 import { GuideDifficulty, GuideStatus } from "@/types/guide";
+import { toast } from "sonner";
 import { useCreateGuide, useGuide, useUpdateGuide } from "../hooks/use-guide";
 
 interface CreateGuideDto {
@@ -162,6 +163,7 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
     resolver: zodResolver(guideFormSchema),
     defaultValues,
     mode: "onChange",
+    shouldFocusError: true,
   });
 
   const renderDifficultyLabel = (role: GuideDifficulty) => {
@@ -757,9 +759,9 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
       push("/admin/guides");
     } catch (error) {
       console.error("Ocurrió un error:", error);
-      alert(
-        "Error al guardar la guía. Por favor, verifica que todos los campos estén completos.",
-      );
+      const message = "Ocurrió un error al guardar la guía. Verifica que todos los campos estén completos.";
+      form.setError("root", { message });
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -2386,6 +2388,11 @@ export function GuidesCreateEditForm({ guideId }: GuideCreateEditFormProps) {
         )}
 
         {/* Form Actions */}
+        {form.formState.errors.root && (
+          <div role="alert" aria-live="assertive" className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <span>{form.formState.errors.root.message}</span>
+          </div>
+        )}
         <div className="flex items-center justify-between gap-4 pb-8">
           <Button
             type="button"
