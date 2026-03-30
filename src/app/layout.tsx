@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import "./globals.css";
 import Providers from "./providers";
@@ -49,6 +50,10 @@ export default function RootLayout({
           closeButton
           duration={7000}
           position="top-right"
+        />
+        <Script
+          src="https://api.useberry.com/integrations/liveUrl/scripts/useberryScript.js"
+          strategy="afterInteractive"
         />
       </body>
     </html>
