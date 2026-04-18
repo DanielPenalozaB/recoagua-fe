@@ -24,7 +24,6 @@ import { useGuide, useGuideProgress } from "@/hooks/use-guides";
 import { GuideDifficulty } from "@/types/guide";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { stat } from "fs";
 
 export default function CitizenGuidesDetailPage({
   params,
@@ -106,12 +105,10 @@ export default function CitizenGuidesDetailPage({
   };
 
   const getModuleStatus = (moduleId: number, order: number) => {
-    // Now valid because userProgress is ModuleProgress[]
     const progress = userProgress.find((p) => p.module.id === moduleId);
 
     if (progress?.completionStatus === "completed") return "completed";
 
-    // Logic for unlocking:
     if (order === 1) return "unlocked";
 
     const previousModule = modules.find((m) => m.order === order - 1);
@@ -209,7 +206,8 @@ export default function CitizenGuidesDetailPage({
       <div className="flex flex-col items-center gap-6 pb-48">
         {modules.map((module) => {
           const status = getModuleStatus(module.id, module.order);
-          const isLocked = status === "completed";
+          const isLocked = status === "locked";
+          const isCompleted = status === "completed";
 
           return (
             <Popover key={`guide-module-${module.id}`}>
@@ -233,7 +231,9 @@ export default function CitizenGuidesDetailPage({
                         "bottom-px left-1/2 z-0 absolute rounded-lg outline-[3px] outline-offset-[6px] w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "outline-gray-400/50"
-                          : "outline-teal-600/50",
+                          : isCompleted
+                            ? "outline-yellow-500/50"
+                            : "outline-teal-600/50",
                       )}
                     />
                     {/* Bottom shadow */}
@@ -242,14 +242,20 @@ export default function CitizenGuidesDetailPage({
                         "bottom-0 left-1/2 z-0 absolute rounded-lg outline-[3px] -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "bg-gray-400 outline-gray-400"
-                          : "bg-teal-600 outline-teal-600",
+                          : isCompleted
+                            ? "bg-yellow-600 outline-yellow-600"
+                            : "bg-teal-600 outline-teal-600",
                       )}
                     />
                     {/* Bottom body */}
                     <div
                       className={cn(
                         "bottom-[28px] left-1/2 z-0 absolute w-[75px] h-3 -translate-x-1/2",
-                        isLocked ? "bg-gray-400" : "bg-teal-600",
+                        isLocked
+                          ? "bg-gray-400"
+                          : isCompleted
+                            ? "bg-yellow-600"
+                            : "bg-teal-600",
                       )}
                     />
                     {/* Bottom cap */}
@@ -258,7 +264,9 @@ export default function CitizenGuidesDetailPage({
                         "bottom-3 left-1/2 absolute rounded-lg outline-[3px] -outline-offset-1 w-14 h-14 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "bg-teal-500 outline-gray-400"
-                          : "bg-teal-500 outline-teal-600",
+                          : isCompleted
+                            ? "bg-yellow-400 outline-yellow-600"
+                            : "bg-teal-500 outline-teal-600",
                       )}
                     />
                     {/* Top shadow */}
@@ -267,29 +275,40 @@ export default function CitizenGuidesDetailPage({
                         "bottom-6 left-1/2 absolute rounded-sm outline-[3px] -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 -translate-x-1/2",
                         isLocked
                           ? "bg-gray-400 outline-gray-400"
-                          : "bg-teal-600 outline-teal-600",
+                          : isCompleted
+                            ? "bg-yellow-600 outline-yellow-600"
+                            : "bg-teal-600 outline-teal-600",
                       )}
                     />
                     {/* Top body */}
                     <div
                       className={cn(
                         "bottom-10 left-1/2 z-8 absolute w-11 h-4 group-active:h-0 group-hover:h-3 transition-all -translate-x-1/2 duration-150 ease-out",
-                        isLocked ? "bg-gray-400" : "bg-teal-600",
+                        isLocked
+                          ? "bg-gray-400"
+                          : isCompleted
+                            ? "bg-yellow-600"
+                            : "bg-teal-600",
                       )}
                     />
                     {/* Top cap */}
                     <div
                       className={cn(
-                        "bottom-10 group-active:bottom-6! group-hover:bottom-9 left-1/2 z-10 absolute bg-teal-500 rounded-sm outline-[3px] -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 transition-all -translate-x-1/2 duration-150 ease-out",
-                        isLocked ? "outline-gray-400" : "outline-teal-600",
+                        "bottom-10 group-active:bottom-6! group-hover:bottom-9 left-1/2 z-10 absolute rounded-sm outline-[3px] -outline-offset-1 w-8 h-8 rotate-x-50 rotate-z-45 transition-all -translate-x-1/2 duration-150 ease-out",
+                        isLocked
+                          ? "bg-teal-500 outline-gray-400"
+                          : isCompleted
+                            ? "bg-yellow-400 outline-yellow-600"
+                            : "bg-teal-500 outline-teal-600",
                       )}
                     />
                     <span
                       className={cn(
-                        "absolute bottom-[2.85rem] group-active:bottom-7! group-hover:bottom-10 justify-center text-teal-600 left-1/2 -translate-x-1/2 z-10 rotate-x-35 font-bold transition-all duration-150 ease-out",
+                        "absolute bottom-[2.85rem] group-active:bottom-7! group-hover:bottom-10 justify-center left-1/2 -translate-x-1/2 z-10 rotate-x-35 font-bold transition-all duration-150 ease-out",
+                        isCompleted ? "text-yellow-700" : "text-teal-600",
                       )}
                     >
-                      {module.order}
+                      {isCompleted ? "✓" : module.order}
                     </span>
                   </button>
                   <span className="absolute top-1/2 -translate-y-1/2 left-[calc(100%+1rem)] min-w-52 text-lg font-bold text-neutral-400 select-none">
@@ -318,11 +337,16 @@ export default function CitizenGuidesDetailPage({
                     )}
                   </div>
                   <Link
-                    title="Comenzar"
+                    title={isCompleted ? "Repasar" : "Comenzar"}
                     href={`/guides/${guideData.data.id}/${module.id}`}
-                    className="flex justify-center items-center gap-2 bg-teal-600 hover:bg-teal-700 px-4 py-2 border-teal-700 border-b-4 rounded-md font-semibold text-teal-50 uppercase whitespace-nowrap duration-150 ease-out cursor-pointer"
+                    className={cn(
+                      "flex justify-center items-center gap-2 px-4 py-2 border-b-4 rounded-md font-semibold uppercase whitespace-nowrap duration-150 ease-out cursor-pointer",
+                      isCompleted
+                        ? "bg-yellow-500 hover:bg-yellow-600 border-yellow-600 text-yellow-50"
+                        : "bg-teal-600 hover:bg-teal-700 border-teal-700 text-teal-50",
+                    )}
                   >
-                    Comenzar
+                    {isCompleted ? "Repasar" : "Comenzar"}
                   </Link>
                 </PopoverContent>
               )}
