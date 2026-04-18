@@ -109,18 +109,21 @@ export default function CitizenGuidesPage() {
             <Clock className="size-4" />
             <span>{guide.estimatedDuration} min</span>
           </div>
-          {guide.isCompleted === false && (
-            <a
-              href={`/guides/${guide.id}`}
-              className="flex justify-center items-center gap-2 px-4 py-2 rounded-lg w-full transition-all duration-200 ease-in-out cursor-pointer bg-[#0D9488] hover:bg-[#14b8a9] text-[#CCFBF1]"
-              onClick={(e) => {
-                e.preventDefault();
-                router.push(`/guides/${guide.id}`);
-              }}
-            >
-              Iniciar lección
-            </a>
-          )}
+          <a
+            href={`/guides/${guide.id}`}
+            className={cn(
+              "flex justify-center items-center gap-2 px-4 py-2 rounded-lg w-full transition-all duration-200 ease-in-out cursor-pointer",
+              guide.isCompleted === true
+                ? "bg-neutral-400 hover:bg-neutral-500 text-white"
+                : "bg-[#0D9488] hover:bg-[#14b8a9] text-[#CCFBF1]",
+            )}
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(`/guides/${guide.id}`);
+            }}
+          >
+            {guide.isCompleted === true ? "Repasar" : "Iniciar lección"}
+          </a>
         </div>
       ));
     } else {

@@ -16,7 +16,7 @@ export default function CitizenGuidesSection() {
   } = useGuides({
     status: GuideStatus.PUBLISHED,
     limit: 5,
-    hideCompleted: true,
+    hideCompleted: false,
   });
 
   const renderContent = () => {
