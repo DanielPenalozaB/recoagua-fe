@@ -1,6 +1,7 @@
 "use client";
 
 import { Droplets, HelpCircle, Home, MapPin, BookOpen } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import CalculatorResults from "@/components/citizen/calculator/calculator-results";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ interface CollectionSystem {
 }
 
 export default function CalculatorPage() {
+  const router = useRouter();
   const SURFACE_TYPES: CollectionMethod[] = [
     { id: "metal", name: "Techo de Metal / Zinc", efficiency: 0.9 },
     { id: "tiles", name: "Techo de Tejas / Concreto", efficiency: 0.8 },
@@ -233,6 +235,7 @@ export default function CalculatorPage() {
   // Simulate adding points when calculating
   const calculateAndEarnPoints = async () => {
     calculateResults();
+    router.replace("/calculator?calculation=completed", { scroll: false });
 
     // Play sound immediately for user feedback
     playSuccessSound();
