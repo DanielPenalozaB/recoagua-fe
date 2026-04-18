@@ -60,7 +60,7 @@ export default function MapPage() {
   );
 
   return (
-    <div className="w-full min-h-[calc(100svh-4rem)] flex flex-col">
+    <div className="w-full h-[calc(100svh-4rem)] flex flex-col">
       {/* Alternativa textual accesible para tecnologías asistivas (WCAG 1.1.1) */}
       <details className="sr-only focus-within:not-sr-only focus-within:absolute focus-within:top-2 focus-within:left-2 focus-within:z-[500] focus-within:bg-white focus-within:p-4 focus-within:rounded-lg focus-within:shadow-lg focus-within:max-w-sm">
         <summary className="font-semibold cursor-pointer">

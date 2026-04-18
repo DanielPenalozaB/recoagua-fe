@@ -41,16 +41,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <a href="#main-content" className="skip-link">
-          Saltar al contenido principal
-        </a>
         <Providers>{children}</Providers>
-        <Toaster
-          richColors
-          closeButton
-          duration={7000}
-          position="top-right"
-        />
+        <Toaster richColors closeButton duration={7000} position="top-right" />
         <Script
           src="https://api.useberry.com/integrations/liveUrl/scripts/useberryScript.js"
           strategy="afterInteractive"
