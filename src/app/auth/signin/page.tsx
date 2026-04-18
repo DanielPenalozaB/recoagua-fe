@@ -74,7 +74,7 @@ export default function SignIn() {
       } else {
         setTimeout(() => {
           const searchParams = new URLSearchParams(window.location.search);
-          const redirectPath = searchParams.get("redirect") || "/";
+          const redirectPath = searchParams.get("redirect") || "/?login=success";
 
           push(redirectPath);
         }, 100);
