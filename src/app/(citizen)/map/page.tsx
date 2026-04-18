@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Map, {
   FullscreenControl,
@@ -18,6 +19,7 @@ import type { Zone } from "@/types/zone";
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? "";
 
 export default function MapPage() {
+  const router = useRouter();
   const [popupInfo, setPopupInfo] = useState<Zone | null>(null);
   const [zones, setZones] = useState<Zone[]>([]);
 
@@ -45,6 +47,7 @@ export default function MapPage() {
           onClick={(e) => {
             e.originalEvent.stopPropagation();
             setPopupInfo(zone);
+            router.replace(`/map?zone=${zone.id}`, { scroll: false });
           }}
         >
           <button
