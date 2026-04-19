@@ -383,9 +383,10 @@ export default function GuideModulePage({
       }
 
       const result = await recordInteraction(payload);
+      const isLastBlock = currentBlockIndex === moduleData.blocks.length - 1;
 
       if (result) {
-        setIsSubmitted(true); // Mark as submitted to disable inputs and show result UI
+        setIsSubmitted(true);
 
         if (
           result.data.isCorrect ||
@@ -404,6 +405,15 @@ export default function GuideModulePage({
         } else {
           playFeedbackSound("error");
           toast.error("Esa no es la respuesta correcta");
+        }
+
+        if (isLastBlock) {
+          toast.success("¡Módulo completado!", {
+            description: `Has terminado ${moduleData.name}. Volviendo a la guía...`,
+          });
+          setTimeout(() => {
+            router.push(`/guides/${data.data.guide.id}`);
+          }, 1500);
         }
       }
     } catch (err) {

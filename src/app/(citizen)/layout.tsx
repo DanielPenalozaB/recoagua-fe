@@ -25,6 +25,7 @@ export default function CitizenLayout({
   const pathname = usePathname();
   const { data: session, status } = useSession();
   const isMapRoute = pathname === "/map";
+  const isModuleRoute = /^\/guides\/\d+\/\d+$/.test(pathname);
 
   const navigationItems: NavItem[] = [
     { route: "/map", icon: Map, label: "Mapa", isActive: pathname === "/map" },
@@ -110,42 +111,44 @@ export default function CitizenLayout({
         >
           {children}
         </main>
-        <footer>
-          <nav
-            aria-label="Navegación de secciones"
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[400]"
-          >
-            <div className="flex items-center gap-2 p-2 rounded-2xl bg-white border border-gray-200 shadow-lg">
-              {navigationItems.map((navItem) => (
-                <Link
-                  key={navItem.route}
-                  href={navItem.route}
-                  aria-current={navItem.isActive ? "page" : undefined}
-                  className={`flex flex-col items-center justify-center gap-1 h-14 w-14 rounded-xl transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
-                    navItem.isActive
-                      ? "bg-teal-100"
-                      : "bg-transparent hover:bg-gray-100"
-                  }`}
-                >
-                  <navItem.icon
-                    size={20}
-                    aria-hidden="true"
-                    className={
-                      navItem.isActive ? "text-teal-600" : "text-gray-500"
-                    }
-                  />
-                  <span
-                    className={`text-xs font-medium ${
-                      navItem.isActive ? "text-teal-600" : "text-gray-500"
+        {!isModuleRoute && (
+          <footer>
+            <nav
+              aria-label="Navegación de secciones"
+              className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[400]"
+            >
+              <div className="flex items-center gap-2 p-2 rounded-2xl bg-white border border-gray-200 shadow-lg">
+                {navigationItems.map((navItem) => (
+                  <Link
+                    key={navItem.route}
+                    href={navItem.route}
+                    aria-current={navItem.isActive ? "page" : undefined}
+                    className={`flex flex-col items-center justify-center gap-1 h-14 w-14 rounded-xl transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
+                      navItem.isActive
+                        ? "bg-teal-100"
+                        : "bg-transparent hover:bg-gray-100"
                     }`}
                   >
-                    {navItem.label}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </nav>
-        </footer>
+                    <navItem.icon
+                      size={20}
+                      aria-hidden="true"
+                      className={
+                        navItem.isActive ? "text-teal-600" : "text-gray-500"
+                      }
+                    />
+                    <span
+                      className={`text-xs font-medium ${
+                        navItem.isActive ? "text-teal-600" : "text-gray-500"
+                      }`}
+                    >
+                      {navItem.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          </footer>
+        )}
       </div>
     </MapboxProvider>
   );

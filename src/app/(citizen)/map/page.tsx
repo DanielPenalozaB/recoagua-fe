@@ -48,6 +48,7 @@ export default function MapPage() {
             e.originalEvent.stopPropagation();
             setPopupInfo(zone);
             router.replace(`/map?zone=${zone.id}`, { scroll: false });
+            new Audio("/success-sound.mp3").play().catch(() => {});
           }}
         >
           <button
