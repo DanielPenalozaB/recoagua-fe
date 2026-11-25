@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RecoAgua · Front-end (aplicación web)
 
-## Getting Started
+Interfaz web de **RecoAgua**, el *Sistema de Gestión para la Recolección de Agua en Hogares de
+Cali, Valle del Cauca*. RecoAgua es una plataforma web educativa que orienta a los hogares en el
+aprovechamiento de agua lluvia para usos no potables. Ofrece guías interactivas, una calculadora
+hídrica, un mapa de zonas de Cali y retos con insignias, además de un panel de administración.
 
-First, run the development server:
+Este repositorio forma parte del trabajo de grado para optar al título de Ingeniero de Sistemas
+en la **Institución Universitaria Antonio José Camacho (UNIAJC)**, Facultad de Ingenierías (2026).
+
+| | |
+| --- | --- |
+| **Autores** | Ismael Yate Calderón · Juan Daniel Peñaloza Brito |
+| **Directora** | Beatriz Eugenia Marín Ospina (Grupo de Investigación GRINTIC) |
+| **Aplicación** | <https://recoagua.com> |
+| **Back-end (API)** | [DanielPenalozaB/recoagua-be](https://github.com/DanielPenalozaB/recoagua-be) |
+
+## Tecnologías
+
+Next.js 16 (App Router) · React 19 · TypeScript · NextAuth.js v4 · TanStack Query · Tailwind CSS v4 ·
+shadcn/ui (Radix) · Mapbox GL · Recharts · Docker · GitHub Actions + Coolify.
+
+## Ejecución local
+
+Requisitos: Node.js ≥ 20.9 y npm. La API ([recoagua-be](https://github.com/DanielPenalozaB/recoagua-be))
+debe estar en ejecución.
 
 ```bash
+git clone https://github.com/DanielPenalozaB/recoagua-fe.git
+cd recoagua-fe
+npm install
+cp template.env .env.local        # completar los valores (ver Manual Técnico, sección 5.2)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La aplicación queda disponible en <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Descripción |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | URL de la API, por ejemplo `http://localhost:4000` |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Token público de Mapbox |
+| `NEXTAUTH_URL` | URL de la aplicación, por ejemplo `http://localhost:3000` |
+| `NEXTAUTH_SECRET` | Clave para cifrar la cookie de sesión |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts principales
 
-## Learn More
+| Comando | Descripción |
+| --- | --- |
+| `npm run dev` | Servidor de desarrollo (Turbopack) |
+| `npm run build` / `npm run start` | Compilación y ejecución en producción |
+| `npm run lint` | ESLint |
+| `npx biome check --write .` | Linter y formateador Biome |
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/          # Rutas: (citizen)/ ciudadano, admin/ administración, auth/ autenticación
+├── components/   # Componentes compartidos (shadcn/ui, tablas, vistas del ciudadano)
+├── features/     # Módulos CRUD del panel de administración
+├── services/     # Clientes HTTP de la API
+├── hooks/, lib/, types/, context/
+└── proxy.ts      # Protección de rutas por sesión y rol
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Despliegue
 
-## Deploy on Vercel
+Cada *push* a `develop` ejecuta `.github/workflows/deploy.yml`, que construye la imagen
+`ghcr.io/danielpenalozab/recoagua-fe:latest` (con las variables `NEXT_PUBLIC_*` como argumentos
+de construcción), la publica en GitHub Container Registry y notifica a Coolify para desplegarla.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentación
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Los detalles de arquitectura, variables de entorno, Docker y CI/CD están en el **Manual Técnico de
+Implementación**. El uso de la plataforma se describe en el **Manual de Usuario**. Ambos se
+entregan con el trabajo de grado.
